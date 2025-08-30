@@ -14,9 +14,10 @@ using Union_Formularios.Formularios;
 
 namespace Formulario_Principal_Car_EFULL.Formularios
 {
-    // Form que gestiona el registro de mantenimiento y la emisión de facturas
     public partial class Formulario_Mantenimiento : Form
     {
+        // Diccionario global placa->marca (declarado arriba)
+        private readonly Dictionary<string, string> _placaMarca = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         // Catálogo simple de servicios con su precio base (para llenar la UI y calcular totales)
         Dictionary<string, decimal> preciosServicio = new Dictionary<string, decimal>
         {
@@ -29,6 +30,9 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         // Referencias a labels (si las usas desde el diseñador, permanecen)
         private Label lb_valor_servicio;
         private Label label10;
+
+        // Marca del vehículo de la placa actualmente seleccionada
+        private string _marcaVehiculoActual = null;
 
         // Tasa de IVA vigente (se intenta actualizar desde BD en el Load)
         private decimal _ivaRate = 0.15m;
@@ -43,11 +47,13 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         public Formulario_Mantenimiento()
         {
             InitializeComponent();
+            InicializarFechaMantenimiento();
         }
 
         // Evento Load: inicializa IVA, grilla, combos, y limpia los datos del visor de factura
         private void Formulario_Mantenimiento_Load(object sender, EventArgs e)
         {
+            InicializarFechaMantenimiento();    //Inicia la fecha actual  
             CargarIvaVigente();        // lee IVA vigente desde la tabla Impuestos
             CargarRepuestos();         // trae los repuestos y arma columnas editables
 
@@ -69,6 +75,18 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             cmb_forma_de_pago.Items.Clear();
             cmb_forma_de_pago.Items.AddRange(new[] { "Contado", "Crédito" });
             cmb_forma_de_pago.SelectedIndex = -1;
+
+            // Asegura que estos eventos estén conectados una sola vez
+            Cmbox_Select_Plaque.SelectedIndexChanged -= Cmbox_Select_Plaque_SelectedIndexChanged;
+            Cmbox_Select_Plaque.SelectedIndexChanged += Cmbox_Select_Plaque_SelectedIndexChanged;
+
+            // Si el usuario selecciona con el mouse (SelectionChangeCommitted)
+            Cmbox_Select_Plaque.SelectionChangeCommitted -= Cmbox_Select_Plaque_SelectedIndexChanged;
+            Cmbox_Select_Plaque.SelectionChangeCommitted += Cmbox_Select_Plaque_SelectedIndexChanged;
+
+            // Si el usuario escribe la placa y se va del control
+            Cmbox_Select_Plaque.Leave -= Cmbox_Select_Plaque_Leave;
+            Cmbox_Select_Plaque.Leave += Cmbox_Select_Plaque_Leave;
 
             // Encabezado de la grilla: altura y estilo
             dgvRepuestos.ColumnHeadersVisible = true;
@@ -110,15 +128,29 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             label1.AutoSize = false;
             label1.Width = 100;
 
-            // Carga de placas al combo desde la tabla Vehiculos
+            // Carga de placas + marca al combo y al diccionario
             using (SqlConnection con = new SqlConnection(_connStr))
+            using (var cmd = new SqlCommand(
+                "SELECT Placa, NULLIF(LTRIM(RTRIM(Marca)),'') AS Marca FROM Vehiculos ORDER BY Placa", con))
             {
                 con.Open();
-                SqlCommand cmd = new SqlCommand("SELECT Placa FROM Vehiculos", con);
-                SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                    Cmbox_Select_Plaque.Items.Add(Convert.ToString(reader["Placa"]));
-                reader.Close();
+                using (var r = cmd.ExecuteReader())
+                {
+                    Cmbox_Select_Plaque.Items.Clear();
+                    _placaMarca.Clear();
+
+                    while (r.Read())
+                    {
+                        var placa = Convert.ToString(r["Placa"])?.Trim();
+                        var marca = r.IsDBNull(1) ? null : Convert.ToString(r["Marca"])?.Trim();
+
+                        if (!string.IsNullOrEmpty(placa))
+                        {
+                            Cmbox_Select_Plaque.Items.Add(placa);
+                            _placaMarca[placa] = string.IsNullOrEmpty(marca) ? null : marca;
+                        }
+                    }
+                }
             }
 
             // Carga el combo de tipos de servicio (Key/Value para precio automático)
@@ -157,7 +189,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                 };
                 dgvRepuestos.Columns.Insert(2, colCantidad);
             }
-
+            
             // Columna check: Seleccionar
             if (!dgvRepuestos.Columns.Contains("Seleccionar"))
             {
@@ -182,6 +214,22 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             }
         }
 
+        // === FECHA: formato largo, siempre hoy al iniciar y sin permitir futuro ===
+        private void InicializarFechaMantenimiento()
+        {
+            var hoy = DateTime.Today;
+
+            DTP_Date_Mantenimiento.Format = DateTimePickerFormat.Long; // “miércoles, 28 de agosto de 2025”
+            DTP_Date_Mantenimiento.ShowCheckBox = false;
+            DTP_Date_Mantenimiento.MinDate = new DateTime(2000, 1, 1); // opcional
+            DTP_Date_Mantenimiento.MaxDate = hoy;                      // no permitir futuro
+            DTP_Date_Mantenimiento.Value = hoy;                      // iniciar en hoy
+
+            txt_Show_Date.Text = hoy.ToString("dd/MM/yyyy");
+        }
+
+
+
         // Ajusta cantidad contra stock cuando termina de editarse la celda
         private void dgvRepuestos_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
@@ -203,6 +251,108 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             }
             ActualizarListaRepuestos(); // refresca el resumen del lado derecho
         }
+
+        private string GetMarcaPorPlaca(string placa)
+        {
+            if (string.IsNullOrWhiteSpace(placa)) return null;
+
+            try
+            {
+                using (var cn = new SqlConnection(_connStr))
+                using (var cmd = new SqlCommand(
+                    @"SELECT TOP 1 NULLIF(LTRIM(RTRIM(Marca)),'') 
+              FROM Vehiculos 
+              WHERE LTRIM(RTRIM(Placa)) = @p", cn))
+                {
+                    cmd.Parameters.AddWithValue("@p", placa.Trim());
+                    cn.Open();
+                    var r = cmd.ExecuteScalar();
+                    return r == null || r == DBNull.Value ? null : Convert.ToString(r);
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private void CargarRepuestosPorMarca(string marca)
+        {
+            // Si no hay marca, vaciamos grilla
+            if (string.IsNullOrWhiteSpace(marca))
+            {
+                dgvRepuestos.DataSource = null;
+                dgvRepuestos.Columns.Clear();
+                return;
+            }
+
+            try
+            {
+                using (var cn = new SqlConnection(_connStr))
+                using (var da = new SqlDataAdapter(@"
+            SELECT
+                r.RepuestoID,
+                r.Codigo,
+                r.Nombre,
+                r.Categoria,
+                r.Marca,
+                r.Modelo,
+                r.PrecioUnitario,
+                r.Stock
+            FROM Repuestos r
+            WHERE r.Activo = 1
+              AND (r.Marca = @marca OR @marca = '') AND LTRIM(RTRIM(r.Marca)) = LTRIM(RTRIM(@marca))
+            ORDER BY r.Nombre;", cn))
+                {
+                    da.SelectCommand.Parameters.AddWithValue("@marca", marca ?? string.Empty);
+                    var t = new DataTable();
+                    da.Fill(t);
+
+                    dgvRepuestos.DataSource = t;
+                    Agrega_Cantidad_Seleccionar();   // agrega "Cantidad" y "Seleccionar" si faltan
+
+                    if (dgvRepuestos.Columns.Contains("RepuestoID"))
+                        dgvRepuestos.Columns["RepuestoID"].Visible = false;
+
+                    foreach (DataGridViewColumn col in dgvRepuestos.Columns)
+                        if (col.Name != "Cantidad" && col.Name != "Seleccionar")
+                            col.ReadOnly = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudieron cargar repuestos por marca:\n" + ex.Message,
+                    "Repuestos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void Agrega_Cantidad_Seleccionar()
+        {
+            if (!dgvRepuestos.Columns.Contains("Cantidad"))
+            {
+                var colCantidad = new DataGridViewTextBoxColumn
+                {
+                    Name = "Cantidad",
+                    HeaderText = "Cantidad",
+                    ValueType = typeof(int),
+                    Width = 90
+                };
+                dgvRepuestos.Columns.Add(colCantidad);
+            }
+
+            if (!dgvRepuestos.Columns.Contains("Seleccionar"))
+            {
+                var colCheck = new DataGridViewCheckBoxColumn
+                {
+                    Name = "Seleccionar",
+                    HeaderText = "Seleccionar",
+                    Width = 70
+                };
+                dgvRepuestos.Columns.Add(colCheck);
+            }
+        }
+
+
 
         // Al comenzar a editar "Cantidad" forzamos que solo acepte números
         private void dgvRepuestos_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
@@ -383,9 +533,8 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                 { MessageBox.Show("Selecciona la forma de pago."); return; }
 
                 // Confirmación previa
-                var rta = MessageBox.Show(this, "¿Está seguro de guardar la factura?",
-                    "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
-                if (rta != DialogResult.Yes) return;
+                var advertencia = MessageBox.Show(this, "¿Está seguro de guardar la factura?","Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
+                if (advertencia != DialogResult.Yes) return;
 
                 using (SqlConnection con = new SqlConnection(_connStr))
                 {
@@ -414,8 +563,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
 
                         // Convierte fecha del preview (si falla, usa hoy)
                         DateTime fechaMant = DateTime.Today;
-                        DateTime.TryParseExact(txt_Show_Date.Text, "dd/MM/yyyy", CultureInfo.InvariantCulture,
-                                               DateTimeStyles.None, out fechaMant);
+                        DateTime.TryParseExact(txt_Show_Date.Text, "dd/MM/yyyy", CultureInfo.InvariantCulture,DateTimeStyles.None, out fechaMant);
 
                         // Inserta cabecera de factura (usa DBNull para campos opcionales)
                         string insertFactura = 
@@ -447,24 +595,67 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                         // Inserta detalle para cada repuesto marcado como "Seleccionar"
                         foreach (DataGridViewRow row in dgvRepuestos.Rows)
                         {
-                            bool seleccionado = row.Cells["Seleccionar"].Value != null && (bool)row.Cells["Seleccionar"].Value;
+                            bool seleccionado = row.Cells["Seleccionar"].Value is bool b && b;
                             if (!seleccionado) continue;
 
-                            int repuestoID = Convert.ToInt32(row.Cells["RepuestoID"].Value);
-                            int cantidad = Convert.ToInt32(row.Cells["Cantidad"].Value);
-                            decimal precioUnit = Convert.ToDecimal(row.Cells["PrecioUnitario"].Value);
+                            // RepuestoID
+                            int repuestoID;
+                            var vRep = row.Cells["RepuestoID"]?.Value;
+                            if (vRep == null || vRep == DBNull.Value || !int.TryParse(vRep.ToString(), out repuestoID))
+                                continue;
 
-                            string insertDetalle = @"INSERT INTO FacturaDetalle (FacturaID, RepuestoID, Cantidad, PrecioUnitario, IVA) 
-                                                     VALUES (@FacturaID, @RepuestoID, @Cantidad, @PrecioUnitario, @IVA)";
+                            // Cantidad
+                            int cantidad = 0;
+                            var vCant = row.Cells["Cantidad"]?.Value;
+                            if (vCant != null && vCant != DBNull.Value)
+                                int.TryParse(vCant.ToString(), out cantidad);
+                            if (cantidad <= 0) continue;
 
-                            SqlCommand cmdDetalle = new SqlCommand(insertDetalle, con, tran);
-                            cmdDetalle.Parameters.AddWithValue("@FacturaID", facturaID);
-                            cmdDetalle.Parameters.AddWithValue("@RepuestoID", repuestoID);
-                            cmdDetalle.Parameters.AddWithValue("@Cantidad", cantidad);
-                            cmdDetalle.Parameters.AddWithValue("@PrecioUnitario", precioUnit);
-                            cmdDetalle.Parameters.AddWithValue("@IVA", Math.Round(precioUnit * cantidad * _ivaRate, 2));
-                            cmdDetalle.ExecuteNonQuery();
+                            // Precio
+                            decimal precioUnit = 0m;
+                            var vPrecio = row.Cells["PrecioUnitario"]?.Value;
+                            if (vPrecio != null && vPrecio != DBNull.Value)
+                            {
+                                if (vPrecio is decimal dec) precioUnit = dec;
+                                else decimal.TryParse(vPrecio.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out precioUnit);
+                            }
+                            if (precioUnit <= 0m) continue;
+
+                            // === Bloqueo/validación de stock en BD (UPDLOCK) ===
+                            int stockActual;
+                            using (var cmdStock = new SqlCommand(
+                                "SELECT Stock FROM Repuestos WITH (UPDLOCK, ROWLOCK) WHERE RepuestoID=@id", con, tran))
+                            {
+                                cmdStock.Parameters.AddWithValue("@id", repuestoID);
+                                var s = cmdStock.ExecuteScalar();
+                                stockActual = s == null || s == DBNull.Value ? 0 : Convert.ToInt32(s);
+                            }
+                            if (stockActual < cantidad)
+                                throw new InvalidOperationException($"Stock insuficiente para el repuesto {repuestoID}. Disponible: {stockActual}, requerido: {cantidad}.");
+
+                            // Inserta detalle
+                            using (SqlCommand cmdDetalle = new SqlCommand(@"
+                            INSERT INTO FacturaDetalle (FacturaID, RepuestoID, Cantidad, PrecioUnitario, IVA)
+                            VALUES (@FacturaID, @RepuestoID, @Cantidad, @PrecioUnitario, @IVA);", con, tran))
+                            {
+                                cmdDetalle.Parameters.AddWithValue("@FacturaID", facturaID);
+                                cmdDetalle.Parameters.AddWithValue("@RepuestoID", repuestoID);
+                                cmdDetalle.Parameters.AddWithValue("@Cantidad", cantidad);
+                                cmdDetalle.Parameters.AddWithValue("@PrecioUnitario", precioUnit);
+                                cmdDetalle.Parameters.AddWithValue("@IVA", Math.Round(precioUnit * cantidad * _ivaRate, 2));
+                                cmdDetalle.ExecuteNonQuery();
+                            }
+
+                            // Descuenta stock
+                            using (var cmdUpd = new SqlCommand(
+                                "UPDATE Repuestos SET Stock = Stock - @c WHERE RepuestoID = @id", con, tran))
+                            {
+                                cmdUpd.Parameters.AddWithValue("@c", cantidad);
+                                cmdUpd.Parameters.AddWithValue("@id", repuestoID);
+                                cmdUpd.ExecuteNonQuery();
+                            }
                         }
+
 
                         tran.Commit();
                         MessageBox.Show("Factura guardada con éxito", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -580,14 +771,38 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         {
             if (rbtn_si_GM.Checked)
             {
-                dgvRepuestos.Enabled = true;
+                // Debe existir una placa válida
+                if (string.IsNullOrWhiteSpace(Cmbox_Select_Plaque.Text))
+                {
+                    rbtn_no_GM.Checked = true;
+                    MessageBox.Show("Selecciona una placa antes de elegir repuestos.",
+                        "Repuestos", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
+                // Reintenta resolver la marca por si el evento del combo no se disparó
+                RefreshMarcaFromComboText();
+
+                if (string.IsNullOrWhiteSpace(_marcaVehiculoActual))
+                {
+                    rbtn_no_GM.Checked = true;
+                    MessageBox.Show("No fue posible determinar la marca del vehículo seleccionado.\n" +
+                                    "Revisa que el vehículo tenga 'Marca' registrada.",
+                        "Repuestos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                dgvRepuestos.Enabled = true;
+                CargarRepuestosPorMarca(_marcaVehiculoActual);
+            }
+            else
+            {
+                dgvRepuestos.Enabled = false;
                 dgvRepuestos.DataSource = null;
                 dgvRepuestos.Columns.Clear();
-                dgvRepuestos.Rows.Clear();
-                CargarRepuestos();
             }
         }
+
 
         // Radio “No usar repuestos”: limpia la grilla
         private void rdb_NoUsarRepuestos_CheckedChanged(object sender, EventArgs e)
@@ -599,11 +814,54 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                 dgvRepuestos.Rows.Clear();
             }
         }
-        private void Cmbox_Select_Plaque_SelectedIndexChanged(object sender, EventArgs e){}
+        private void RefreshMarcaFromComboText()
+        {
+            var placa = Cmbox_Select_Plaque.Text?.Trim();
+            _marcaVehiculoActual = null;
+
+            if (!string.IsNullOrEmpty(placa))
+            {
+                if (_placaMarca.TryGetValue(placa, out var marcaMem) && !string.IsNullOrEmpty(marcaMem))
+                {
+                    _marcaVehiculoActual = marcaMem;
+                }
+                else
+                {
+                    _marcaVehiculoActual = GetMarcaPorPlaca(placa); // fallback BD
+                }
+            }
+        }
+
+        // Si el usuario elige del dropdown o cambia índice
+        private void Cmbox_Select_Plaque_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RefreshMarcaFromComboText();
+
+            // Habilita el radio solo si hay placa
+            rbtn_si_GM.Enabled = !string.IsNullOrWhiteSpace(Cmbox_Select_Plaque.Text);
+
+            // Si ya estaba “Sí”, refresca grilla por marca
+            if (rbtn_si_GM.Checked)
+                CargarRepuestosPorMarca(_marcaVehiculoActual);
+        }
+
+        // Si el usuario ESCRIBIÓ la placa y deja el campo
+        private void Cmbox_Select_Plaque_Leave(object sender, EventArgs e)
+        {
+            RefreshMarcaFromComboText();
+        }
+
+
         private void DTP_Date_Mantenimiento_ValueChanged(object sender, EventArgs e)
         {
+            var hoy = DateTime.Today;
+            if (DTP_Date_Mantenimiento.Value.Date > hoy)
+                DTP_Date_Mantenimiento.Value = hoy;
+
             txt_Show_Date.Text = DTP_Date_Mantenimiento.Value.ToString("dd/MM/yyyy");
         }
+
+
         private void txt_Show_Repuestos_TextChanged(object sender, EventArgs e) { }
         private Label label1;
         private Guna.UI2.WinForms.Guna2ComboBox Cmbox_Select_Plaque;
@@ -652,9 +910,9 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         private Guna.UI2.WinForms.Guna2RadioButton rbtn_si_GM;
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.label1 = new System.Windows.Forms.Label();
             this.Cmbox_Select_Plaque = new Guna.UI2.WinForms.Guna2ComboBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -732,6 +990,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             this.Cmbox_Select_Plaque.Size = new System.Drawing.Size(302, 36);
             this.Cmbox_Select_Plaque.TabIndex = 5;
             this.Cmbox_Select_Plaque.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.Cmbox_Select_Plaque.SelectedIndexChanged += new System.EventHandler(this.Cmbox_Select_Plaque_SelectedIndexChanged);
             // 
             // label2
             // 
@@ -759,7 +1018,6 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             this.DTP_Date_Mantenimiento.TabIndex = 7;
             this.DTP_Date_Mantenimiento.UseTransparentBackground = true;
             this.DTP_Date_Mantenimiento.Value = new System.DateTime(2025, 7, 31, 22, 43, 37, 433);
-            this.DTP_Date_Mantenimiento.ValueChanged += new System.EventHandler(this.DTP_Date_Mantenimiento_ValueChanged);
             // 
             // label3
             // 
@@ -1039,28 +1297,28 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             // dgvRepuestos
             // 
             this.dgvRepuestos.AllowUserToAddRows = false;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.White;
-            this.dgvRepuestos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
+            this.dgvRepuestos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvRepuestos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dgvRepuestos.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvRepuestos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvRepuestos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvRepuestos.ColumnHeadersHeight = 4;
             this.dgvRepuestos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvRepuestos.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvRepuestos.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvRepuestos.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.dgvRepuestos.Location = new System.Drawing.Point(21, 318);
             this.dgvRepuestos.Name = "dgvRepuestos";

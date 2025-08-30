@@ -14,59 +14,66 @@ namespace Formulario_Principal_Car_EFULL.Formularios
     public partial class Formulario_Reportes : Form
     {
         private int? _selectedUserId;
-       
+
         public Formulario_Reportes()
         {
             InitializeComponent();
+
+            // === Fecha: Guna2 – “vacío” y formato ===
             ConfigurarDtpNullable(dtp_Fecha_Inicial);
             ConfigurarDtpNullable(dtp_Fecha_Final);
-            ConfigurarGrid();
-            if (this.Controls.Find("cmb_Comprobante_Reporte", true).FirstOrDefault() is ComboBox cmbComp)
-            {
-                cmbComp.Items.Clear();
-                cmbComp.Items.AddRange(new object[] { "Tarjeta", "Efectivo", "Transferencia" });
-                cmbComp.SelectedIndex = -1;
-            }
-            txt_select_mecanico.ReadOnly = true;
-            
-            this.Load += Reportes_Load;
-            btn_Aplicar_Filtros.Click += btn_Aplicar_Filtros_Click;
-            btn_Limpiar_filtros.Click += btn_Limpiar_filtros_Click;
-            btn_Export_xlsx.Click += btn_Export_xlsx_Click;
 
-            btn_Seleccionar_Trabajador.Click += btn_Seleccionar_Trabajador_Click;
-            if (this.Controls.Find("btn_Seleccionar_Propietario_Reporte", true).FirstOrDefault() is Button bAlt)
-                bAlt.Click += btn_Seleccionar_Trabajador_Click;
+            // Limitar a hoy (no futuro)
+            dtp_Fecha_Inicial.MaxDate = DateTime.Today;
+            dtp_Fecha_Final.MaxDate = DateTime.Today;
+
+            ConfigurarGrid();
+            txt_select_mecanico.ReadOnly = true;
+
+            // Asegurar que los handlers se suscriben SOLO una vez
+            WireHandlersOnce();
         }
 
         private readonly string _connStr = "Data Source=.;Initial Catalog=CAR_EFULL;Integrated Security=True;TrustServerCertificate=True";
         private readonly BindingSource _bs = new BindingSource();
         private DataTable _dt = new DataTable();
 
-        private void ConfigurarDtpNullable(Guna.UI2.WinForms.Guna2DateTimePicker dtp)
+        // Guards para evitar dobles suscripciones/ejecuciones
+        private bool _handlersWired;
+        private bool _loadedOnce;
+
+        // Flag de exportación
+        private bool _isExporting;
+
+        private void WireHandlersOnce()
         {
-            dtp.Checked = false;
-            dtp.Format = DateTimePickerFormat.Custom;
-            dtp.CustomFormat = " ";
-            dtp.ValueChanged += (s, e) =>
+            if (_handlersWired) return;
+
+            this.Load -= Reportes_Load;
+            this.Load += Reportes_Load;
+
+            btn_Aplicar_Filtros.Click -= btn_Aplicar_Filtros_Click;
+            btn_Aplicar_Filtros.Click += btn_Aplicar_Filtros_Click;
+
+            btn_Limpiar_filtros.Click -= btn_Limpiar_filtros_Click;
+            btn_Limpiar_filtros.Click += btn_Limpiar_filtros_Click;
+
+            btn_Export_xlsx.Click -= btn_Export_xlsx_Click;
+            btn_Export_xlsx.Click += btn_Export_xlsx_Click;
+
+            btn_Seleccionar_Trabajador.Click -= btn_Seleccionar_Trabajador_Click;
+            btn_Seleccionar_Trabajador.Click += btn_Seleccionar_Trabajador_Click;
+
+            // Botón alterno (si existe en tu form)
+            if (this.Controls.Find("btn_Seleccionar_Propietario_Reporte", true).FirstOrDefault() is Button bAlt)
             {
-                dtp.CustomFormat = "dd/MM/yyyy"; 
-                dtp.Checked = true;
-            };
-        }
-        private void Reportes_Load(object sender, EventArgs e)
-        {
-            try
-            {
-                CargarCombos();
-                CargarReportes();   
+                bAlt.Click -= btn_Seleccionar_Trabajador_Click;
+                bAlt.Click += btn_Seleccionar_Trabajador_Click;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al iniciar el módulo de reportes:\n" + ex.Message,
-                    "Reportes", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+
+            _handlersWired = true;
         }
+
         private void ConfigurarGrid()
         {
             dgvReportes.ReadOnly = true;
@@ -74,7 +81,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             dgvReportes.AllowUserToAddRows = false;
             dgvReportes.AllowUserToDeleteRows = false;
             dgvReportes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvReportes.AutoGenerateColumns = true; // usaremos alias desde el SELECT
+            dgvReportes.AutoGenerateColumns = true;
             dgvReportes.DataSource = _bs;
             dgvReportes.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 248, 255);
 
@@ -83,7 +90,40 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             dgvReportes.ColumnHeadersHeight = 32;
             dgvReportes.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
             dgvReportes.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        }
 
+        // Inicia “vacío” y activa formato al cambiar
+        private void ConfigurarDtpNullable(Guna.UI2.WinForms.Guna2DateTimePicker dtp)
+        {
+            dtp.Checked = false;
+            dtp.Format = DateTimePickerFormat.Custom;
+            dtp.CustomFormat = " ";
+            dtp.ValueChanged += (s, e) =>
+            {
+                dtp.CustomFormat = "dd/MM/yyyy";
+                dtp.Checked = true;
+                if (dtp.Value.Date > DateTime.Today)
+                {
+                    dtp.Value = DateTime.Today;
+                }
+            };
+        }
+
+        private void Reportes_Load(object sender, EventArgs e)
+        {
+            if (_loadedOnce) return; // evita doble ejecución si el diseñador también llama
+            _loadedOnce = true;
+
+            try
+            {
+                CargarCombos();
+                CargarReportes();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ocurrió un problema al iniciar el módulo de reportes.\n\nDetalle: " + ex.Message,
+                    "Reportes", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // =================== Carga de filtros ===================
@@ -141,6 +181,28 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                         cmb_Servicio_realizado_Reporte.ValueMember = "TipoServicio";
                         cmb_Servicio_realizado_Reporte.SelectedIndex = -1;
                     }
+
+                    ComboBox cmbComp = this.Controls.Find("cmb_Comprobante_Reporte", true).FirstOrDefault() as ComboBox
+                                      ?? this.Controls.Find("cmb_Comprobante", true).FirstOrDefault() as ComboBox;
+                    using (var da = new SqlDataAdapter(
+                                   "SELECT DISTINCT MetodoPago FROM Facturas WHERE ISNULL(MetodoPago,'')<>'' ORDER BY MetodoPago", cn))
+                    {
+                        var t = new DataTable();
+                        da.Fill(t);
+                        cmbComp.Items.Clear();
+                        if (t.Rows.Count > 0)
+                        {
+                            foreach (DataRow r in t.Rows)
+                                cmbComp.Items.Add(Convert.ToString(r["MetodoPago"]));
+                        }
+                        else
+                        {
+                            cmbComp.Items.AddRange(new object[] { "Efectivo", "Tarjeta", "Transferencia" });
+                        }
+                        cmbComp.SelectedIndex = -1;
+                        cmbComp.Text = string.Empty;
+                    }
+
                 }
             }
             catch (Exception ex)
@@ -157,13 +219,14 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             {
                 var sql = new StringBuilder(@"
                 SELECT
-                f.CodigoFactura                                       AS [CodigoFactura],
+                f.CodigoFactura                                       AS [Codigo de Factura],
                 f.FechaMantenimiento                                  AS [Fecha del mantenimiento],
                 v.Placa                                               AS [Placa],
                 (p.Nombre + ' ' + p.Apellido)                         AS [Propietario],
                 ISNULL(NULLIF(f.TipoServicio,''),'(Sin registro)')    AS [Servicio],
+                ISNULL(NULLIF(f.MetodoPago,''),'(Sin registro)')    AS [Metodo de Pago],
                 ISNULL(u.FirstName + ' ' + u.LastName,'(Sin técnico)')AS [Tecnico],
-                    f.Total                                               AS [Total]
+                f.Total                                               AS [Total]
                 FROM Facturas f
                 JOIN Vehiculos v     ON v.VehicleID = f.VehicleID
                 JOIN Propietarios p  ON p.ID_Propietario = f.ID_Propietario
@@ -172,25 +235,29 @@ namespace Formulario_Principal_Car_EFULL.Formularios
 
                 var cmdParams = new System.Collections.Generic.List<SqlParameter>();
 
+                // ===== Fechas =====
                 DateTime? ini = dtp_Fecha_Inicial.Checked ? dtp_Fecha_Inicial.Value.Date : (DateTime?)null;
                 DateTime? fin = dtp_Fecha_Final.Checked ? dtp_Fecha_Final.Value.Date : (DateTime?)null;
+
+                // Forzar que no haya fechas futuras (por si acaso)
+                if (ini.HasValue && ini.Value > DateTime.Today) ini = DateTime.Today;
+                if (fin.HasValue && fin.Value > DateTime.Today) fin = DateTime.Today;
 
                 if (fin.HasValue && !ini.HasValue)
                 {
                     MessageBox.Show("Para usar 'Fecha hasta', primero selecciona 'Fecha desde'.",
-                        "Filtros", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        "Filtros por fecha", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
                 if (ini.HasValue && !fin.HasValue)
-                {
-                    fin = DateTime.Today; 
-                }
+                    fin = DateTime.Today;
+
                 if (ini.HasValue && fin.HasValue)
                 {
                     if (fin.Value < ini.Value)
                     {
-                        MessageBox.Show("La fecha final no puede ser menor a la inicial.",
-                            "Filtros", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("La fecha final no puede ser menor a la fecha inicial.",
+                            "Filtros por fecha", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
                     sql.AppendLine("  AND f.FechaMantenimiento BETWEEN @FIni AND @FFin");
@@ -198,12 +265,14 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                     cmdParams.Add(new SqlParameter("@FFin", fin.Value));
                 }
 
+                // ===== Placa =====
                 if (Cmbox_Select_Placa.SelectedIndex >= 0)
                 {
                     sql.AppendLine("  AND v.Placa = @Placa");
                     cmdParams.Add(new SqlParameter("@Placa", Cmbox_Select_Placa.SelectedValue.ToString()));
                 }
 
+                // ===== Mecánico =====
                 if (_selectedUserId.HasValue)
                 {
                     sql.AppendLine("  AND f.UserID = @UserID");
@@ -215,27 +284,23 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                     cmdParams.Add(new SqlParameter("@Mec", "%" + txt_select_mecanico.Text.Trim() + "%"));
                 }
 
-
-                if (!string.IsNullOrWhiteSpace(txt_select_mecanico.Text))
-                {
-                    sql.AppendLine("  AND ISNULL(u.FirstName + ' ' + u.LastName,'') LIKE @Mec");
-                    cmdParams.Add(new SqlParameter("@Mec", "%" + txt_select_mecanico.Text.Trim() + "%"));
-                }
-
-                ComboBox cmbComp = this.Controls.Find("cmb_Comprobante_Reporte", true).FirstOrDefault() as ComboBox;
+                // ===== Comprobante (Método de pago) =====
+                ComboBox cmbComp = this.Controls.Find("cmb_Comprobante_Reporte", true).FirstOrDefault() as ComboBox
+                                   ?? this.Controls.Find("cmb_Comprobante", true).FirstOrDefault() as ComboBox;
                 if (cmbComp != null && cmbComp.SelectedIndex >= 0)
                 {
                     sql.AppendLine("  AND f.MetodoPago = @MetodoPago");
                     cmdParams.Add(new SqlParameter("@MetodoPago", cmbComp.SelectedItem.ToString()));
                 }
 
+                // ===== Código de factura =====
                 if (cmb_Codigo_Factura_Reporte.SelectedIndex >= 0)
                 {
                     sql.AppendLine("  AND f.CodigoFactura = @CodFac");
                     cmdParams.Add(new SqlParameter("@CodFac", cmb_Codigo_Factura_Reporte.SelectedValue.ToString()));
                 }
 
-                // Servicio realizado
+                // ===== Servicio realizado =====
                 if (cmb_Servicio_realizado_Reporte.SelectedIndex >= 0)
                 {
                     sql.AppendLine("  AND f.TipoServicio = @Srv");
@@ -263,7 +328,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar reportes:\n" + ex.Message,
+                MessageBox.Show("No se pudieron cargar los reportes.\n\nDetalle: " + ex.Message,
                     "Reportes", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -296,9 +361,8 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             }
             catch (Exception ex)
             {
-                // No caemos si hay problema de conversión
                 Nom_Serv_moda.Text = "—";
-                MessageBox.Show("Error al calcular KPIs:\n" + ex.Message,
+                MessageBox.Show("No se pudieron calcular los totales/resúmenes.\n\nDetalle: " + ex.Message,
                     "Reportes", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
@@ -307,47 +371,58 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         private void btn_Aplicar_Filtros_Click(object sender, EventArgs e)
         {
             CargarReportes();
-            if (_dt != null && _dt.Rows.Count == 0
-        && Cmbox_Select_Placa.SelectedIndex >= 0
-        && cmb_Codigo_Factura_Reporte.SelectedIndex >= 0)
-    {
-        Cmbox_Select_Placa.SelectedIndex = -1;
-        Cmbox_Select_Placa.Text = string.Empty;
-        CargarReportes();
-        MessageBox.Show("El código de factura no pertenece a la placa seleccionada. Se limpió la placa.",
-            "Filtros", MessageBoxButtons.OK, MessageBoxIcon.Information);
-    }
+
+            // Si se combinó placa + código incompatible, limpia placa y recarga (una sola vez)
+            if (_dt != null && _dt.Rows.Count == 0 &&
+                Cmbox_Select_Placa.SelectedIndex >= 0 &&
+                cmb_Codigo_Factura_Reporte.SelectedIndex >= 0)
+            {
+                var placa = Cmbox_Select_Placa.Text;
+                Cmbox_Select_Placa.SelectedIndex = -1;
+                Cmbox_Select_Placa.Text = string.Empty;
+
+                CargarReportes();
+
+                MessageBox.Show(
+                    $"El código de factura seleccionado no pertenece a la placa '{placa}'.\n" +
+                    $"Se limpió la placa para mostrar resultados.",
+                    "Filtro inconsistente", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         private void btn_Limpiar_filtros_Click(object sender, EventArgs e)
         {
             try
             {
-                // Vaciar todos
+                // Fechas a “vacío” (sin filtro) y formato en blanco
                 dtp_Fecha_Inicial.Checked = false; dtp_Fecha_Inicial.CustomFormat = " ";
                 dtp_Fecha_Final.Checked = false; dtp_Fecha_Final.CustomFormat = " ";
+
+                // Placa
                 Cmbox_Select_Placa.SelectedIndex = -1;
+                Cmbox_Select_Placa.Text = string.Empty;
+
+                // Mecánico
+                _selectedUserId = null;
                 txt_select_mecanico.Clear();
-                var cmbComp = this.Controls.Find("cmb_Comprobante_Reporte", true).FirstOrDefault() as ComboBox;
-                if (cmbComp != null) cmbComp.SelectedIndex = -1;
-                cmb_Codigo_Factura_Reporte.SelectedIndex = -1;
-                cmb_Servicio_realizado_Reporte.SelectedIndex = -1;
 
-                CargarReportes(); // todo
+                // Comprobante (cualquiera de los 2 nombres)
+                ComboBox cmbComp = this.Controls.Find("cmb_Comprobante_Reporte", true).FirstOrDefault() as ComboBox
+                                   ?? this.Controls.Find("cmb_Comprobante", true).FirstOrDefault() as ComboBox;
+                if (cmbComp != null) { cmbComp.SelectedIndex = -1; cmbComp.Text = string.Empty; }
 
-                if (_dt != null && _dt.Rows.Count == 0 && Cmbox_Select_Placa.SelectedIndex >= 0 && cmb_Codigo_Factura_Reporte.SelectedIndex >= 0)
-                {
-                    Cmbox_Select_Placa.SelectedIndex = -1;
-                    CargarReportes();
-                    MessageBox.Show(
-                        "El código de factura no pertenece a la placa seleccionada. Se limpió la placa.",
-                        "Filtros", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                // Código de factura
+                cmb_Codigo_Factura_Reporte.SelectedIndex = -1; cmb_Codigo_Factura_Reporte.Text = string.Empty;
 
+                // Servicio
+                cmb_Servicio_realizado_Reporte.SelectedIndex = -1; cmb_Servicio_realizado_Reporte.Text = string.Empty;
+
+                // Recargar TODO (sin filtros)
+                CargarReportes();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("No se pudieron limpiar los filtros:\n" + ex.Message,
+                MessageBox.Show("No se pudieron limpiar los filtros.\n\nDetalle: " + ex.Message,
                     "Reportes", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
@@ -359,14 +434,14 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                 var sel = new Union_Formularios.Formularios.Formulario_Seleccionar_Trabajador();
                 sel.TrabajadorSeleccionado += (id, nombre) =>
                 {
-                    _selectedUserId = id;                
-                    txt_select_mecanico.Text = nombre;  
+                    _selectedUserId = id;
+                    txt_select_mecanico.Text = nombre;
                 };
                 sel.ShowDialog();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("No se pudo abrir el selector:\n" + ex.Message,
+                MessageBox.Show("No se pudo abrir el selector de personal.\n\nDetalle: " + ex.Message,
                     "Reportes", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
@@ -376,12 +451,11 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             txt_select_mecanico.Text = nombreCompleto;
         }
 
-        private bool _isExporting;
-
         private void btn_Export_xlsx_Click(object sender, EventArgs e)
         {
             if (_isExporting) return;
             _isExporting = true;
+
             try
             {
                 if (_dt == null || _dt.Rows.Count == 0)
@@ -402,7 +476,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                     {
                         var ws = wb.AddWorksheet("Reportes");
 
-                        // ===== Encabezado =====
+                        // Encabezado
                         ws.Cell("C1").Value = "Reporte — Car-EFULL";
                         ws.Cell("C1").Style.Font.Bold = true;
                         ws.Cell("C1").Style.Font.FontSize = 16;
@@ -410,7 +484,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                         ws.Cell("C2").Value = "Generado: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm");
                         ws.Cell("C3").Value = "Filtros: " + ResumenFiltros();
 
-                        // ===== Tabla de datos desde A5 =====
+                        // Tabla
                         var tabla = ws.Cell(5, 1).InsertTable(_dt, "TablaReportes", true);
                         tabla.Theme = XLTableTheme.TableStyleMedium6;
 
@@ -423,37 +497,42 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                         if (colTotal > 0)
                             ws.Column(colTotal).Style.NumberFormat.Format = "$#,##0.00";
 
-                        // Autofit
                         ws.Columns().AdjustToContents();
 
-                        // Guardar archivo
                         wb.SaveAs(sfd.FileName);
                     }
 
-                    MessageBox.Show("Exportación exitosa.", "Exportar", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("El archivo se exportó correctamente.", "Exportar", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al exportar a Excel (ClosedXML):\n" + ex.Message,
+                MessageBox.Show("Error al exportar a Excel.\n\nDetalle: " + ex.Message,
                     "Exportar", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            finally { _isExporting = false; }
+            finally
+            {
+                _isExporting = false;
+            }
         }
 
 
         private string ResumenFiltros()
         {
-            string fn(object o) => string.IsNullOrWhiteSpace(Convert.ToString(o)) ? "—" : Convert.ToString(o);
+            string fmt(string s) => string.IsNullOrWhiteSpace(s) ? "—" : s;
 
-            var cmbComp = this.Controls.Find("cmb_Comprobante_Reporte", true).FirstOrDefault() as ComboBox;
+            ComboBox cmbComp = this.Controls.Find("cmb_Comprobante_Reporte", true).FirstOrDefault() as ComboBox
+                               ?? this.Controls.Find("cmb_Comprobante", true).FirstOrDefault() as ComboBox;
+
             string comp = (cmbComp != null && cmbComp.SelectedIndex >= 0) ? cmbComp.SelectedItem.ToString() : "Todos";
 
             string fIni = dtp_Fecha_Inicial.Checked ? dtp_Fecha_Inicial.Value.ToString("dd/MM/yyyy") : "—";
-            string fFin = dtp_Fecha_Final.Checked ? dtp_Fecha_Final.Value.ToString("dd/MM/yyyy") : (dtp_Fecha_Inicial.Checked ? DateTime.Today.ToString("dd/MM/yyyy") : "—");
+            string fFin = dtp_Fecha_Final.Checked ? dtp_Fecha_Final.Value.ToString("dd/MM/yyyy")
+                                                  : (dtp_Fecha_Inicial.Checked ? DateTime.Today.ToString("dd/MM/yyyy") : "—");
 
-            return $"Desde: {fIni} | Hasta: {fFin} | Placa: {fn(Cmbox_Select_Placa.Text)} | Mecánico: {fn(txt_select_mecanico.Text)} | Comprobante: {comp} | " +
-                   $"Código Factura: {fn(cmb_Codigo_Factura_Reporte.Text)} | Servicio: {fn(cmb_Servicio_realizado_Reporte.Text)}";
+            return $"Desde: {fIni} | Hasta: {fFin} | Placa: {fmt(Cmbox_Select_Placa.Text)} | " +
+                   $"Mecánico: {fmt(txt_select_mecanico.Text)} | Comprobante: {comp} | " +
+                   $"Código Factura: {fmt(cmb_Codigo_Factura_Reporte.Text)} | Servicio: {fmt(cmb_Servicio_realizado_Reporte.Text)}";
         }
 
 
@@ -879,7 +958,6 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             this.dgvReportes.AllowUserToAddRows = false;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
             this.dgvReportes.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.dgvReportes.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dgvReportes.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvReportes.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -892,6 +970,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             this.dgvReportes.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvReportes.ColumnHeadersHeight = 4;
             this.dgvReportes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            this.dgvReportes.Cursor = System.Windows.Forms.Cursors.Default;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
