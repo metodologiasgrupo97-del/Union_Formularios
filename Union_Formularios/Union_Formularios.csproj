@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2CED8BEE-86E1-499D-A068-0B699623833B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Union_Formularios</RootNamespace>
+    <AssemblyName>Union_Formularios</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ClosedXML, Version=0.105.0.0, Culture=neutral, PublicKeyToken=fd1eb21b62ae805b, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClosedXML.0.105.0\lib\netstandard2.0\ClosedXML.dll</HintPath>
+    </Reference>
+    <Reference Include="ClosedXML.Parser, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1d5f7376574c51ec, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClosedXML.Parser.2.0.0\lib\netstandard2.0\ClosedXML.Parser.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=3.1.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.3.1.1\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml.Framework, Version=3.1.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.Framework.3.1.1\lib\net46\DocumentFormat.OpenXml.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelNumberFormat, Version=1.1.0.0, Culture=neutral, PublicKeyToken=23c6f5d73be07eca, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelNumberFormat.1.1.0\lib\net20\ExcelNumberFormat.dll</HintPath>
+    </Reference>
+    <Reference Include="FontAwesome.Sharp, Version=6.6.0.0, Culture=neutral, PublicKeyToken=d16d1e4e568ec10f, processorArchitecture=MSIL">
+      <HintPath>..\packages\FontAwesome.Sharp.6.6.0\lib\net472\FontAwesome.Sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Guna.UI2, Version=2.0.4.6, Culture=neutral, PublicKeyToken=8b9d14aa5142e261, processorArchitecture=MSIL">
+      <HintPath>..\packages\Guna.UI2.WinForms.2.0.4.6\lib\net472\Guna.UI2.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualBasic.PowerPacks, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="RBush, Version=4.0.0.0, Culture=neutral, PublicKeyToken=c77e27b81f4d0187, processorArchitecture=MSIL">
+      <HintPath>..\packages\RBush.Signed.4.0.0\lib\net47\RBush.dll</HintPath>
+    </Reference>
+    <Reference Include="SixLabors.Fonts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d998eea7b14cab13, processorArchitecture=MSIL">
+      <HintPath>..\packages\SixLabors.Fonts.1.0.0\lib\netstandard2.0\SixLabors.Fonts.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Formualrio_Bienvenida.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formualrio_Bienvenida.Designer.cs">
+      <DependentUpon>Formualrio_Bienvenida.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Formularios\EmpresaConfigService.cs" />
+    <Compile Include="Formularios\Formulario_Add_Propietario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formularios\Formulario_Add_Propietario.Designer.cs">
+      <DependentUpon>Formulario_Add_Propietario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Formularios\Formulario_Add_Users.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formularios\Formulario_Add_Users.Designer.cs">
+      <DependentUpon>Formulario_Add_Users.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Formularios\Formulario_Configuracion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formularios\Formulario_Configuracion.Designer.cs">
+      <DependentUpon>Formulario_Configuracion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Formularios\Formulario_dgv_De_Propietarios.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formularios\Formulario_dgv_De_Propietarios.Designer.cs">
+      <DependentUpon>Formulario_dgv_De_Propietarios.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Formularios\Formulario_EdtDash.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formularios\Formulario_EdtDash.Designer.cs">
+      <DependentUpon>Formulario_EdtDash.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Formularios\Formulario_EdtUsu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formularios\Formulario_EdtUsu.Designer.cs">
+      <DependentUpon>Formulario_EdtUsu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Formularios\Formulario_Facturas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formularios\Formulario_Mantenimiento.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formularios\Formulario_Propietarios.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formularios\Formulario_Reportes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formularios\Formulario_Seleccionar_Trabajador.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formularios\Formulario_Seleccionar_Trabajador.Designer.cs">
+      <DependentUpon>Formulario_Seleccionar_Trabajador.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Formularios\Formulario_Vehiculos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formulario_Principal_Car_EFULL.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formulario_Principal_Car_EFULL.Designer.cs">
+      <DependentUpon>Formulario_Principal_Car_EFULL.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Formulario_Login.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formulario_Login.Designer.cs">
+      <DependentUpon>Formulario_Login.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InicioControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="InicioControl.Designer.cs">
+      <DependentUpon>InicioControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Logo_Circular\Imagen_Circular.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Recuperar_Contraseña_Formulario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Recuperar_Contraseña_Formulario.Designer.cs">
+      <DependentUpon>Recuperar_Contraseña_Formulario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Union_De_Formularios.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Union_De_Formularios.Designer.cs">
+      <DependentUpon>Union_De_Formularios.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Formualrio_Bienvenida.resx">
+      <DependentUpon>Formualrio_Bienvenida.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formularios\Formulario_Add_Propietario.resx">
+      <DependentUpon>Formulario_Add_Propietario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formularios\Formulario_Add_Users.resx">
+      <DependentUpon>Formulario_Add_Users.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formularios\Formulario_Configuracion.resx">
+      <DependentUpon>Formulario_Configuracion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formularios\Formulario_dgv_De_Propietarios.resx">
+      <DependentUpon>Formulario_dgv_De_Propietarios.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formularios\Formulario_EdtDash.resx">
+      <DependentUpon>Formulario_EdtDash.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formularios\Formulario_EdtUsu.resx">
+      <DependentUpon>Formulario_EdtUsu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formularios\Formulario_Facturas.resx">
+      <DependentUpon>Formulario_Facturas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formularios\Formulario_Mantenimiento.resx">
+      <DependentUpon>Formulario_Mantenimiento.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formularios\Formulario_Propietarios.resx">
+      <DependentUpon>Formulario_Propietarios.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formularios\Formulario_Reportes.resx">
+      <DependentUpon>Formulario_Reportes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formularios\Formulario_Seleccionar_Trabajador.resx">
+      <DependentUpon>Formulario_Seleccionar_Trabajador.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formularios\Formulario_Vehiculos.resx">
+      <DependentUpon>Formulario_Vehiculos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formulario_Principal_Car_EFULL.resx">
+      <DependentUpon>Formulario_Principal_Car_EFULL.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formulario_Login.resx">
+      <DependentUpon>Formulario_Login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InicioControl.resx">
+      <DependentUpon>InicioControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Recuperar_Contraseña_Formulario.resx">
+      <DependentUpon>Recuperar_Contraseña_Formulario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Union_De_Formularios.resx">
+      <DependentUpon>Union_De_Formularios.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Capa_Corte_Transversal\Capa_Corte_Transversal.csproj">
+      <Project>{1fbfae07-d2ce-4b73-89f8-30d15e959681}</Project>
+      <Name>Capa_Corte_Transversal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Datos_Acceso\Datos_Acceso.csproj">
+      <Project>{c3aecf19-53b7-4a6b-a45d-0bae78916ecf}</Project>
+      <Name>Datos_Acceso</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dominio\Dominio.csproj">
+      <Project>{a9c6598e-6762-452f-979e-0902c18391e7}</Project>
+      <Name>Dominio</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Logo Provisional.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Logo_Leorium.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Logo_Leorium1.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Logo_Leorium2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Leorium 2.0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Ola para login.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Usuario_Default.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Logo definitivo de leorium.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edit1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\user-id-card.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Usu edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Usu worker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edit_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edit_icon1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon_download.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon_Close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon_trash.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon_Add_Usu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon_add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon_Add_Usu1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Usu worker1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Leorium_logo2.1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon_minus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon-excel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon-search.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

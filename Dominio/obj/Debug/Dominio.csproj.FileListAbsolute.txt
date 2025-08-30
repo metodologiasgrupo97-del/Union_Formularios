@@ -1,0 +1,13 @@
+C:\Users\Gary.S\source\repos\Union_Formularios\Dominio\bin\Debug\Dominio.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Dominio\bin\Debug\Dominio.pdb
+C:\Users\Gary.S\source\repos\Union_Formularios\Dominio\bin\Debug\Datos_Acceso.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Dominio\bin\Debug\FontAwesome.Sharp.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Dominio\bin\Debug\Datos_Acceso.pdb
+C:\Users\Gary.S\source\repos\Union_Formularios\Dominio\obj\Debug\Dominio.csproj.AssemblyReference.cache
+C:\Users\Gary.S\source\repos\Union_Formularios\Dominio\obj\Debug\Dominio.csproj.CoreCompileInputs.cache
+C:\Users\Gary.S\source\repos\Union_Formularios\Dominio\obj\Debug\Dominio.csproj.Up2Date
+C:\Users\Gary.S\source\repos\Union_Formularios\Dominio\obj\Debug\Dominio.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Dominio\obj\Debug\Dominio.pdb
+C:\Users\Gary.S\source\repos\Union_Formularios\Dominio\bin\Debug\Capa_Corte_Transversal.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Dominio\bin\Debug\Capa_Corte_Transversal.pdb
+C:\Users\Gary.S\source\repos\Union_Formularios\Dominio\bin\Debug\Guna.UI2.dll

@@ -1,0 +1,8 @@
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Capa_Corte_Transversal.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Capa_Corte_Transversal.pdb
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Corte_Transversal.csproj.AssemblyReference.cache
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Corte_Transversal.csproj.CoreCompileInputs.cache
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Corte_Transversal.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Corte_Transversal.pdb
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Guna.UI2.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Cor.3A8CD8C2.Up2Date

@@ -1,0 +1,11 @@
+C:\Users\Gary.S\source\repos\Union_Formularios\Datos_Acceso\bin\Debug\Datos_Acceso.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Datos_Acceso\bin\Debug\Datos_Acceso.pdb
+C:\Users\Gary.S\source\repos\Union_Formularios\Datos_Acceso\bin\Debug\FontAwesome.Sharp.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Datos_Acceso\obj\Debug\Datos_Acceso.csproj.AssemblyReference.cache
+C:\Users\Gary.S\source\repos\Union_Formularios\Datos_Acceso\obj\Debug\Datos_Acceso.csproj.CoreCompileInputs.cache
+C:\Users\Gary.S\source\repos\Union_Formularios\Datos_Acceso\obj\Debug\Datos_Ac.51D9DE6E.Up2Date
+C:\Users\Gary.S\source\repos\Union_Formularios\Datos_Acceso\obj\Debug\Datos_Acceso.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Datos_Acceso\obj\Debug\Datos_Acceso.pdb
+C:\Users\Gary.S\source\repos\Union_Formularios\Datos_Acceso\bin\Debug\Capa_Corte_Transversal.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Datos_Acceso\bin\Debug\Capa_Corte_Transversal.pdb
+C:\Users\Gary.S\source\repos\Union_Formularios\Datos_Acceso\bin\Debug\Guna.UI2.dll
