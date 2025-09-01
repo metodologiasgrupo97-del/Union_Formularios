@@ -25,23 +25,22 @@ namespace Formulario_Principal_Car_EFULL.Formularios
 
         private void dgvPropietarios_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0)
-            {
-                Formulario_Add_Propietario frmEditar = new Formulario_Add_Propietario();
+            if (e.RowIndex < 0) return;
 
-                frmEditar.txtCedula.Text = dgvPropietarios.Rows[e.RowIndex].Cells["Cedula"].Value.ToString();
-                frmEditar.txtNombre.Text = dgvPropietarios.Rows[e.RowIndex].Cells["Nombre"].Value.ToString();
-                frmEditar.txtApellido.Text = dgvPropietarios.Rows[e.RowIndex].Cells["Apellido"].Value.ToString();
-                frmEditar.txtTelefono.Text = dgvPropietarios.Rows[e.RowIndex].Cells["Telefono"].Value.ToString();
-                frmEditar.txtCorreo.Text = dgvPropietarios.Rows[e.RowIndex].Cells["Correo"].Value.ToString();
-                frmEditar.txtDireccion.Text = dgvPropietarios.Rows[e.RowIndex].Cells["Direccion"].Value.ToString();
-                frmEditar.cmbEstado.Text = dgvPropietarios.Rows[e.RowIndex].Cells["Estado"].Value.ToString();
+            // Asegúrate que la grilla tiene la columna "ID_Propietario"
+            int idPropietario = Convert.ToInt32(
+                dgvPropietarios.Rows[e.RowIndex].Cells["ID_Propietario"].Value
+            );
 
-                frmEditar.btnGuardar.Text = "Actualizar"; 
+            // Abre directamente en modo edición (constructor con ID)
+            var frmEditar = new Formulario_Add_Propietario(idPropietario);
 
-                frmEditar.ShowDialog();
-            }
+            // Opcional: recargar al cerrar
+            frmEditar.FormClosed += (s, args) => CargarPropietarios();
+
+            frmEditar.ShowDialog(this);
         }
+
         private void btn_Eliminar_Click(object sender, EventArgs e)
         {
             try
@@ -64,7 +63,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
 
                 if (facturas > 0)
                 {
-                    // No borrar: hay facturas (histórico)
+                    // No borrar: hay facturas 
                     var resp = MessageBox.Show(
                         $"El propietario {nombre} ({cedula}) tiene {facturas} factura(s) asociada(s).\n" +
                         $"Por integridad, no se puede eliminar.\n\n¿Deseas marcarlo como INACTIVO?",

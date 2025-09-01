@@ -31,6 +31,7 @@ namespace Formulario_Principal_Car_EFULL
             Cargar_Nombre_Usuario();
             Cargar_Cargo_Usuario();
             Cargar_Correo_Usuario();
+            Cargar_Imagen_Usuario_DesdeCache();
 
             Nom_Usu.ForeColor = Color.White;
             this.Text = string.Empty;
@@ -137,8 +138,56 @@ namespace Formulario_Principal_Car_EFULL
         private void btnConfig_Click(object sender, EventArgs e)
         {
             ActivateButton(sender, RGBColors.color1);
-            Abrir_Sub_Formulario(new Formulario_Configuracion(Panel_Escritorio)); 
+
+            var frmConfig = new Union_Formularios.Formularios.Formulario_Configuracion(Panel_Escritorio);
+
+            frmConfig.PerfilActualizado += data =>
+            {
+                try
+                {
+                    Capa_Corte_Transversal.Cache.Cache_Inicio_Sesion_Usuario.FirstName = data.FirstName;
+                    Capa_Corte_Transversal.Cache.Cache_Inicio_Sesion_Usuario.Email = data.Email;
+
+                    Nom_Usu.Text = data.FirstName; 
+
+                    if (data.FotoPerfil != null && data.FotoPerfil.Length > 0)
+                    {
+                        var img = BytesToImage(data.FotoPerfil);
+                        if (img != null)
+                            imagen_Circular1.Image = img;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("No se pudo refrescar el header: " + ex.Message, "Dashboard",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            };
+
+            Abrir_Sub_Formulario(frmConfig);
         }
+        private void Cargar_Imagen_Usuario_DesdeCache()
+        {
+            try
+            {
+                // Si tu Cache tiene la foto en bytes, úsala:
+                var fotoBytesProp = typeof(Capa_Corte_Transversal.Cache.Cache_Inicio_Sesion_Usuario)
+                    .GetProperty("FotoPerfil"); // depende si existe en tu cache
+
+                if (fotoBytesProp != null)
+                {
+                    var bytes = fotoBytesProp.GetValue(null) as byte[];
+                    if (bytes != null && bytes.Length > 0)
+                    {
+                        var img = BytesToImage(bytes);
+                        if (img != null) imagen_Circular1.Image = img;
+                    }
+                }
+            }
+            catch { /* silencioso */ }
+        }
+
+
         private void MostrarInicio()
         {
             Panel_Escritorio.Controls.Clear();
@@ -218,6 +267,16 @@ namespace Formulario_Principal_Car_EFULL
         {
             Nom_Usu.Text = Cache_Inicio_Sesion_Usuario.FirstName;
         }
+        private static Image BytesToImage(byte[] bytes)
+        {
+            if (bytes == null || bytes.Length == 0) return null;
+            using (var ms = new System.IO.MemoryStream(bytes))
+            using (var tmp = Image.FromStream(ms, useEmbeddedColorManagement: true, validateImageData: true))
+            {
+                return new Bitmap(tmp); // clon para no depender del stream
+            }
+        }
+
         private void Cargar_Cargo_Usuario() 
         {
             lblCargo.Text = Cache_Inicio_Sesion_Usuario.Position;

@@ -31,10 +31,10 @@
             this.lbl_Editar_Perfil = new System.Windows.Forms.Label();
             this.lbl_descr_edit_profil = new System.Windows.Forms.Label();
             this.guna2GradientPanel2 = new Guna.UI2.WinForms.Guna2GradientPanel();
-            this.guna2Button4 = new Guna.UI2.WinForms.Guna2Button();
-            this.guna2Button5 = new Guna.UI2.WinForms.Guna2Button();
+            this.btn_Cargar_Foto_Perfil = new Guna.UI2.WinForms.Guna2Button();
+            this.btn_Guardar_Act_Perfil = new Guna.UI2.WinForms.Guna2Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.imagen_Circular2 = new CustomControls.RJControls.Imagen_Circular();
+            this.img_Perfil = new CustomControls.RJControls.Imagen_Circular();
             this.guna2Separator1 = new Guna.UI2.WinForms.Guna2Separator();
             this.label2 = new System.Windows.Forms.Label();
             this.txt_Edit_Nom_Profile = new Guna.UI2.WinForms.Guna2TextBox();
@@ -49,12 +49,12 @@
             this.txt_Edit_telf_Profile = new Guna.UI2.WinForms.Guna2TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.guna2TextBox6 = new Guna.UI2.WinForms.Guna2TextBox();
+            this.txt_Edit_Cor_Profile = new Guna.UI2.WinForms.Guna2TextBox();
             this.edt_dash_config = new Guna.UI2.WinForms.Guna2Button();
             this.add_trabajador_config = new Guna.UI2.WinForms.Guna2Button();
             this.edt_perfil_config = new Guna.UI2.WinForms.Guna2Button();
             this.guna2GradientPanel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.imagen_Circular2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.img_Perfil)).BeginInit();
             this.SuspendLayout();
             // 
             // lbl_Editar_Perfil
@@ -80,10 +80,10 @@
             // guna2GradientPanel2
             // 
             this.guna2GradientPanel2.BorderRadius = 10;
-            this.guna2GradientPanel2.Controls.Add(this.guna2Button4);
-            this.guna2GradientPanel2.Controls.Add(this.guna2Button5);
+            this.guna2GradientPanel2.Controls.Add(this.btn_Cargar_Foto_Perfil);
+            this.guna2GradientPanel2.Controls.Add(this.btn_Guardar_Act_Perfil);
             this.guna2GradientPanel2.Controls.Add(this.label1);
-            this.guna2GradientPanel2.Controls.Add(this.imagen_Circular2);
+            this.guna2GradientPanel2.Controls.Add(this.img_Perfil);
             this.guna2GradientPanel2.FillColor = System.Drawing.Color.White;
             this.guna2GradientPanel2.FillColor2 = System.Drawing.Color.White;
             this.guna2GradientPanel2.Location = new System.Drawing.Point(736, 115);
@@ -94,48 +94,50 @@
             this.guna2GradientPanel2.Size = new System.Drawing.Size(331, 453);
             this.guna2GradientPanel2.TabIndex = 11;
             // 
-            // guna2Button4
+            // btn_Cargar_Foto_Perfil
             // 
-            this.guna2Button4.Animated = true;
-            this.guna2Button4.BorderRadius = 8;
-            this.guna2Button4.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button4.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button4.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.guna2Button4.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.guna2Button4.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(208)))), ((int)(((byte)(117)))));
-            this.guna2Button4.Font = new System.Drawing.Font("Montserrat SemiBold", 12F, System.Drawing.FontStyle.Bold);
-            this.guna2Button4.ForeColor = System.Drawing.Color.White;
-            this.guna2Button4.Image = global::Union_Formularios.Properties.Resources.edit_icon1;
-            this.guna2Button4.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.guna2Button4.ImageOffset = new System.Drawing.Point(7, -1);
-            this.guna2Button4.ImageSize = new System.Drawing.Size(26, 26);
-            this.guna2Button4.Location = new System.Drawing.Point(27, 296);
-            this.guna2Button4.Name = "guna2Button4";
-            this.guna2Button4.ShadowDecoration.BorderRadius = 14;
-            this.guna2Button4.Size = new System.Drawing.Size(284, 45);
-            this.guna2Button4.TabIndex = 35;
-            this.guna2Button4.Text = "Cambiar foto de perfil";
+            this.btn_Cargar_Foto_Perfil.Animated = true;
+            this.btn_Cargar_Foto_Perfil.BorderRadius = 8;
+            this.btn_Cargar_Foto_Perfil.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btn_Cargar_Foto_Perfil.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btn_Cargar_Foto_Perfil.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btn_Cargar_Foto_Perfil.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btn_Cargar_Foto_Perfil.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(208)))), ((int)(((byte)(117)))));
+            this.btn_Cargar_Foto_Perfil.Font = new System.Drawing.Font("Montserrat SemiBold", 12F, System.Drawing.FontStyle.Bold);
+            this.btn_Cargar_Foto_Perfil.ForeColor = System.Drawing.Color.White;
+            this.btn_Cargar_Foto_Perfil.Image = global::Union_Formularios.Properties.Resources.edit_icon1;
+            this.btn_Cargar_Foto_Perfil.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btn_Cargar_Foto_Perfil.ImageOffset = new System.Drawing.Point(7, -1);
+            this.btn_Cargar_Foto_Perfil.ImageSize = new System.Drawing.Size(26, 26);
+            this.btn_Cargar_Foto_Perfil.Location = new System.Drawing.Point(27, 296);
+            this.btn_Cargar_Foto_Perfil.Name = "btn_Cargar_Foto_Perfil";
+            this.btn_Cargar_Foto_Perfil.ShadowDecoration.BorderRadius = 14;
+            this.btn_Cargar_Foto_Perfil.Size = new System.Drawing.Size(284, 45);
+            this.btn_Cargar_Foto_Perfil.TabIndex = 35;
+            this.btn_Cargar_Foto_Perfil.Text = "Cambiar foto de perfil";
+            this.btn_Cargar_Foto_Perfil.Click += new System.EventHandler(this.btn_Cargar_Foto_Perfil_Click);
             // 
-            // guna2Button5
+            // btn_Guardar_Act_Perfil
             // 
-            this.guna2Button5.Animated = true;
-            this.guna2Button5.BorderRadius = 8;
-            this.guna2Button5.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button5.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button5.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.guna2Button5.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.guna2Button5.Font = new System.Drawing.Font("Montserrat SemiBold", 12F, System.Drawing.FontStyle.Bold);
-            this.guna2Button5.ForeColor = System.Drawing.Color.White;
-            this.guna2Button5.Image = global::Union_Formularios.Properties.Resources.icon_download;
-            this.guna2Button5.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.guna2Button5.ImageOffset = new System.Drawing.Point(8, -1);
-            this.guna2Button5.ImageSize = new System.Drawing.Size(25, 25);
-            this.guna2Button5.Location = new System.Drawing.Point(27, 347);
-            this.guna2Button5.Name = "guna2Button5";
-            this.guna2Button5.ShadowDecoration.BorderRadius = 14;
-            this.guna2Button5.Size = new System.Drawing.Size(284, 45);
-            this.guna2Button5.TabIndex = 34;
-            this.guna2Button5.Text = "Guardar";
+            this.btn_Guardar_Act_Perfil.Animated = true;
+            this.btn_Guardar_Act_Perfil.BorderRadius = 8;
+            this.btn_Guardar_Act_Perfil.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btn_Guardar_Act_Perfil.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btn_Guardar_Act_Perfil.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btn_Guardar_Act_Perfil.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btn_Guardar_Act_Perfil.Font = new System.Drawing.Font("Montserrat SemiBold", 12F, System.Drawing.FontStyle.Bold);
+            this.btn_Guardar_Act_Perfil.ForeColor = System.Drawing.Color.White;
+            this.btn_Guardar_Act_Perfil.Image = global::Union_Formularios.Properties.Resources.icon_download;
+            this.btn_Guardar_Act_Perfil.ImageAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.btn_Guardar_Act_Perfil.ImageOffset = new System.Drawing.Point(8, -1);
+            this.btn_Guardar_Act_Perfil.ImageSize = new System.Drawing.Size(25, 25);
+            this.btn_Guardar_Act_Perfil.Location = new System.Drawing.Point(27, 347);
+            this.btn_Guardar_Act_Perfil.Name = "btn_Guardar_Act_Perfil";
+            this.btn_Guardar_Act_Perfil.ShadowDecoration.BorderRadius = 14;
+            this.btn_Guardar_Act_Perfil.Size = new System.Drawing.Size(284, 45);
+            this.btn_Guardar_Act_Perfil.TabIndex = 34;
+            this.btn_Guardar_Act_Perfil.Text = "Guardar";
+            this.btn_Guardar_Act_Perfil.Click += new System.EventHandler(this.btn_Guardar_Act_Perfil_Click);
             // 
             // label1
             // 
@@ -149,24 +151,24 @@
             this.label1.TabIndex = 13;
             this.label1.Text = "Foto de Perfil";
             // 
-            // imagen_Circular2
+            // img_Perfil
             // 
-            this.imagen_Circular2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.img_Perfil.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.imagen_Circular2.BorderCapStyle = System.Drawing.Drawing2D.DashCap.Flat;
-            this.imagen_Circular2.BorderColor = System.Drawing.Color.White;
-            this.imagen_Circular2.BorderColor2 = System.Drawing.Color.White;
-            this.imagen_Circular2.BorderLineStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-            this.imagen_Circular2.BorderSize = 2;
-            this.imagen_Circular2.GradientAngle = 50F;
-            this.imagen_Circular2.Image = global::Union_Formularios.Properties.Resources.Usuario_Default;
-            this.imagen_Circular2.Location = new System.Drawing.Point(82, 81);
-            this.imagen_Circular2.Name = "imagen_Circular2";
-            this.imagen_Circular2.Size = new System.Drawing.Size(170, 170);
-            this.imagen_Circular2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.imagen_Circular2.TabIndex = 12;
-            this.imagen_Circular2.TabStop = false;
+            this.img_Perfil.BorderCapStyle = System.Drawing.Drawing2D.DashCap.Flat;
+            this.img_Perfil.BorderColor = System.Drawing.Color.White;
+            this.img_Perfil.BorderColor2 = System.Drawing.Color.White;
+            this.img_Perfil.BorderLineStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+            this.img_Perfil.BorderSize = 2;
+            this.img_Perfil.GradientAngle = 50F;
+            this.img_Perfil.Image = global::Union_Formularios.Properties.Resources.Usuario_Default;
+            this.img_Perfil.Location = new System.Drawing.Point(82, 81);
+            this.img_Perfil.Name = "img_Perfil";
+            this.img_Perfil.Size = new System.Drawing.Size(170, 170);
+            this.img_Perfil.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.img_Perfil.TabIndex = 12;
+            this.img_Perfil.TabStop = false;
             // 
             // guna2Separator1
             // 
@@ -327,7 +329,7 @@
             this.txt_Edit_telf_Profile.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txt_Edit_telf_Profile.Location = new System.Drawing.Point(396, 263);
             this.txt_Edit_telf_Profile.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
-            this.txt_Edit_telf_Profile.MaxLength = 9;
+            this.txt_Edit_telf_Profile.MaxLength = 10;
             this.txt_Edit_telf_Profile.Name = "txt_Edit_telf_Profile";
             this.txt_Edit_telf_Profile.PasswordChar = '\0';
             this.txt_Edit_telf_Profile.PlaceholderText = "(09) 9876543 ";
@@ -335,7 +337,6 @@
             this.txt_Edit_telf_Profile.Size = new System.Drawing.Size(268, 36);
             this.txt_Edit_telf_Profile.TabIndex = 22;
             this.txt_Edit_telf_Profile.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txt_Edit_telf_Profile.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txt_Edit_telf_Profile_KeyPress);
             // 
             // label7
             // 
@@ -358,26 +359,26 @@
             this.label8.TabIndex = 26;
             this.label8.Text = "Correo electrónico";
             // 
-            // guna2TextBox6
+            // txt_Edit_Cor_Profile
             // 
-            this.guna2TextBox6.Animated = true;
-            this.guna2TextBox6.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.guna2TextBox6.DefaultText = "";
-            this.guna2TextBox6.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
-            this.guna2TextBox6.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
-            this.guna2TextBox6.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.guna2TextBox6.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.guna2TextBox6.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.guna2TextBox6.Font = new System.Drawing.Font("Segoe UI", 14.25F);
-            this.guna2TextBox6.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.guna2TextBox6.Location = new System.Drawing.Point(396, 339);
-            this.guna2TextBox6.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
-            this.guna2TextBox6.Name = "guna2TextBox6";
-            this.guna2TextBox6.PasswordChar = '\0';
-            this.guna2TextBox6.PlaceholderText = "ejemplo@servicio.com";
-            this.guna2TextBox6.SelectedText = "";
-            this.guna2TextBox6.Size = new System.Drawing.Size(268, 36);
-            this.guna2TextBox6.TabIndex = 25;
+            this.txt_Edit_Cor_Profile.Animated = true;
+            this.txt_Edit_Cor_Profile.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txt_Edit_Cor_Profile.DefaultText = "";
+            this.txt_Edit_Cor_Profile.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txt_Edit_Cor_Profile.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.txt_Edit_Cor_Profile.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txt_Edit_Cor_Profile.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txt_Edit_Cor_Profile.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txt_Edit_Cor_Profile.Font = new System.Drawing.Font("Segoe UI", 14.25F);
+            this.txt_Edit_Cor_Profile.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txt_Edit_Cor_Profile.Location = new System.Drawing.Point(396, 339);
+            this.txt_Edit_Cor_Profile.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.txt_Edit_Cor_Profile.Name = "txt_Edit_Cor_Profile";
+            this.txt_Edit_Cor_Profile.PasswordChar = '\0';
+            this.txt_Edit_Cor_Profile.PlaceholderText = "ejemplo@servicio.com";
+            this.txt_Edit_Cor_Profile.SelectedText = "";
+            this.txt_Edit_Cor_Profile.Size = new System.Drawing.Size(268, 36);
+            this.txt_Edit_Cor_Profile.TabIndex = 25;
             // 
             // edt_dash_config
             // 
@@ -416,7 +417,6 @@
             this.add_trabajador_config.Size = new System.Drawing.Size(224, 61);
             this.add_trabajador_config.TabIndex = 1;
             this.add_trabajador_config.Text = "Añadir Trabajador";
-            this.add_trabajador_config.Click += new System.EventHandler(this.guna2Button2_Click);
             // 
             // edt_perfil_config
             // 
@@ -443,7 +443,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1212, 753);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.guna2TextBox6);
+            this.Controls.Add(this.txt_Edit_Cor_Profile);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.txt_Edit_telf_Profile);
@@ -467,7 +467,7 @@
             this.Text = "Configuración";
             this.guna2GradientPanel2.ResumeLayout(false);
             this.guna2GradientPanel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.imagen_Circular2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.img_Perfil)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -482,7 +482,7 @@
         private System.Windows.Forms.Label lbl_descr_edit_profil;
         private Guna.UI2.WinForms.Guna2GradientPanel guna2GradientPanel2;
         private System.Windows.Forms.Label label1;
-        private CustomControls.RJControls.Imagen_Circular imagen_Circular2;
+        private CustomControls.RJControls.Imagen_Circular img_Perfil;
         private Guna.UI2.WinForms.Guna2Separator guna2Separator1;
         private System.Windows.Forms.Label label2;
         private Guna.UI2.WinForms.Guna2TextBox txt_Edit_Nom_Profile;
@@ -497,8 +497,8 @@
         private Guna.UI2.WinForms.Guna2TextBox txt_Edit_telf_Profile;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
-        private Guna.UI2.WinForms.Guna2TextBox guna2TextBox6;
-        private Guna.UI2.WinForms.Guna2Button guna2Button5;
-        private Guna.UI2.WinForms.Guna2Button guna2Button4;
+        private Guna.UI2.WinForms.Guna2TextBox txt_Edit_Cor_Profile;
+        private Guna.UI2.WinForms.Guna2Button btn_Guardar_Act_Perfil;
+        private Guna.UI2.WinForms.Guna2Button btn_Cargar_Foto_Perfil;
     }
 }
