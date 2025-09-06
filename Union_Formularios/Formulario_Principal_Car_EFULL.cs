@@ -1,4 +1,5 @@
 ﻿using Capa_Corte_Transversal.Cache;
+using Datos_Acceso.SqlServer;
 using FontAwesome.Sharp;
 using Formulario_Principal_Car_EFULL.Formularios;
 using System;
@@ -7,6 +8,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -31,7 +33,7 @@ namespace Formulario_Principal_Car_EFULL
             Cargar_Nombre_Usuario();
             Cargar_Cargo_Usuario();
             Cargar_Correo_Usuario();
-            Cargar_Imagen_Usuario_DesdeCache();
+            Cargar_Imagen_Usuario_DesdeDB();
 
             Nom_Usu.ForeColor = Color.White;
             this.Text = string.Empty;
@@ -166,26 +168,38 @@ namespace Formulario_Principal_Car_EFULL
 
             Abrir_Sub_Formulario(frmConfig);
         }
-        private void Cargar_Imagen_Usuario_DesdeCache()
+        private void Cargar_Imagen_Usuario_DesdeDB()
         {
             try
             {
-                // Si tu Cache tiene la foto en bytes, úsala:
-                var fotoBytesProp = typeof(Capa_Corte_Transversal.Cache.Cache_Inicio_Sesion_Usuario)
-                    .GetProperty("FotoPerfil"); // depende si existe en tu cache
-
-                if (fotoBytesProp != null)
+                // Utilizando la conexión ya configurada en tu proyecto
+                using (SqlConnection con = new ConexionSQL_Implementacion().AbrirConexion()) // Aquí se usa la conexión que ya tienes
                 {
-                    var bytes = fotoBytesProp.GetValue(null) as byte[];
-                    if (bytes != null && bytes.Length > 0)
+                    con.Open();
+
+                    int userId = Cache_Inicio_Sesion_Usuario.UserID;
+
+                    string query = "SELECT FotoPerfil FROM Users WHERE UserID = @UserID";
+                    SqlCommand cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@UserID", userId);
+
+                    var fotoBytes = cmd.ExecuteScalar() as byte[];
+
+                    if (fotoBytes != null && fotoBytes.Length > 0)
                     {
-                        var img = BytesToImage(bytes);
-                        if (img != null) imagen_Circular1.Image = img;
+                        using (MemoryStream ms = new MemoryStream(fotoBytes))
+                        {
+                            imagen_Circular1.Image = Image.FromStream(ms);
+                        }
                     }
                 }
             }
-            catch { /* silencioso */ }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo cargar la imagen del perfil: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
+
 
 
         private void MostrarInicio()
@@ -266,16 +280,18 @@ namespace Formulario_Principal_Car_EFULL
         private void Cargar_Nombre_Usuario()
         {
             Nom_Usu.Text = Cache_Inicio_Sesion_Usuario.FirstName;
+            Cargar_Imagen_Usuario_DesdeDB();
         }
         private static Image BytesToImage(byte[] bytes)
         {
             if (bytes == null || bytes.Length == 0) return null;
-            using (var ms = new System.IO.MemoryStream(bytes))
+            using (var ms = new MemoryStream(bytes))
             using (var tmp = Image.FromStream(ms, useEmbeddedColorManagement: true, validateImageData: true))
             {
-                return new Bitmap(tmp); // clon para no depender del stream
+                return new Bitmap(tmp);
             }
         }
+
 
         private void Cargar_Cargo_Usuario() 
         {

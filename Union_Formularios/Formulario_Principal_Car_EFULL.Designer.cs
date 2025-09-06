@@ -150,7 +150,6 @@
             this.imagen_Circular1.BorderLineStyle = System.Drawing.Drawing2D.DashStyle.Dash;
             this.imagen_Circular1.BorderSize = 2;
             this.imagen_Circular1.GradientAngle = 50F;
-            this.imagen_Circular1.Image = global::Union_Formularios.Properties.Resources.Usuario_Default;
             this.imagen_Circular1.Location = new System.Drawing.Point(12, 6);
             this.imagen_Circular1.Name = "imagen_Circular1";
             this.imagen_Circular1.Size = new System.Drawing.Size(77, 77);
