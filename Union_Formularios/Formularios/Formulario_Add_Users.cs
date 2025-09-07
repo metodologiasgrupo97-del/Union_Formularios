@@ -14,16 +14,23 @@ namespace Union_Formularios.Formularios
 {
     public partial class Formulario_Add_Users : Form
     {
-        private Panel panelEscritorio;
-        private Form subFormulario;
+        // ===== 1) CAMPOS =====
+        private Panel panelEscritorio;   // Panel contenedor donde se insertan subformularios
+        private Form subFormulario;      // Referencia al subformulario actual
+        private byte[] imagenEnBytes;    // Imagen del usuario convertida a arreglo de bytes
 
+        // ===== 2) CONSTRUCTOR =====
+        // Recibe el panel de escritorio para poder abrir subformularios dentro de él.
         public Formulario_Add_Users(Panel panel)
         {
             InitializeComponent();
             this.panelEscritorio = panel;
         }
-        private byte[] imagenEnBytes;
 
+        // ===== 3) HANDLERS PRINCIPALES =====
+
+        // Botón para subir foto: abre un diálogo de archivos, carga imagen en PictureBox
+        // y la convierte a arreglo de bytes para guardarla en BD.
         private void btnSubirFoto_Click(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
@@ -41,6 +48,7 @@ namespace Union_Formularios.Formularios
             }
         }
 
+        // Botón Registrar: valida campos, prepara datos y llama al modelo para registrar usuario.
         private void btnRegistrar_Click(object sender, EventArgs e)
         {
             string usuario = txt_Edit_Nom_Usu.Text;
@@ -51,62 +59,54 @@ namespace Union_Formularios.Formularios
             string puesto = Cmbox_Select_Plaque.SelectedItem?.ToString();
             string telefono = txt_Add_telf_User.Text.Trim();
 
-
+            // === Validaciones ===
             if (string.IsNullOrWhiteSpace(usuario))
             {
                 MessageBox.Show("Por favor ingrese un nombre de usuario.", "Campo obligatorio", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txt_Edit_Nom_Usu.Focus();
                 return;
             }
-
             if (string.IsNullOrWhiteSpace(contraseña))
             {
                 MessageBox.Show("Por favor ingrese una contraseña.", "Campo obligatorio", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txt_Edit_Pass_Profile.Focus();
                 return;
             }
-
             if (string.IsNullOrWhiteSpace(nombre))
             {
                 MessageBox.Show("Por favor ingrese el nombre del usuario.", "Campo obligatorio", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txt_Edit_Name_Profile.Focus();
                 return;
             }
-
             if (string.IsNullOrWhiteSpace(apellido))
             {
                 MessageBox.Show("Por favor ingrese el apellido del usuario.", "Campo obligatorio", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txt_Edit_LastName_Profile.Focus();
                 return;
             }
-
             if (string.IsNullOrWhiteSpace(correo))
             {
                 MessageBox.Show("Por favor ingrese el correo del usuario.", "Campo obligatorio", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txt_Cor_Edit.Focus();
                 return;
             }
-
             if (string.IsNullOrWhiteSpace(puesto))
             {
                 MessageBox.Show("Por favor seleccione un puesto.", "Campo obligatorio", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Cmbox_Select_Plaque.Focus();
                 return;
             }
-
             if (imagenEnBytes == null)
             {
                 MessageBox.Show("Por favor cargue una fotografía del usuario.", "Campo obligatorio", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-
             if (string.IsNullOrWhiteSpace(telefono))
             {
                 MessageBox.Show("Por favor ingrese el número de teléfono.", "Campo obligatorio", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txt_Add_telf_User.Focus();
                 return;
             }
-
             if (!System.Text.RegularExpressions.Regex.IsMatch(telefono, @"^09\d{8}$"))
             {
                 MessageBox.Show("Ingrese un número de teléfono celular válido de Ecuador (ej: 0998765432).", "Formato incorrecto", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -114,12 +114,14 @@ namespace Union_Formularios.Formularios
                 return;
             }
 
+            // === Registro ===
             Modelo_Registro_Usuario modelo = new Modelo_Registro_Usuario();
             string resultado = modelo.RegistrarTrabajador(usuario, contraseña, nombre, apellido, puesto, correo, telefono, imagenEnBytes);
             MessageBox.Show(resultado, "Resultado del registro", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-
+        // ===== 4) NAVEGACIÓN ENTRE FORMULARIOS =====
+        // Abre un subformulario dentro del panel de escritorio (usado en botones de navegación).
         private void Abrir_Sub_Formulario(Form form)
         {
             if (subFormulario != null)
@@ -135,27 +137,31 @@ namespace Union_Formularios.Formularios
             form.Show();
         }
 
-
+        // Botón para abrir formulario de dashboard.
         private void guna2Button2_Click(object sender, EventArgs e)
         {
             Abrir_Sub_Formulario(new Formulario_EdtDash(panelEscritorio));
             this.Close();
         }
 
+        // Botón para abrir formulario de configuración.
         private void guna2Button1_Click(object sender, EventArgs e)
         {
             Abrir_Sub_Formulario(new Formulario_Configuracion(panelEscritorio));
             this.Close();
         }
 
+        // ===== 5) VALIDACIONES DE ENTRADA =====
+        // Restringe campo de teléfono a solo dígitos.
         private void txt_Add_telf_User_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {
-                e.Handled = true; 
+                e.Handled = true;
             }
         }
 
+        // ===== 6) MOSTRAR / OCULTAR TELÉFONO SECUNDARIO =====
         private void guna2Button6_Click(object sender, EventArgs e)
         {
             btn_Mostrar_numtelf_secundario.BringToFront();
@@ -173,9 +179,10 @@ namespace Union_Formularios.Formularios
             txt_numtelf_secun.Visible = true;
         }
 
+        // ===== 7) EVENTOS VACÍOS (generados por diseñador) =====
         private void txt_Add_telf_User_TextChanged(object sender, EventArgs e)
         {
-
+            // Actualmente vacío: puede eliminarse si no está enlazado en el diseñador.
         }
     }
 }

@@ -19,6 +19,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
 
     public partial class Formulario_Vehiculos : Form
     {
+        // ===== 1) CAMPOS (estado del formulario) =====
         // Estado de selección (IDs solo para navegación de catálogos; NO se guardan)
         private int? _tipoIdSel, _marcaIdSel, _modeloIdSel;
 
@@ -28,18 +29,13 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         // Evitar eventos durante binding
         private bool _suspendEvents = false;
 
+        // ===== 2) CONSTRUCTOR =====
         public Formulario_Vehiculos()
         {
             InitializeComponent();
         }
 
-        public void EstablecerPropietario(int id, string nombreCompleto)
-        {
-            idPropietarioSeleccionado = id;
-            txt_Prop_Asig.Text = nombreCompleto;
-        }
-
-        // ========== LOAD ==========
+        // ===== 3) CICLO DE VIDA DEL FORM =====
         private void FormVehiculo_Load(object sender, EventArgs e)
         {
             // Combos: solo lista
@@ -66,6 +62,14 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             cmb_Año.SelectedIndexChanged += cmb_Año_SelectedIndexChanged;
         }
 
+        // ===== 4) MÉTODOS PÚBLICOS (API del formulario) =====
+        public void EstablecerPropietario(int id, string nombreCompleto)
+        {
+            idPropietarioSeleccionado = id;
+            txt_Prop_Asig.Text = nombreCompleto;
+        }
+
+        // ===== 5) HELPERS / LÓGICA / DATOS =====
         private void SetInitialState()
         {
             txt_Placa.Enabled = true;
@@ -114,216 +118,6 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             _suspendEvents = false;
         }
 
-        // ========== PLACA ==========
-        private void txt_Placa_TextChanged(object sender, EventArgs e)
-        {
-            txt_Placa.CharacterCasing = CharacterCasing.Upper;
-            bool ok = Regex.IsMatch(txt_Placa.Text.Trim(), @"^[A-Z]{3}-\d{4}$");
-
-            if (ok)
-            {
-                Cmbox_Tip_Vehic.Enabled = true;
-            }
-            else
-            {
-                Cmbox_Tip_Vehic.Enabled = false;
-                Cmbox_Tip_Vehic.SelectedIndex = -1;
-
-                ResetCombo(Cmbox_Marca); Cmbox_Marca.Enabled = false;
-                ResetCombo(Cmbox_Modelo); Cmbox_Modelo.Enabled = false;
-                ResetCombo(cmb_Año); cmb_Año.Enabled = false;
-                SetFinalFieldsEnabled(false);
-
-                _tipoIdSel = _marcaIdSel = _modeloIdSel = null;
-            }
-        }
-
-        // ========== TIPO ==========
-        private void Cmbox_Tip_Vehic_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_suspendEvents) return;
-
-            if (Cmbox_Tip_Vehic.SelectedItem == null)
-            {
-                _tipoIdSel = null;
-                ResetCombo(Cmbox_Marca); Cmbox_Marca.Enabled = false;
-                ResetCombo(Cmbox_Modelo); Cmbox_Modelo.Enabled = false;
-                ResetCombo(cmb_Año); cmb_Año.Enabled = false;
-                SetFinalFieldsEnabled(false);
-                return;
-            }
-
-            if (Cmbox_Tip_Vehic.SelectedItem is DataRowView drvT && drvT.Row.Table.Columns.Contains("TipoID"))
-                _tipoIdSel = Convert.ToInt32(drvT["TipoID"]);
-            else
-                _tipoIdSel = null;
-
-            if (_tipoIdSel.HasValue)
-            {
-                CargarMarcasDesdeBD(_tipoIdSel.Value);
-                Cmbox_Marca.Enabled = true;
-            }
-            else
-            {
-                ResetCombo(Cmbox_Marca);
-                Cmbox_Marca.Enabled = false;
-            }
-
-            ResetCombo(Cmbox_Modelo); Cmbox_Modelo.Enabled = false;
-            ResetCombo(cmb_Año); cmb_Año.Enabled = false;
-            SetFinalFieldsEnabled(false);
-        }
-
-        // ========== MARCA ==========
-        private void Cmbox_Marca_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_suspendEvents) return;
-
-            if (Cmbox_Marca.SelectedItem == null)
-            {
-                _marcaIdSel = null;
-                ResetCombo(Cmbox_Modelo); Cmbox_Modelo.Enabled = false;
-                ResetCombo(cmb_Año); cmb_Año.Enabled = false;
-                SetFinalFieldsEnabled(false);
-                return;
-            }
-
-            if (Cmbox_Marca.SelectedItem is DataRowView drvM && drvM.Row.Table.Columns.Contains("MarcaID"))
-                _marcaIdSel = Convert.ToInt32(drvM["MarcaID"]);
-            else
-                _marcaIdSel = null;
-
-            if (_marcaIdSel.HasValue)
-            {
-                CargarModelosDesdeBD(_marcaIdSel.Value);
-                Cmbox_Modelo.Enabled = true;
-            }
-            else
-            {
-                ResetCombo(Cmbox_Modelo);
-                Cmbox_Modelo.Enabled = false;
-            }
-
-            ResetCombo(cmb_Año); cmb_Año.Enabled = false;
-            SetFinalFieldsEnabled(false);
-        }
-
-        // ========== MODELO ==========
-        private void Cmbox_Modelo_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_suspendEvents) return;
-
-            if (Cmbox_Modelo.SelectedItem == null)
-            {
-                _modeloIdSel = null;
-                ResetCombo(cmb_Año); cmb_Año.Enabled = false;
-                SetFinalFieldsEnabled(false);
-                return;
-            }
-
-            if (Cmbox_Modelo.SelectedItem is DataRowView drvMo && drvMo.Row.Table.Columns.Contains("ModeloID"))
-                _modeloIdSel = Convert.ToInt32(drvMo["ModeloID"]);
-            else
-                _modeloIdSel = null;
-
-            if (_modeloIdSel.HasValue)
-            {
-                CargarAniosDesdeBD(_modeloIdSel.Value);
-                cmb_Año.Enabled = true;
-            }
-            else
-            {
-                ResetCombo(cmb_Año);
-                cmb_Año.Enabled = false;
-            }
-
-            SetFinalFieldsEnabled(false);
-        }
-
-        // ========== AÑO ==========
-        private void cmb_Año_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_suspendEvents) return;
-
-            if (cmb_Año.SelectedItem == null)
-            {
-                SetFinalFieldsEnabled(false);
-                return;
-            }
-
-            // Con seleccionar un año válido, habilita resto
-            SetFinalFieldsEnabled(true);
-        }
-
-        // ========== Guardar (en TEXTO, coincide con tu tabla actual) ==========
-        private void btn_Guardar_Vehiculo_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string placa = txt_Placa.Text.Trim().ToUpper();
-                if (!Regex.IsMatch(placa, @"^[A-Z]{3}-\d{4}$")) { MessageBox.Show("Placa inválida (AAA-1234)."); return; }
-                if (Cmbox_Tip_Vehic.SelectedItem == null) { MessageBox.Show("Seleccione Tipo."); return; }
-                if (Cmbox_Marca.SelectedItem == null) { MessageBox.Show("Seleccione Marca."); return; }
-                if (Cmbox_Modelo.SelectedItem == null) { MessageBox.Show("Seleccione Modelo."); return; }
-                if (cmb_Año.SelectedItem == null) { MessageBox.Show("Seleccione Año."); return; }
-                if (idPropietarioSeleccionado <= 0) { MessageBox.Show("Seleccione un propietario."); return; }
-                if (string.IsNullOrWhiteSpace(txt_Num_Motor.Text)) { MessageBox.Show("Ingrese N° Motor."); return; }
-                if (string.IsNullOrWhiteSpace(txt_Num_Chasis.Text)) { MessageBox.Show("Ingrese N° Chasis."); return; }
-                if (string.IsNullOrWhiteSpace(txt_Color.Text)) { MessageBox.Show("Ingrese Color."); return; }
-                if (Cmbox_Combustible.SelectedItem == null) { MessageBox.Show("Seleccione Combustible."); return; }
-                if (!int.TryParse(txt_Kilometraje.Text.Trim(), out int km) || km < 0) { MessageBox.Show("Kilometraje inválido."); return; }
-                if (Cmbox_Estado.SelectedItem == null) { MessageBox.Show("Seleccione Estado."); return; }
-
-                string tipo = GetTextFrom(Cmbox_Tip_Vehic);
-                string marca = GetTextFrom(Cmbox_Marca);
-                string modelo = GetTextFrom(Cmbox_Modelo);
-                int anio = GetAnioFromCombo();
-
-                using (var cn = new ConexionVehiculo().Conectar())
-                {
-                    cn.Open();
-
-                    // Placa única
-                    using (var ch = new SqlCommand("SELECT COUNT(1) FROM dbo.Vehiculos WHERE Placa=@p", cn))
-                    {
-                        ch.Parameters.AddWithValue("@p", placa);
-                        if (Convert.ToInt32(ch.ExecuteScalar()) > 0)
-                        {
-                            MessageBox.Show("Ya existe un vehículo con esa placa.");
-                            return;
-                        }
-                    }
-
-                    using (var cmd = new SqlCommand(@"
-                        INSERT INTO dbo.Vehiculos
-                        (Placa, Marca, Modelo, Anio, NumeroMotor, NumeroChasis, Tipo, Color, Combustible, Kilometraje, Estado, ID_Propietario)
-                        VALUES (@Placa, @Marca, @Modelo, @Anio, @Motor, @Chasis, @Tipo, @Color, @Combustible, @Kilometraje, @Estado, @Prop);", cn))
-                    {
-                        cmd.Parameters.AddWithValue("@Placa", placa);
-                        cmd.Parameters.AddWithValue("@Marca", marca);
-                        cmd.Parameters.AddWithValue("@Modelo", modelo);
-                        cmd.Parameters.AddWithValue("@Anio", anio);
-                        cmd.Parameters.AddWithValue("@Motor", txt_Num_Motor.Text.Trim().ToUpper());
-                        cmd.Parameters.AddWithValue("@Chasis", txt_Num_Chasis.Text.Trim().ToUpper());
-                        cmd.Parameters.AddWithValue("@Tipo", tipo);
-                        cmd.Parameters.AddWithValue("@Color", txt_Color.Text.Trim());
-                        cmd.Parameters.AddWithValue("@Combustible", Cmbox_Combustible.Text);
-                        cmd.Parameters.AddWithValue("@Kilometraje", km);
-                        cmd.Parameters.AddWithValue("@Estado", Cmbox_Estado.Text);
-                        cmd.Parameters.AddWithValue("@Prop", idPropietarioSeleccionado);
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-
-                MessageBox.Show("Vehículo registrado correctamente.");
-                SetInitialState(); // limpia y deja todo listo
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al guardar vehículo: " + ex.Message, "BD", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         private string GetTextFrom(ComboBox cmb)
         {
             if (cmb.SelectedItem is DataRowView drv && drv.Row.Table.Columns.Contains("Nombre"))
@@ -339,14 +133,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             throw new InvalidOperationException("El año seleccionado no es válido.");
         }
 
-        private void btnSeleccionarPropietario_Click(object sender, EventArgs e)
-        {
-            var frm = new Formulario_dgv_De_Propietarios();
-            frm.formPadre = this;
-            frm.ShowDialog();
-        }
-
-        // ========== CARGA DE CATÁLOGOS ==========
+        // ===== 6) CARGA DE CATÁLOGOS (acceso a BD) =====
         private void CargarTiposDesdeBD()
         {
             try
@@ -441,10 +228,227 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             }
         }
 
-        // ==== eventos autogenerados vacíos (si existen en el diseñador) ====
-        private void panel1_Paint(object sender, PaintEventArgs e) { }
-        private void Formulario_Reportes_Load(object sender, EventArgs e) { }
-        private void guna2Button3_Click(object sender, EventArgs e) { }
+        // ===== 7) HANDLERS DE UI (por control) =====
+
+        // ---- Placa ----
+        private void txt_Placa_TextChanged(object sender, EventArgs e)
+        {
+            txt_Placa.CharacterCasing = CharacterCasing.Upper;
+            bool ok = Regex.IsMatch(txt_Placa.Text.Trim(), @"^[A-Z]{3}-\d{4}$");
+
+            if (ok)
+            {
+                Cmbox_Tip_Vehic.Enabled = true;
+            }
+            else
+            {
+                Cmbox_Tip_Vehic.Enabled = false;
+                Cmbox_Tip_Vehic.SelectedIndex = -1;
+
+                ResetCombo(Cmbox_Marca); Cmbox_Marca.Enabled = false;
+                ResetCombo(Cmbox_Modelo); Cmbox_Modelo.Enabled = false;
+                ResetCombo(cmb_Año); cmb_Año.Enabled = false;
+                SetFinalFieldsEnabled(false);
+
+                _tipoIdSel = _marcaIdSel = _modeloIdSel = null;
+            }
+        }
+
+        // ---- Tipo ----
+        private void Cmbox_Tip_Vehic_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_suspendEvents) return;
+
+            if (Cmbox_Tip_Vehic.SelectedItem == null)
+            {
+                _tipoIdSel = null;
+                ResetCombo(Cmbox_Marca); Cmbox_Marca.Enabled = false;
+                ResetCombo(Cmbox_Modelo); Cmbox_Modelo.Enabled = false;
+                ResetCombo(cmb_Año); cmb_Año.Enabled = false;
+                SetFinalFieldsEnabled(false);
+                return;
+            }
+
+            if (Cmbox_Tip_Vehic.SelectedItem is DataRowView drvT && drvT.Row.Table.Columns.Contains("TipoID"))
+                _tipoIdSel = Convert.ToInt32(drvT["TipoID"]);
+            else
+                _tipoIdSel = null;
+
+            if (_tipoIdSel.HasValue)
+            {
+                CargarMarcasDesdeBD(_tipoIdSel.Value);
+                Cmbox_Marca.Enabled = true;
+            }
+            else
+            {
+                ResetCombo(Cmbox_Marca);
+                Cmbox_Marca.Enabled = false;
+            }
+
+            ResetCombo(Cmbox_Modelo); Cmbox_Modelo.Enabled = false;
+            ResetCombo(cmb_Año); cmb_Año.Enabled = false;
+            SetFinalFieldsEnabled(false);
+        }
+
+        // ---- Marca ----
+        private void Cmbox_Marca_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_suspendEvents) return;
+
+            if (Cmbox_Marca.SelectedItem == null)
+            {
+                _marcaIdSel = null;
+                ResetCombo(Cmbox_Modelo); Cmbox_Modelo.Enabled = false;
+                ResetCombo(cmb_Año); cmb_Año.Enabled = false;
+                SetFinalFieldsEnabled(false);
+                return;
+            }
+
+            if (Cmbox_Marca.SelectedItem is DataRowView drvM && drvM.Row.Table.Columns.Contains("MarcaID"))
+                _marcaIdSel = Convert.ToInt32(drvM["MarcaID"]);
+            else
+                _marcaIdSel = null;
+
+            if (_marcaIdSel.HasValue)
+            {
+                CargarModelosDesdeBD(_marcaIdSel.Value);
+                Cmbox_Modelo.Enabled = true;
+            }
+            else
+            {
+                ResetCombo(Cmbox_Modelo);
+                Cmbox_Modelo.Enabled = false;
+            }
+
+            ResetCombo(cmb_Año); cmb_Año.Enabled = false;
+            SetFinalFieldsEnabled(false);
+        }
+
+        // ---- Modelo ----
+        private void Cmbox_Modelo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_suspendEvents) return;
+
+            if (Cmbox_Modelo.SelectedItem == null)
+            {
+                _modeloIdSel = null;
+                ResetCombo(cmb_Año); cmb_Año.Enabled = false;
+                SetFinalFieldsEnabled(false);
+                return;
+            }
+
+            if (Cmbox_Modelo.SelectedItem is DataRowView drvMo && drvMo.Row.Table.Columns.Contains("ModeloID"))
+                _modeloIdSel = Convert.ToInt32(drvMo["ModeloID"]);
+            else
+                _modeloIdSel = null;
+
+            if (_modeloIdSel.HasValue)
+            {
+                CargarAniosDesdeBD(_modeloIdSel.Value);
+                cmb_Año.Enabled = true;
+            }
+            else
+            {
+                ResetCombo(cmb_Año);
+                cmb_Año.Enabled = false;
+            }
+
+            SetFinalFieldsEnabled(false);
+        }
+
+        // ---- Año ----
+        private void cmb_Año_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_suspendEvents) return;
+
+            if (cmb_Año.SelectedItem == null)
+            {
+                SetFinalFieldsEnabled(false);
+                return;
+            }
+
+            // Con seleccionar un año válido, habilita resto
+            SetFinalFieldsEnabled(true);
+        }
+
+        // ---- Guardar ----
+        private void btn_Guardar_Vehiculo_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string placa = txt_Placa.Text.Trim().ToUpper();
+                if (!Regex.IsMatch(placa, @"^[A-Z]{3}-\d{4}$")) { MessageBox.Show("Placa inválida (AAA-1234)."); return; }
+                if (Cmbox_Tip_Vehic.SelectedItem == null) { MessageBox.Show("Seleccione Tipo."); return; }
+                if (Cmbox_Marca.SelectedItem == null) { MessageBox.Show("Seleccione Marca."); return; }
+                if (Cmbox_Modelo.SelectedItem == null) { MessageBox.Show("Seleccione Modelo."); return; }
+                if (cmb_Año.SelectedItem == null) { MessageBox.Show("Seleccione Año."); return; }
+                if (idPropietarioSeleccionado <= 0) { MessageBox.Show("Seleccione un propietario."); return; }
+                if (string.IsNullOrWhiteSpace(txt_Num_Motor.Text)) { MessageBox.Show("Ingrese N° Motor."); return; }
+                if (string.IsNullOrWhiteSpace(txt_Num_Chasis.Text)) { MessageBox.Show("Ingrese N° Chasis."); return; }
+                if (string.IsNullOrWhiteSpace(txt_Color.Text)) { MessageBox.Show("Ingrese Color."); return; }
+                if (Cmbox_Combustible.SelectedItem == null) { MessageBox.Show("Seleccione Combustible."); return; }
+                if (!int.TryParse(txt_Kilometraje.Text.Trim(), out int km) || km < 0) { MessageBox.Show("Kilometraje inválido."); return; }
+                if (Cmbox_Estado.SelectedItem == null) { MessageBox.Show("Seleccione Estado."); return; }
+
+                string tipo = GetTextFrom(Cmbox_Tip_Vehic);
+                string marca = GetTextFrom(Cmbox_Marca);
+                string modelo = GetTextFrom(Cmbox_Modelo);
+                int anio = GetAnioFromCombo();
+
+                using (var cn = new ConexionVehiculo().Conectar())
+                {
+                    cn.Open();
+
+                    // Placa única
+                    using (var ch = new SqlCommand("SELECT COUNT(1) FROM dbo.Vehiculos WHERE Placa=@p", cn))
+                    {
+                        ch.Parameters.AddWithValue("@p", placa);
+                        if (Convert.ToInt32(ch.ExecuteScalar()) > 0)
+                        {
+                            MessageBox.Show("Ya existe un vehículo con esa placa.");
+                            return;
+                        }
+                    }
+
+                    using (var cmd = new SqlCommand(@"
+                        INSERT INTO dbo.Vehiculos
+                        (Placa, Marca, Modelo, Anio, NumeroMotor, NumeroChasis, Tipo, Color, Combustible, Kilometraje, Estado, ID_Propietario)
+                        VALUES (@Placa, @Marca, @Modelo, @Anio, @Motor, @Chasis, @Tipo, @Color, @Combustible, @Kilometraje, @Estado, @Prop);", cn))
+                    {
+                        cmd.Parameters.AddWithValue("@Placa", placa);
+                        cmd.Parameters.AddWithValue("@Marca", marca);
+                        cmd.Parameters.AddWithValue("@Modelo", modelo);
+                        cmd.Parameters.AddWithValue("@Anio", anio);
+                        cmd.Parameters.AddWithValue("@Motor", txt_Num_Motor.Text.Trim().ToUpper());
+                        cmd.Parameters.AddWithValue("@Chasis", txt_Num_Chasis.Text.Trim().ToUpper());
+                        cmd.Parameters.AddWithValue("@Tipo", tipo);
+                        cmd.Parameters.AddWithValue("@Color", txt_Color.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Combustible", Cmbox_Combustible.Text);
+                        cmd.Parameters.AddWithValue("@Kilometraje", km);
+                        cmd.Parameters.AddWithValue("@Estado", Cmbox_Estado.Text);
+                        cmd.Parameters.AddWithValue("@Prop", idPropietarioSeleccionado);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                MessageBox.Show("Vehículo registrado correctamente.");
+                SetInitialState(); // limpia y deja todo listo
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al guardar vehículo: " + ex.Message, "BD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ---- Selector de propietario ----
+        private void btnSeleccionarPropietario_Click(object sender, EventArgs e)
+        {
+            var frm = new Formulario_dgv_De_Propietarios();
+            frm.formPadre = this;
+            frm.ShowDialog();
+        }
+
+        // ---- Validaciones de teclado / formato en controles ----
         private void txt_Kilometraje_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
@@ -477,6 +481,14 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                 txt_Color.SelectionStart = cursorPos;
             }
         }
+
+        // ---- Eventos autogenerados vacíos (si existen en el diseñador) ----
+        private void panel1_Paint(object sender, PaintEventArgs e) { }
+        private void Formulario_Reportes_Load(object sender, EventArgs e) { }
+        private void guna2Button3_Click(object sender, EventArgs e) { }
+
+/// ////////////////
+
 
         private Panel panel1;
         private Guna.UI2.WinForms.Guna2Button btn_Guardar_Vehiculo;

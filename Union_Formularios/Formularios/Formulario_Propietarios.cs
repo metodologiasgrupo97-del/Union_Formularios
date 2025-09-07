@@ -15,14 +15,99 @@ namespace Formulario_Principal_Car_EFULL.Formularios
 {
     public partial class Formulario_Propietarios : Form
     {
+        // ===== 1) CAMPOS Y PROPIEDADES =====
+        // Tabla en memoria para cargar y (en Load) filtrar propietarios activos.
         private DataTable propietariosDT;
+
+        // Referencia opcional al formulario de Vehículos (para comunicación cruzada si se requiere).
         public Formulario_Vehiculos formPadre { get; set; }
 
+        // ===== 2) CONSTRUCTOR =====
+        // Inicializa los componentes visuales del formulario.
+        // (No altera lógica de carga ni de datos; eso ocurre en el evento Load).
         public Formulario_Propietarios()
         {
             InitializeComponent();
         }
 
+        // ===== 3) CICLO DE VIDA =====
+        // Evento Load: consulta la tabla Propietarios, carga en DataTable, aplica filtro Estado='Activo'
+        // y bindea el DataGridView para mostrar solo activos al iniciar.
+        private void Formulario_Propietarios_Load(object sender, EventArgs e)
+        {
+            propietariosDT = new DataTable();
+
+            using (SqlConnection cn = new SqlConnection("Server = DESKTOP-9TRMID2; DataBase = CAR_EFULL; integrated security = true"))
+            {
+                cn.Open();
+                string query = "SELECT ID_Propietario, Cedula, Nombre, Apellido, Telefono, Correo, Direccion, Estado, FechaRegistro FROM Propietarios";
+                SqlDataAdapter adapter = new SqlDataAdapter(query, cn);
+                adapter.Fill(propietariosDT);
+            }
+            // Mostrar solo Activos mediante vista filtrada sobre el DataTable cargado.
+            DataView vistaActivos = propietariosDT.DefaultView;
+            vistaActivos.RowFilter = "Estado = 'Activo'";
+            dgvPropietarios.DataSource = vistaActivos;
+        }
+
+        // ===== 4) HELPERS / ACCESO A DATOS =====
+        // Cuenta referencias (vehículos y facturas) de un propietario antes de intentar eliminar.
+        // Devuelve tupla con cantidades para tomar decisiones en la UI (eliminar, marcar inactivo, etc.).
+        private (int vehiculos, int facturas) ContarReferenciasPropietario(int idPropietario)
+        {
+            using (SqlConnection cn = new ConexionSQL_Implementacion().AbrirConexion())
+            {
+                cn.Open();
+                using (SqlCommand cmd = new SqlCommand(@"
+            SELECT 
+	            Vehiculos = (SELECT COUNT(*) FROM Vehiculos WHERE ID_Propietario = @id),
+	            Facturas  = (SELECT COUNT(*) FROM Facturas  WHERE ID_Propietario = @id);", cn))
+                {
+                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = idPropietario;
+                    using (var rd = cmd.ExecuteReader())
+                    {
+                        if (rd.Read())
+                            return (Convert.ToInt32(rd["Vehiculos"]), Convert.ToInt32(rd["Facturas"]));
+                    }
+                }
+            }
+            return (0, 0);
+        }
+
+        // Marca propietario como Inactivo cuando existen dependencias (p. ej., facturas) y no se puede eliminar.
+        // No cambia la vista actual; el llamador decide cuándo recargar la grilla.
+        private void MarcarPropietarioInactivo(int idPropietario)
+        {
+            using (SqlConnection cn = new ConexionSQL_Implementacion().AbrirConexion())
+            {
+                cn.Open();
+                using (SqlCommand cmd = new SqlCommand(
+                    "UPDATE Propietarios SET Estado = 'Inactivo' WHERE ID_Propietario = @id", cn))
+                {
+                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = idPropietario;
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // Recarga completa de la tabla Propietarios para refrescar el DataGridView.
+        // (Aquí no se aplica filtro Estado='Activo'; el llamador muestra todo el resultado de la consulta).
+        private void CargarPropietarios()
+        {
+            using (SqlConnection cn = new ConexionSQL_Implementacion().AbrirConexion())
+            {
+                cn.Open();
+                string query = "SELECT * FROM Propietarios";
+                SqlDataAdapter da = new SqlDataAdapter(query, cn);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                dgvPropietarios.DataSource = dt;
+            }
+        }
+
+        // ===== 5) HANDLERS DE UI =====
+        // Doble clic en una fila de la grilla: abre el formulario de edición en modo "editar" (con ID).
+        // Al cerrar el editor, recarga la grilla para reflejar cambios.
         private void dgvPropietarios_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
@@ -38,6 +123,9 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             frmEditar.ShowDialog(this);
         }
 
+        // Botón Eliminar: valida selección, verifica dependencias (facturas/vehículos),
+        // ofrece marcar como Inactivo si hay facturas y, si procede, elimina dentro de transacción
+        // (desvincula vehículos primero cuando corresponda).
         private void btn_Eliminar_Click(object sender, EventArgs e)
         {
             try
@@ -115,7 +203,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                         catch
                         {
                             tx.Rollback();
-                            throw; // Lo captura el catch de afuera y muestra mensaje sin cerrar la app
+                            throw; // Se propaga al catch externo para mostrar mensaje
                         }
                     }
                 }
@@ -138,78 +226,15 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             }
         }
 
-        private (int vehiculos, int facturas) ContarReferenciasPropietario(int idPropietario)
-        {
-            using (SqlConnection cn = new ConexionSQL_Implementacion().AbrirConexion())
-            {
-                cn.Open();
-                using (SqlCommand cmd = new SqlCommand(@"
-            SELECT 
-	            Vehiculos = (SELECT COUNT(*) FROM Vehiculos WHERE ID_Propietario = @id),
-	            Facturas  = (SELECT COUNT(*) FROM Facturas  WHERE ID_Propietario = @id);", cn))
-                {
-                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = idPropietario;
-                    using (var rd = cmd.ExecuteReader())
-                    {
-                        if (rd.Read())
-                            return (Convert.ToInt32(rd["Vehiculos"]), Convert.ToInt32(rd["Facturas"]));
-                    }
-                }
-            }
-            return (0, 0);
-        }
-
-        private void MarcarPropietarioInactivo(int idPropietario)
-        {
-            using (SqlConnection cn = new ConexionSQL_Implementacion().AbrirConexion())
-            {
-                cn.Open();
-                using (SqlCommand cmd = new SqlCommand(
-                    "UPDATE Propietarios SET Estado = 'Inactivo' WHERE ID_Propietario = @id", cn))
-                {
-                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = idPropietario;
-                    cmd.ExecuteNonQuery();
-                }
-            }
-        }
-
-
+        // Botón Añadir: abre formulario de alta de propietario en modo nuevo (sin ID).
+        // Al cerrarse, se recarga el DataGridView para reflejar el nuevo registro.
         private void btn_Añadir_Click(object sender, EventArgs e)
         {
             Formulario_Add_Propietario frmAdd = new Formulario_Add_Propietario();
             frmAdd.FormClosed += (s, args) => CargarPropietarios(); // Recargar al cerrar
             frmAdd.ShowDialog();
         }
-        private void CargarPropietarios()
-        {
-            using (SqlConnection cn = new ConexionSQL_Implementacion().AbrirConexion())
-            {
-                cn.Open();
-                string query = "SELECT * FROM Propietarios";
-                SqlDataAdapter da = new SqlDataAdapter(query, cn);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-                dgvPropietarios.DataSource = dt;
-            }
-        }
 
-
-        private void Formulario_Propietarios_Load(object sender, EventArgs e)
-        {
-            propietariosDT = new DataTable();
-
-            using (SqlConnection cn = new SqlConnection("Server = DESKTOP-9TRMID2; DataBase = CAR_EFULL; integrated security = true"))
-            {
-                cn.Open();
-                string query = "SELECT ID_Propietario, Cedula, Nombre, Apellido, Telefono, Correo, Direccion, Estado, FechaRegistro FROM Propietarios";
-                SqlDataAdapter adapter = new SqlDataAdapter(query, cn);
-                adapter.Fill(propietariosDT);
-            }
-            // Aplicar filtro SOLO mostrar propietarios activos
-            DataView vistaActivos = propietariosDT.DefaultView;
-            vistaActivos.RowFilter = "Estado = 'Activo'";
-            dgvPropietarios.DataSource = vistaActivos;
-        }
 
         /// ////////////////////////////////////////////////////////////////////////////
         private Guna.UI2.WinForms.Guna2DataGridView dgvPropietarios;

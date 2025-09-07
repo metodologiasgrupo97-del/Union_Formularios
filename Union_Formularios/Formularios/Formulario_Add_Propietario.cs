@@ -8,11 +8,15 @@ namespace Union_Formularios.Formularios
 {
     public partial class Formulario_Add_Propietario : Form
     {
-        // null = alta; valor = edición
+        // ===== 1) CAMPOS Y PROPIEDADES =====
+        // null = alta (insert), valor = edición (update).
         private int? _propietarioId = null;
+
+        // Propiedad booleana de solo lectura: indica si se está editando.
         private bool IsEditMode => _propietarioId.HasValue;
 
-        // === Constructor: Modo ALTA ===
+        // ===== 2) CONSTRUCTORES =====
+        // Constructor para modo ALTA (nuevo propietario).
         public Formulario_Add_Propietario()
         {
             InitializeComponent();
@@ -20,14 +24,15 @@ namespace Union_Formularios.Formularios
             ConfigurarDatePicker();
         }
 
-        // === Constructor: Modo EDICIÓN ===
+        // Constructor para modo EDICIÓN (se recibe un ID).
         public Formulario_Add_Propietario(int propietarioId) : this()
         {
             ConfigurarComoEdicion(propietarioId);
-            dtpFechaRegistro.Enabled = false;
+            dtpFechaRegistro.Enabled = false; // la fecha no se edita
         }
 
-        // Alternativa si quieres abrir con ctor vacío y luego configurar
+        // ===== 3) CONFIGURACIÓN DE MODO =====
+        // Se usa para preparar el formulario en modo edición.
         public void ConfigurarComoEdicion(int propietarioId)
         {
             _propietarioId = propietarioId;
@@ -35,10 +40,13 @@ namespace Union_Formularios.Formularios
 
             CargarPropietario(propietarioId);
 
+            // La cédula no debe modificarse en edición.
             txtCedula.ReadOnly = true;
             txtCedula.TabStop = false;
         }
 
+        // ===== 4) CARGA DE DATOS =====
+        // Carga desde BD los datos de un propietario específico y los muestra en el formulario.
         private void CargarPropietario(int id)
         {
             try
@@ -64,6 +72,7 @@ namespace Union_Formularios.Formularios
                                 return;
                             }
 
+                            // Asignación de campos al formulario
                             txtCedula.Text = rd["Cedula"]?.ToString();
                             txtNombre.Text = rd["Nombre"]?.ToString();
                             txtApellido.Text = rd["Apellido"]?.ToString();
@@ -96,6 +105,8 @@ namespace Union_Formularios.Formularios
             }
         }
 
+        // ===== 5) HANDLER GUARDAR =====
+        // Según el modo (alta o edición) ejecuta INSERT o UPDATE.
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             if (!CamposCompletos())
@@ -105,13 +116,10 @@ namespace Union_Formularios.Formularios
                 return;
             }
 
-            // Para depurar si hace falta:
-            System.Diagnostics.Debug.WriteLine($"[Formulario_Add_Propietario] IsEditMode={IsEditMode}, Id={_propietarioId}");
-
+            // Modo ALTA (insertar propietario nuevo).
             if (!IsEditMode)
             {
-                // ============== INSERT (ALTA) ==============
-                // Verificar cédula duplicada SOLO en alta
+                // Verificar duplicados de cédula antes de insertar.
                 if (CedulaExiste(txtCedula.Text.Trim()))
                 {
                     MessageBox.Show("La cédula ingresada ya existe. No se puede duplicar.", "Duplicado",
@@ -156,7 +164,7 @@ namespace Union_Formularios.Formularios
             }
             else
             {
-                // ============== UPDATE (EDICIÓN) ==============
+                // Modo EDICIÓN (actualizar propietario existente).
                 if (!_propietarioId.HasValue)
                 {
                     MessageBox.Show("ID de propietario no válido para actualización.", "Error",
@@ -164,7 +172,7 @@ namespace Union_Formularios.Formularios
                     return;
                 }
 
-                // Importante: NO se actualiza la cédula ni la fecha de registro
+                // No se permite modificar la cédula ni la fecha de registro.
                 try
                 {
                     using (SqlConnection cn = new ConexionSQL_Implementacion().AbrirConexion())
@@ -212,9 +220,10 @@ namespace Union_Formularios.Formularios
             }
         }
 
+        // ===== 6) VALIDACIONES Y HELPERS =====
+        // Verifica que todos los campos requeridos estén completos.
         private bool CamposCompletos()
         {
-            // En edición, la cédula está readonly pero debe estar cargada.
             return !string.IsNullOrWhiteSpace(txtCedula.Text) &&
                    !string.IsNullOrWhiteSpace(txtNombre.Text) &&
                    !string.IsNullOrWhiteSpace(txtApellido.Text) &&
@@ -224,6 +233,7 @@ namespace Union_Formularios.Formularios
                    cmbEstado.SelectedIndex != -1;
         }
 
+        // Configura el control de fecha para registros nuevos.
         private void ConfigurarDatePicker()
         {
             dtpFechaRegistro.Format = DateTimePickerFormat.Long;
@@ -231,7 +241,7 @@ namespace Union_Formularios.Formularios
             dtpFechaRegistro.Value = DateTime.Today;
         }
 
-
+        // Comprueba si ya existe la cédula ingresada en la BD.
         private bool CedulaExiste(string cedula)
         {
             try
@@ -249,8 +259,10 @@ namespace Union_Formularios.Formularios
             }
             catch
             {
+                // En caso de error en la verificación, devuelve true para evitar insertar duplicados.
                 return true;
             }
         }
     }
 }
+
