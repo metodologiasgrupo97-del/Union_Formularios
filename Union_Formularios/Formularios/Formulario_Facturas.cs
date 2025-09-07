@@ -14,7 +14,6 @@ namespace Formulario_Principal_Car_EFULL.Formularios
 {
         public partial class Formulario_Facturas : Form
         {
-        // Cadena de conexión típica para SQL Server local
         private string connectionString = @"Server=localhost;Database=CAR_EFULL;Trusted_Connection=True;";
 
         public Formulario_Facturas()
@@ -23,10 +22,8 @@ namespace Formulario_Principal_Car_EFULL.Formularios
 
             dgvFacturas.CellDoubleClick += DgvFacturas_CellDoubleClick;
             dgvFacturas.SelectionChanged += DgvFacturas_SelectionChanged;
-
             this.Load += FormularioFacturacion_Load;
         }
-
         private void FormularioFacturacion_Load(object sender, EventArgs e)
         {
             CargarFacturas();
@@ -37,14 +34,17 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             try
             {
                 string query = @"
-                    SELECT 
-                        NumeroFactura, 
-                        Cliente, 
-                        Fecha, 
-                        Total, 
-                        RutaFactura 
-                    FROM Facturas
-                    ORDER BY Fecha DESC";
+                SELECT 
+                    F.CodigoFactura,
+                    P.Nombre + ' ' + P.Apellido AS Propietario,
+                    V.Placa AS Vehiculo,
+                    F.TipoServicio AS Servicio,
+                    F.Fecha,
+                    F.Total
+                FROM Facturas F
+                INNER JOIN Propietarios P ON F.ID_Propietario = P.ID_Propietario
+                INNER JOIN Vehiculos V ON F.VehicleID = V.VehicleID
+                ORDER BY F.Fecha DESC";
 
                 using (SqlConnection con = new SqlConnection(connectionString))
                 using (SqlDataAdapter da = new SqlDataAdapter(query, con))
@@ -53,7 +53,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                     da.Fill(dt);
                     dgvFacturas.DataSource = dt;
 
-                    dgvFacturas.Columns["RutaFactura"].Visible = false;
+                    // Ajustes visuales
                     dgvFacturas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                     dgvFacturas.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
                 }
@@ -64,12 +64,14 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             }
         }
 
-        // Doble clic: abre la factura en el visor predeterminado
         private void DgvFacturas_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
-                string rutaFactura = dgvFacturas.Rows[e.RowIndex].Cells["RutaFactura"].Value.ToString();
+                // Aquí asumimos que tus facturas digitales están guardadas como "CodigoFactura.jpg" en C:\Facturas\
+                string codigoFactura = dgvFacturas.Rows[e.RowIndex].Cells["CodigoFactura"].Value.ToString();
+                string rutaFactura = $@"C:\Facturas\{codigoFactura}.jpg"; // Ajusta según tu ruta
+
                 if (File.Exists(rutaFactura))
                 {
                     try
@@ -87,19 +89,21 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                 }
             }
         }
-
-        // Cambiar selección: muestra previsualización de la factura
         private void DgvFacturas_SelectionChanged(object sender, EventArgs e)
         {
             if (dgvFacturas.SelectedRows.Count > 0)
             {
-                string rutaFactura = dgvFacturas.SelectedRows[0].Cells["RutaFactura"].Value.ToString();
+                string codigoFactura = dgvFacturas.SelectedRows[0].Cells["CodigoFactura"].Value.ToString();
+                string rutaFactura = $@"C:\Facturas\{codigoFactura}.jpg"; // Ajusta según tu ruta
 
                 if (File.Exists(rutaFactura))
                 {
                     try
                     {
-                        pictureBoxFactura.Image = System.Drawing.Image.FromFile(rutaFactura);
+                        using (var tempImage = Image.FromFile(rutaFactura))
+                        {
+                            pictureBoxFactura.Image = new Bitmap(tempImage);
+                        }
                         pictureBoxFactura.SizeMode = PictureBoxSizeMode.Zoom;
                     }
                     catch
@@ -113,53 +117,54 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                 }
             }
         }
-
         private Guna.UI2.WinForms.Guna2DataGridView dgvFacturas;
         private Guna.UI2.WinForms.Guna2ShadowPanel guna2ShadowPanel1;
         private FontAwesome.Sharp.IconPictureBox pictureBoxFactura;
         private Guna.UI2.WinForms.Guna2ShadowPanel guna2ShadowPanel2;
+        private Label label2;
         private Label label1;
 
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgvFacturas = new Guna.UI2.WinForms.Guna2DataGridView();
             this.label1 = new System.Windows.Forms.Label();
             this.guna2ShadowPanel1 = new Guna.UI2.WinForms.Guna2ShadowPanel();
-            this.guna2ShadowPanel2 = new Guna.UI2.WinForms.Guna2ShadowPanel();
             this.pictureBoxFactura = new FontAwesome.Sharp.IconPictureBox();
+            this.guna2ShadowPanel2 = new Guna.UI2.WinForms.Guna2ShadowPanel();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFacturas)).BeginInit();
             this.guna2ShadowPanel1.SuspendLayout();
-            this.guna2ShadowPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxFactura)).BeginInit();
+            this.guna2ShadowPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // dgvFacturas
             // 
             this.dgvFacturas.AllowUserToAddRows = false;
             this.dgvFacturas.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.White;
-            this.dgvFacturas.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvFacturas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
+            this.dgvFacturas.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvFacturas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvFacturas.ColumnHeadersHeight = 15;
             this.dgvFacturas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvFacturas.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvFacturas.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvFacturas.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.dgvFacturas.Location = new System.Drawing.Point(15, 12);
             this.dgvFacturas.Name = "dgvFacturas";
@@ -210,17 +215,6 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             this.guna2ShadowPanel1.Size = new System.Drawing.Size(490, 642);
             this.guna2ShadowPanel1.TabIndex = 48;
             // 
-            // guna2ShadowPanel2
-            // 
-            this.guna2ShadowPanel2.BackColor = System.Drawing.Color.Transparent;
-            this.guna2ShadowPanel2.Controls.Add(this.dgvFacturas);
-            this.guna2ShadowPanel2.FillColor = System.Drawing.Color.White;
-            this.guna2ShadowPanel2.Location = new System.Drawing.Point(25, 84);
-            this.guna2ShadowPanel2.Name = "guna2ShadowPanel2";
-            this.guna2ShadowPanel2.ShadowColor = System.Drawing.Color.Black;
-            this.guna2ShadowPanel2.Size = new System.Drawing.Size(667, 642);
-            this.guna2ShadowPanel2.TabIndex = 49;
-            // 
             // pictureBoxFactura
             // 
             this.pictureBoxFactura.BackColor = System.Drawing.Color.Transparent;
@@ -235,9 +229,31 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             this.pictureBoxFactura.TabIndex = 0;
             this.pictureBoxFactura.TabStop = false;
             // 
+            // guna2ShadowPanel2
+            // 
+            this.guna2ShadowPanel2.BackColor = System.Drawing.Color.Transparent;
+            this.guna2ShadowPanel2.Controls.Add(this.dgvFacturas);
+            this.guna2ShadowPanel2.FillColor = System.Drawing.Color.White;
+            this.guna2ShadowPanel2.Location = new System.Drawing.Point(25, 84);
+            this.guna2ShadowPanel2.Name = "guna2ShadowPanel2";
+            this.guna2ShadowPanel2.ShadowColor = System.Drawing.Color.Black;
+            this.guna2ShadowPanel2.Size = new System.Drawing.Size(667, 642);
+            this.guna2ShadowPanel2.TabIndex = 49;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Montserrat SemiBold", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(705, 21);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(116, 38);
+            this.label2.TabIndex = 50;
+            this.label2.Text = "Factura:";
+            // 
             // Formulario_Facturas
             // 
             this.ClientSize = new System.Drawing.Size(1212, 753);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.guna2ShadowPanel2);
             this.Controls.Add(this.guna2ShadowPanel1);
             this.Controls.Add(this.label1);
@@ -246,8 +262,8 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             this.Load += new System.EventHandler(this.Formulario_Facturas_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvFacturas)).EndInit();
             this.guna2ShadowPanel1.ResumeLayout(false);
-            this.guna2ShadowPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxFactura)).EndInit();
+            this.guna2ShadowPanel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

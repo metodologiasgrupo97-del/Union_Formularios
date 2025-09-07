@@ -6,10 +6,14 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
+using PdfSharp.Pdf;
+using PdfSharp.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Media;
 using Union_Formularios.Formularios;
 
 namespace Formulario_Principal_Car_EFULL.Formularios
@@ -592,6 +596,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
 
                         int facturaID = Convert.ToInt32(cmdFactura.ExecuteScalar());
 
+
                         // Inserta detalle para cada repuesto marcado como "Seleccionar"
                         foreach (DataGridViewRow row in dgvRepuestos.Rows)
                         {
@@ -658,7 +663,60 @@ namespace Formulario_Principal_Car_EFULL.Formularios
 
 
                         tran.Commit();
-                        MessageBox.Show("Factura guardada con éxito", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        try
+                        {
+                            // Carpeta donde se guardarán los PDFs
+                            string rutaFactura = @"E:\Facturas";
+                            if (!Directory.Exists(rutaFactura))
+                                Directory.CreateDirectory(rutaFactura);
+
+                            string archivoPdf = Path.Combine(rutaFactura, codigoFactura + ".pdf");
+
+                            // --- OBTENER NOMBRE COMPLETO DEL PROPIETARIO ---
+                            string nombrePropietario = "";
+                            using (SqlCommand cmd = new SqlCommand(@"
+                            SELECT Nombre + ' ' + Apellido FROM Propietarios WHERE ID_Propietario = @IDProp", con, tran))
+                            {
+                                cmd.Parameters.AddWithValue("@IDProp", info.idProp.Value);
+                                var result = cmd.ExecuteScalar();
+                                nombrePropietario = result != null ? result.ToString() : "SIN PROPIETARIO";
+                            }
+
+                            // Datos de la factura
+                            string vehiculo = txt_Show_Placa.Text.Trim();
+                            string servicio = txt_Show_Service.Text.Trim();
+
+                            // --- CREAR PDF ---
+                            PdfDocument document = new PdfDocument();
+                            document.Info.Title = "Factura " + codigoFactura;
+                            PdfPage page = document.AddPage();
+                            XGraphics gfx = XGraphics.FromPdfPage(page);
+
+                            // Fuentes
+                            XFont font = new XFont("Times New Roman", 12, PdfSharp.Drawing.XFontStyleEx.Regular);
+                            XFont fontBold = new XFont("Times New Romanw", 18, PdfSharp.Drawing.XFontStyleEx.Bold);
+
+                            // Contenido del PDF
+                            gfx.DrawString("FACTURA", fontBold, XBrushes.Black, new XPoint(200, 50));
+                            gfx.DrawString("Código: " + codigoFactura, font, XBrushes.Black, new XPoint(50, 100));
+                            gfx.DrawString("Propietario: " + nombrePropietario, font, XBrushes.Black, new XPoint(50, 130));
+                            gfx.DrawString("Vehículo: " + vehiculo, font, XBrushes.Black, new XPoint(50, 160));
+                            gfx.DrawString("Servicio: " + servicio, font, XBrushes.Black, new XPoint(50, 190));
+                            gfx.DrawString("Subtotal: $" + subtotal.ToString("F2"), font, XBrushes.Black, new XPoint(50, 220));
+                            gfx.DrawString("IVA: $" + iva.ToString("F2"), font, XBrushes.Black, new XPoint(50, 250));
+                            gfx.DrawString("Total: $" + total.ToString("F2"), font, XBrushes.Black, new XPoint(50, 280));
+                            gfx.DrawString("Fecha: " + DateTime.Now.ToString("dd/MM/yyyy"), font, XBrushes.Black, new XPoint(50, 310));
+
+                            // Guardar PDF
+                            document.Save(archivoPdf);
+                            document.Close();
+                        }
+                        catch (Exception exPdf)
+                        {
+                            MessageBox.Show("Factura guardada, pero hubo error al generar PDF: " + exPdf.Message,
+                                "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+
                     }
                     catch (Exception ex)
                     {
@@ -755,9 +813,24 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         }
 
         // Botón reservado (si en el futuro se requiere recalcular sin tocar la UI :D)
-        private void btnCalcularTotal_Click(object sender, EventArgs e)
+        private void btnCalcularTotal_Click(object sender, EventArgs e) { }
+        private string GetNombrePropietario(int idProp, SqlConnection con)
         {
+            string nombre = "";
+            using (SqlCommand cmd = new SqlCommand("SELECT Nombre, Apellido FROM Propietarios WHERE PropietarioID=@id", con))
+            {
+                cmd.Parameters.AddWithValue("@id", idProp);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        nombre = reader["Nombre"].ToString() + " " + reader["Apellido"].ToString();
+                    }
+                }
+            }
+            return nombre;
         }
+
 
         // Abre el diálogo para seleccionar el trabajador/mecánico y devuelve a este form
         private void btn_Seleccionar_Propietario_Click(object sender, EventArgs e)
@@ -802,7 +875,6 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                 dgvRepuestos.Columns.Clear();
             }
         }
-
 
         // Radio “No usar repuestos”: limpia la grilla
         private void rdb_NoUsarRepuestos_CheckedChanged(object sender, EventArgs e)

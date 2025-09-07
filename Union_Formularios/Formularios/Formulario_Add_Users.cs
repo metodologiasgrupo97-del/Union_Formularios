@@ -138,7 +138,8 @@ namespace Union_Formularios.Formularios
 
         private void guna2Button2_Click(object sender, EventArgs e)
         {
-
+            Abrir_Sub_Formulario(new Formulario_EdtDash(panelEscritorio));
+            this.Close();
         }
 
         private void guna2Button1_Click(object sender, EventArgs e)

@@ -6,7 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Datos_Acceso.SqlServer; 
+using Datos_Acceso.SqlServer;
+using Union_Formularios.Formularios;
 
 namespace Union_Formularios.Formularios
 {
@@ -54,8 +55,10 @@ namespace Union_Formularios.Formularios
         {
             if (_eventsWired) return;
             HookClickByName("edt_dash_config", edt_dash_config_Click);
+            HookClickByName("add_trabajador_config", add_trabajador_config_Click); 
             _eventsWired = true;
         }
+
 
         private void HookClickByName(string controlName, EventHandler handler)
         {
@@ -68,6 +71,10 @@ namespace Union_Formularios.Formularios
         private void edt_dash_config_Click(object sender, EventArgs e)
         {
             OpenOrEmbed(new Formulario_EdtDash(panelEscritorio));
+        }
+        private void add_trabajador_config_Click(object sender, EventArgs e)
+        {
+            OpenOrEmbed(new Formulario_Add_Users(panelEscritorio));
         }
 
         private void OpenOrEmbed(Form form)
@@ -421,7 +428,6 @@ namespace Union_Formularios.Formularios
             if (img == null) return null;
             using (var ms = new MemoryStream())
             {
-                // Igual que en tu Add_Users: usa el formato crudo del PictureBox
                 img.Save(ms, img.RawFormat);
                 return ms.ToArray();
             }

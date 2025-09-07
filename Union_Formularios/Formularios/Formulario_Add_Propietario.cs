@@ -17,12 +17,14 @@ namespace Union_Formularios.Formularios
         {
             InitializeComponent();
             btnGuardar.Text = "Guardar";
+            ConfigurarDatePicker();
         }
 
         // === Constructor: Modo EDICIÓN ===
         public Formulario_Add_Propietario(int propietarioId) : this()
         {
             ConfigurarComoEdicion(propietarioId);
+            dtpFechaRegistro.Enabled = false;
         }
 
         // Alternativa si quieres abrir con ctor vacío y luego configurar
@@ -33,7 +35,6 @@ namespace Union_Formularios.Formularios
 
             CargarPropietario(propietarioId);
 
-            // La cédula NO se edita en modo actualización
             txtCedula.ReadOnly = true;
             txtCedula.TabStop = false;
         }
@@ -222,6 +223,14 @@ namespace Union_Formularios.Formularios
                    !string.IsNullOrWhiteSpace(txtDireccion.Text) &&
                    cmbEstado.SelectedIndex != -1;
         }
+
+        private void ConfigurarDatePicker()
+        {
+            dtpFechaRegistro.Format = DateTimePickerFormat.Long;
+            dtpFechaRegistro.MaxDate = DateTime.Today;
+            dtpFechaRegistro.Value = DateTime.Today;
+        }
+
 
         private bool CedulaExiste(string cedula)
         {

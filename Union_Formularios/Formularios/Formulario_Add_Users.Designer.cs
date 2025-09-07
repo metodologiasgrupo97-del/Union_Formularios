@@ -527,6 +527,7 @@
             this.edt_dash_trabajador.Size = new System.Drawing.Size(224, 61);
             this.edt_dash_trabajador.TabIndex = 48;
             this.edt_dash_trabajador.Text = "Editar Dashboard";
+            this.edt_dash_trabajador.Click += new System.EventHandler(this.guna2Button2_Click);
             // 
             // add_trabajador_trabajador
             // 
@@ -546,7 +547,6 @@
             this.add_trabajador_trabajador.Size = new System.Drawing.Size(224, 61);
             this.add_trabajador_trabajador.TabIndex = 47;
             this.add_trabajador_trabajador.Text = "Añadir Trabajador";
-            this.add_trabajador_trabajador.Click += new System.EventHandler(this.guna2Button2_Click);
             // 
             // edt_perfil_trabajador
             // 

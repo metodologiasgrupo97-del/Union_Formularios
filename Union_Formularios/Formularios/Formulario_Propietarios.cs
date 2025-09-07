@@ -27,15 +27,12 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         {
             if (e.RowIndex < 0) return;
 
-            // Asegúrate que la grilla tiene la columna "ID_Propietario"
             int idPropietario = Convert.ToInt32(
                 dgvPropietarios.Rows[e.RowIndex].Cells["ID_Propietario"].Value
             );
 
             // Abre directamente en modo edición (constructor con ID)
             var frmEditar = new Formulario_Add_Propietario(idPropietario);
-
-            // Opcional: recargar al cerrar
             frmEditar.FormClosed += (s, args) => CargarPropietarios();
 
             frmEditar.ShowDialog(this);
