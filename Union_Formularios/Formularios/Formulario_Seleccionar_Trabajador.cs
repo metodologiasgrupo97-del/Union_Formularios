@@ -1,4 +1,5 @@
-﻿using Formulario_Principal_Car_EFULL.Formularios;
+﻿using Datos_Acceso.SqlServer;
+using Formulario_Principal_Car_EFULL.Formularios;
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -31,7 +32,7 @@ namespace Union_Formularios.Formularios
             try
             {
                 DataTable trabajadoresDT = new DataTable();
-                using (SqlConnection cn = new SqlConnection("Server=DESKTOP-9TRMID2; DataBase=CAR_EFULL; Integrated Security=true"))
+                using (var cn = Conexion_SQL.OpenConnection())
                 {
                     cn.Open();
                     string query = @"SELECT UserID, FirstName AS Nombre, LastName AS Apellido, Position AS Cargo 

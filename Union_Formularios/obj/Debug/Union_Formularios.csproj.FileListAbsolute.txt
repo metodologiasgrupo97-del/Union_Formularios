@@ -110,3 +110,4 @@ C:\Users\Gary.S\source\repos\Union_Formularios\Union_Formularios\bin\Debug\Syste
 C:\Users\Gary.S\source\repos\Union_Formularios\Union_Formularios\bin\Debug\System.Security.Cryptography.Pkcs.xml
 C:\Users\Gary.S\source\repos\Union_Formularios\Union_Formularios\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\Gary.S\source\repos\Union_Formularios\Union_Formularios\bin\Debug\System.ValueTuple.xml
+C:\Users\Gary.S\source\repos\Union_Formularios\Union_Formularios\obj\Debug\Union_Formularios.Formularios.Formulario_Seleccionar_Vehiculo.resources

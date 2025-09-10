@@ -1,4 +1,5 @@
-﻿using Formulario_Principal_Car_EFULL.Formularios;
+﻿using Datos_Acceso.SqlServer;
+using Formulario_Principal_Car_EFULL.Formularios;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,9 +32,8 @@ namespace Union_Formularios.Formularios
         {
             DataTable propietariosDT = new DataTable();
 
-            using (SqlConnection cn = new SqlConnection("Server=DESKTOP-9TRMID2; DataBase=CAR_EFULL; Integrated Security=true"))
+            using (var cn = Conexion_SQL.OpenConnection())
             {
-                cn.Open();
                 string query = @"SELECT ID_Propietario, Cedula, Nombre, Apellido, Telefono, Correo, Direccion, Estado, FechaRegistro 
                                  FROM Propietarios 
                                  WHERE Estado = 'Activo'";

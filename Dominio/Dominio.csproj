@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Modelo_Dominio_Usuario.cs" />
+    <Compile Include="Modelo_Dominio_Vehiculos.cs" />
     <Compile Include="Modelo_Registro_Usuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

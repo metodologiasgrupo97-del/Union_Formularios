@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|c:\\users\\gary.s\\source\\repos\\union_formularios\\union_formularios\\formularios\\formulario_dgv_de_propietarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\formularios\\formulario_dgv_de_propietarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|c:\\users\\gary.s\\source\\repos\\union_formularios\\union_formularios\\formularios\\formulario_vehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\formularios\\formulario_vehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\union_formularios\\formularios\\formulario_dgv_de_propietarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\formularios\\formulario_dgv_de_propietarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\union_formularios\\formularios\\formulario_vehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\formularios\\formulario_vehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|c:\\users\\gary.s\\source\\repos\\union_formularios\\union_formularios\\formularios\\formulario_dgv_de_propietarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\formularios\\formulario_dgv_de_propietarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,31 +22,45 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "Formulario_dgv_De_Propietarios.cs",
               "DocumentMoniker": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios\\Formulario_dgv_De_Propietarios.cs",
               "RelativeDocumentMoniker": "Union_Formularios\\Formularios\\Formulario_dgv_De_Propietarios.cs",
               "ToolTip": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios\\Formulario_dgv_De_Propietarios.cs",
               "RelativeToolTip": "Union_Formularios\\Formularios\\Formulario_dgv_De_Propietarios.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEcAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAowC0AAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-07T23:10:47.332Z",
+              "WhenOpened": "2025-09-10T07:00:40.52Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Formulario_Vehiculos.cs",
+              "DocumentMoniker": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios\\Formulario_Vehiculos.cs",
+              "RelativeDocumentMoniker": "Union_Formularios\\Formularios\\Formulario_Vehiculos.cs",
+              "ToolTip": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios\\Formulario_Vehiculos.cs",
+              "RelativeToolTip": "Union_Formularios\\Formularios\\Formulario_Vehiculos.cs",
+              "ViewState": "AgIAAKQCAAAAAAAAAADwv7oCAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-09T12:46:40.52Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Formulario_dgv_De_Propietarios.cs [Dise\u00F1o]",
-              "DocumentMoniker": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios\\Formulario_dgv_De_Propietarios.cs",
-              "RelativeDocumentMoniker": "Union_Formularios\\Formularios\\Formulario_dgv_De_Propietarios.cs",
-              "ToolTip": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios\\Formulario_dgv_De_Propietarios.cs [Dise\u00F1o]",
-              "RelativeToolTip": "Union_Formularios\\Formularios\\Formulario_dgv_De_Propietarios.cs [Dise\u00F1o]",
+              "Title": "Formulario_Vehiculos.cs [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios\\Formulario_Vehiculos.cs",
+              "RelativeDocumentMoniker": "Union_Formularios\\Formularios\\Formulario_Vehiculos.cs",
+              "ToolTip": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios\\Formulario_Vehiculos.cs [Dise\u00F1o]",
+              "RelativeToolTip": "Union_Formularios\\Formularios\\Formulario_Vehiculos.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-07T23:10:46.005Z"
+              "WhenOpened": "2025-09-10T03:31:25.599Z",
+              "EditorCaption": " [Dise\u00F1o]"
             }
           ]
         }

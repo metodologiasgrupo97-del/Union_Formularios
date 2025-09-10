@@ -9,15 +9,11 @@ namespace Datos_Acceso.SqlServer
 {
     public class ConexionSQL_Implementacion
     {
-        private string connectionString = "Server=DESKTOP-9TRMID2; DataBase=CAR_EFULL; integrated security=true"; 
-
+        // Devuelve una conexión usando la clase abstracta (sin abrirla aquí)
         public SqlConnection AbrirConexion()
         {
-            SqlConnection con = new SqlConnection(connectionString);
-            return con;
+            // Solo delega: NO hay string literal, NO abre la conexión
+            return Conexion_SQL.GetConnection();
         }
     }
-
-
 }
-

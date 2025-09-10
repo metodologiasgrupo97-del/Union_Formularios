@@ -222,6 +222,12 @@
     <Compile Include="Formularios\Formulario_Seleccionar_Trabajador.Designer.cs">
       <DependentUpon>Formulario_Seleccionar_Trabajador.cs</DependentUpon>
     </Compile>
+    <Compile Include="Formularios\Formulario_Seleccionar_Vehiculo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formularios\Formulario_Seleccionar_Vehiculo.Designer.cs">
+      <DependentUpon>Formulario_Seleccionar_Vehiculo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Formularios\Formulario_Vehiculos.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -300,6 +306,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Formularios\Formulario_Seleccionar_Trabajador.resx">
       <DependentUpon>Formulario_Seleccionar_Trabajador.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formularios\Formulario_Seleccionar_Vehiculo.resx">
+      <DependentUpon>Formulario_Seleccionar_Vehiculo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formularios\Formulario_Vehiculos.resx">
       <DependentUpon>Formulario_Vehiculos.cs</DependentUpon>

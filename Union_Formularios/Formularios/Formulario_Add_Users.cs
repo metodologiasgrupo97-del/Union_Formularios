@@ -182,7 +182,6 @@ namespace Union_Formularios.Formularios
         // ===== 7) EVENTOS VACÍOS (generados por diseñador) =====
         private void txt_Add_telf_User_TextChanged(object sender, EventArgs e)
         {
-            // Actualmente vacío: puede eliminarse si no está enlazado en el diseñador.
         }
     }
 }

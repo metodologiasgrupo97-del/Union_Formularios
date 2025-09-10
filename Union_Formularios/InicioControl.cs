@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Datos_Acceso.SqlServer;
 
 namespace Union_Formularios
 {
@@ -21,31 +22,31 @@ namespace Union_Formularios
         }
         private void CargarTotales()
         {
-            string cadenaConexion = "Server=DESKTOP-9TRMID2;Database=CAR_EFULL;Integrated Security=true";
-
-            using (SqlConnection cn = new SqlConnection(cadenaConexion))
+            using (var cn = Conexion_SQL.OpenConnection())
             {
-                cn.Open();
-
                 // Total de vehículos
                 using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM Vehiculos", cn))
                 {
                     int totalVehiculos = (int)cmd.ExecuteScalar();
                     lblTotalVehiculos.Text = totalVehiculos.ToString();
                 }
-
                 // Total de propietarios
                 using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM Propietarios", cn))
                 {
                     int totalPropietarios = (int)cmd.ExecuteScalar();
                     lblTotalPropietarios.Text = totalPropietarios.ToString();
                 }
-
-                // Total de trabajadores o usuarios
+                // Total de trabajadores 
                 using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM Users", cn))
                 {
                     int totalTrabajadores = (int)cmd.ExecuteScalar();
                     lblTotalTrabajadores.Text = totalTrabajadores.ToString();
+                }
+                // Total de facturas
+                using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM Facturas", cn))
+                {
+                    int totalFacturas = (int)cmd.ExecuteScalar();
+                    llblTotalFacturas.Text = totalFacturas.ToString();
                 }
             }
         }
@@ -93,5 +94,6 @@ namespace Union_Formularios
         {
 
         }
+
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using Datos_Acceso.SqlServer;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -14,8 +15,6 @@ namespace Formulario_Principal_Car_EFULL.Formularios
 {
         public partial class Formulario_Facturas : Form
         {
-        private string connectionString = @"Server=localhost;Database=CAR_EFULL;Trusted_Connection=True;";
-
         public Formulario_Facturas()
         {
             InitializeComponent();
@@ -24,6 +23,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             dgvFacturas.SelectionChanged += DgvFacturas_SelectionChanged;
             this.Load += FormularioFacturacion_Load;
         }
+
         private void FormularioFacturacion_Load(object sender, EventArgs e)
         {
             CargarFacturas();
@@ -33,88 +33,82 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         {
             try
             {
-                string query = @"
-                SELECT 
-                    F.CodigoFactura,
-                    P.Nombre + ' ' + P.Apellido AS Propietario,
-                    V.Placa AS Vehiculo,
-                    F.TipoServicio AS Servicio,
-                    F.Fecha,
-                    F.Total
-                FROM Facturas F
-                INNER JOIN Propietarios P ON F.ID_Propietario = P.ID_Propietario
-                INNER JOIN Vehiculos V ON F.VehicleID = V.VehicleID
-                ORDER BY F.Fecha DESC";
+                const string query = @"
+                    SELECT 
+                        F.CodigoFactura,
+                        P.Nombre + ' ' + P.Apellido AS Propietario,
+                        V.Placa AS Vehiculo,
+                        F.TipoServicio AS Servicio,
+                        F.Fecha,
+                        F.Total
+                    FROM Facturas F
+                    INNER JOIN Propietarios P ON F.ID_Propietario = P.ID_Propietario
+                    INNER JOIN Vehiculos V ON F.VehicleID = V.VehicleID
+                    ORDER BY F.Fecha DESC";
 
-                using (SqlConnection con = new SqlConnection(connectionString))
-                using (SqlDataAdapter da = new SqlDataAdapter(query, con))
+                using (var con = Conexion_SQL.OpenConnection()) // <-- conexión centralizada (ya abierta)
+                using (var da = new SqlDataAdapter(query, con)) // <-- sin string local
                 {
-                    DataTable dt = new DataTable();
+                    var dt = new DataTable();
                     da.Fill(dt);
                     dgvFacturas.DataSource = dt;
 
                     // Ajustes visuales
                     dgvFacturas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                     dgvFacturas.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                    dgvFacturas.MultiSelect = false;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar facturas: " + ex.Message);
+                MessageBox.Show("Error al cargar facturas: " + ex.Message, "BD", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void DgvFacturas_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0)
-            {
-                // Aquí asumimos que tus facturas digitales están guardadas como "CodigoFactura.jpg" en C:\Facturas\
-                string codigoFactura = dgvFacturas.Rows[e.RowIndex].Cells["CodigoFactura"].Value.ToString();
-                string rutaFactura = $@"C:\Facturas\{codigoFactura}.jpg"; // Ajusta según tu ruta
+            if (e.RowIndex < 0) return;
 
-                if (File.Exists(rutaFactura))
+            string codigoFactura = dgvFacturas.Rows[e.RowIndex].Cells["CodigoFactura"].Value?.ToString() ?? "";
+            string rutaFactura = $@"C:\Facturas\{codigoFactura}.jpg"; // ajusta si usas E:\Facturas
+
+            if (File.Exists(rutaFactura))
+            {
+                try
                 {
-                    try
-                    {
-                        System.Diagnostics.Process.Start(rutaFactura);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("No se pudo abrir la factura: " + ex.Message);
-                    }
+                    System.Diagnostics.Process.Start(rutaFactura);
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("La factura digitalizada no se encuentra disponible.");
+                    MessageBox.Show("No se pudo abrir la factura: " + ex.Message);
                 }
             }
+            else
+            {
+                MessageBox.Show("La factura digitalizada no se encuentra disponible.");
+            }
         }
+
         private void DgvFacturas_SelectionChanged(object sender, EventArgs e)
         {
-            if (dgvFacturas.SelectedRows.Count > 0)
-            {
-                string codigoFactura = dgvFacturas.SelectedRows[0].Cells["CodigoFactura"].Value.ToString();
-                string rutaFactura = $@"C:\Facturas\{codigoFactura}.jpg"; // Ajusta según tu ruta
+            if (dgvFacturas.SelectedRows.Count == 0) { pictureBoxFactura.Image = null; return; }
 
-                if (File.Exists(rutaFactura))
+            string codigoFactura = dgvFacturas.SelectedRows[0].Cells["CodigoFactura"].Value?.ToString() ?? "";
+            string rutaFactura = $@"C:\Facturas\{codigoFactura}.jpg"; // ajusta si usas E:\Facturas
+
+            if (!File.Exists(rutaFactura)) { pictureBoxFactura.Image = null; return; }
+
+            try
+            {
+                using (var tempImage = Image.FromFile(rutaFactura)) // evita lock del archivo
                 {
-                    try
-                    {
-                        using (var tempImage = Image.FromFile(rutaFactura))
-                        {
-                            pictureBoxFactura.Image = new Bitmap(tempImage);
-                        }
-                        pictureBoxFactura.SizeMode = PictureBoxSizeMode.Zoom;
-                    }
-                    catch
-                    {
-                        pictureBoxFactura.Image = null;
-                    }
+                    pictureBoxFactura.Image = new Bitmap(tempImage);
                 }
-                else
-                {
-                    pictureBoxFactura.Image = null;
-                }
+                pictureBoxFactura.SizeMode = PictureBoxSizeMode.Zoom;
+            }
+            catch
+            {
+                pictureBoxFactura.Image = null;
             }
         }
         private Guna.UI2.WinForms.Guna2DataGridView dgvFacturas;

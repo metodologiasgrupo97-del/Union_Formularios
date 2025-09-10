@@ -1,29 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// Datos_Acceso.SqlServer.Conexion_SQL
 using System.Data.SqlClient;
 
-namespace Datos_Acceso
+namespace Datos_Acceso.SqlServer
 {
     public abstract class Conexion_SQL
     {
-        private readonly string Connection_String;
-        public Conexion_SQL()
+        // Ajusta tu cadena de conexión aquí
+        private static readonly string _cs = "Server=DESKTOP-9TRMID2;Database=CAR_EFULL;Integrated Security=True;TrustServerCertificate=True;";
+
+        public static SqlConnection OpenConnection()
         {
-            Connection_String = "Server = DESKTOP-9TRMID2; DataBase = CAR_EFULL; integrated security = true";
+            var cn = new SqlConnection(_cs);  // instancia nueva SIEMPRE
+            cn.Open();
+            return cn;
         }
-        protected SqlConnection GetConnection()
+        public static SqlConnection GetConnection()
         {
-            return new SqlConnection(Connection_String);
-        }
-        public class ConexionVehiculo : Conexion_SQL
-        {
-            public SqlConnection Conectar()
-            {
-                return GetConnection();
-            }
+            return new SqlConnection(_cs);    
         }
     }
 }

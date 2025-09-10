@@ -283,16 +283,6 @@ namespace Union_Formularios.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Usu_worker1 {
-            get {
-                object obj = ResourceManager.GetObject("Usu worker1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap Usuario_Default {
             get {
                 object obj = ResourceManager.GetObject("Usuario_Default", resourceCulture);

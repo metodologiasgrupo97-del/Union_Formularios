@@ -81,29 +81,6 @@ namespace Union_Formularios.Formularios
             form.Show();
         }
 
-
-
-        private void Abrir_Sub_Formulario(Form form)
-        {
-            if (Sub_Formualrio != null)
-                Sub_Formualrio.Close();
-
-            Sub_Formualrio = form;
-            form.TopLevel = false;
-            form.FormBorderStyle = FormBorderStyle.None;
-            form.Dock = DockStyle.Fill;
-
-            if (!panelEscritorio.Controls.Contains(form))
-            {
-                panelEscritorio.Controls.Clear();
-                panelEscritorio.Controls.Add(form);
-            }
-
-            panelEscritorio.Tag = form;
-            form.BringToFront();
-            form.Show();
-        }
-
         // ==================== Handlers de los botones ====================
         private void edt_perfil_dash_Click(object sender, EventArgs e)
         {
