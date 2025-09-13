@@ -57,43 +57,44 @@ namespace Union_Formularios
         }
         private void CargarVehiculos()
         {
-            using (SqlConnection cn = new SqlConnection("Server=DESKTOP-9TRMID2; DataBase=CAR_EFULL; Integrated Security=true"))
+            try
             {
-                try
+                using (SqlConnection cn = Conexion_SQL.GetConnection()) 
                 {
-                    cn.Open();
                     string consulta = @"
-                        SELECT 
-                            V.Placa,
-                            V.Marca,
-                            V.Modelo,
-                            V.Color,
-                            V.Estado,
-                            P.Nombre AS Propietario
-                        FROM Vehiculos V
-                        INNER JOIN Propietarios P ON V.ID_Propietario = P.ID_Propietario";
+                    SELECT 
+                        V.Placa,
+                        Ma.Nombre AS Marca,
+                        Mo.Nombre AS Modelo,
+                        V.Color,
+                        V.Estado,
+                        (P.Nombre + ' ' + ISNULL(P.Apellido,'')) AS Propietario
+                    FROM Vehiculos V
+                    INNER JOIN Propietarios    P  ON V.ID_Propietario = P.ID_Propietario
+                    INNER JOIN MarcaVehiculo   Ma ON V.MarcaID       = Ma.MarcaID
+                    INNER JOIN ModeloVehiculo  Mo ON V.ModeloID      = Mo.ModeloID
+                    ORDER BY V.Placa;";
 
-                    SqlDataAdapter adaptador = new SqlDataAdapter(consulta, cn);
-                    DataTable tabla = new DataTable();
-                    adaptador.Fill(tabla);
+                    using (SqlCommand cmd = new SqlCommand(consulta, cn))
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        DataTable tabla = new DataTable();
+                        da.Fill(tabla);
 
-                    dgvVehiculos.DataSource = tabla;
-
-                    dgvVehiculos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-                    dgvVehiculos.ReadOnly = true;
-                    dgvVehiculos.AllowUserToAddRows = false;
+                        dgvVehiculos.AutoGenerateColumns = true;
+                        dgvVehiculos.DataSource = tabla;
+                        dgvVehiculos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                        dgvVehiculos.ReadOnly = true;
+                        dgvVehiculos.AllowUserToAddRows = false;
+                    }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error al cargar los vehículos: " + ex.Message);
-                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar los vehículos: " + ex.Message);
             }
         }
 
-        private void dgvVehiculos_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
 
     }
 }

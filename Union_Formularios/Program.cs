@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 
 namespace Union_Formularios
@@ -14,9 +12,19 @@ namespace Union_Formularios
         [STAThread]
         static void Main()
         {
+            string filePath = "servidor_config.txt";
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Formulario_Login());
+
+            if (!File.Exists(filePath)) 
+            {
+                Application.Run(new Pedir_Nom_Servidor());
+            }
+            else
+            {
+                Application.Run(new Formulario_Login());
+            }
         }
     }
 }
