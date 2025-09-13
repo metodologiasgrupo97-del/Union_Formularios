@@ -184,24 +184,6 @@ namespace Union_Formularios
             this.Show();
         }
 
-        private void txtUsuI_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtContraI_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void iconButton1_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void iconButton1_Click_1(object sender, EventArgs e)
-        {
-        }
-
         bool mostrarContraseña = false;
         private void Mostrar_Cont_MouseClick(object sender, MouseEventArgs e)
         {
@@ -229,12 +211,6 @@ namespace Union_Formularios
         {
             int radio = 30;
             Panel_Iniciar_sesion.Region = new Region(GetRoundedRectPath(Panel_Iniciar_sesion.ClientRectangle, radio));
-        }
-
-      
-        private void lbl_Mensaje_de_Error_Login_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

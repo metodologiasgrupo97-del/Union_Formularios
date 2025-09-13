@@ -135,18 +135,6 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                 {
                     cn.Open();
 
-                    using (var da = new SqlDataAdapter(@"SELECT DISTINCT v.Placa FROM Vehiculos v INNER JOIN Facturas f ON f.VehicleID = v.VehicleID ORDER BY v.Placa;", cn))
-                    {
-                        var t = new DataTable();
-                        da.Fill(t);
-                        Cmbox_Select_Placa.DataSource = t;
-                        Cmbox_Select_Placa.DisplayMember = "Placa";
-                        Cmbox_Select_Placa.ValueMember = "Placa";
-                        Cmbox_Select_Placa.SelectedIndex = -1; // vacío
-                        Cmbox_Select_Placa.Text = string.Empty;
-                    }
-
-
                     // Placas
                     using (var da = new SqlDataAdapter(@"SELECT DISTINCT v.Placa FROM Vehiculos v INNER JOIN Facturas f ON f.VehicleID = v.VehicleID ORDER BY v.Placa;", cn))
                     {

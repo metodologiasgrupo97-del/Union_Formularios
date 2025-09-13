@@ -89,7 +89,6 @@
             this.txtContraI.TabIndex = 20;
             this.txtContraI.Tag = "ContraI";
             this.txtContraI.Text = "Ingrese la contraseña";
-            this.txtContraI.TextChanged += new System.EventHandler(this.txtContraI_TextChanged);
             this.txtContraI.Enter += new System.EventHandler(this.txtEnter2);
             this.txtContraI.Leave += new System.EventHandler(this.txtLeave2);
             // 
@@ -138,7 +137,6 @@
             this.lbl_Mensaje_de_Error_Login.TabIndex = 14;
             this.lbl_Mensaje_de_Error_Login.Text = "Mensaje de Error";
             this.lbl_Mensaje_de_Error_Login.Visible = false;
-            this.lbl_Mensaje_de_Error_Login.Click += new System.EventHandler(this.lbl_Mensaje_de_Error_Login_Click);
             // 
             // Simbolo_Error
             // 
@@ -169,7 +167,6 @@
             this.Mostrar_Cont.Size = new System.Drawing.Size(31, 26);
             this.Mostrar_Cont.TabIndex = 12;
             this.Mostrar_Cont.UseVisualStyleBackColor = false;
-            this.Mostrar_Cont.Click += new System.EventHandler(this.iconButton1_Click);
             this.Mostrar_Cont.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Mostrar_Cont_MouseClick);
             // 
             // Ocultar_Cont
@@ -187,7 +184,6 @@
             this.Ocultar_Cont.Size = new System.Drawing.Size(31, 26);
             this.Ocultar_Cont.TabIndex = 13;
             this.Ocultar_Cont.UseVisualStyleBackColor = false;
-            this.Ocultar_Cont.Click += new System.EventHandler(this.iconButton1_Click_1);
             this.Ocultar_Cont.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Ocultar_Cont_MouseClick);
             // 
             // button2
@@ -234,7 +230,6 @@
             this.txtUsuI.TabIndex = 6;
             this.txtUsuI.Tag = "UsuarioI";
             this.txtUsuI.Text = "Ingrese el usuario";
-            this.txtUsuI.TextChanged += new System.EventHandler(this.txtUsuI_TextChanged);
             this.txtUsuI.Enter += new System.EventHandler(this.txtEnter);
             this.txtUsuI.Leave += new System.EventHandler(this.txtLeave);
             // 

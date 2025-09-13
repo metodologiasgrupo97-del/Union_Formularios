@@ -1,14 +1,10 @@
-﻿using System;
-using System.IO;
+﻿using Microsoft.Reporting.WinForms;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
-using Datos_Acceso.SqlServer;
-using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Formulario_Principal_Car_EFULL.Formularios
@@ -18,11 +14,27 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         public Formulario_Facturas()
         {
             InitializeComponent();
-
             dgvFacturas.CellDoubleClick += DgvFacturas_CellDoubleClick;
-            this.Load += FormularioFacturacion_Load;
+            this.Load += Formulario_Facturas_Load;
         }
+        private void Formulario_Facturas_Load(object sender, EventArgs e)
+        {
+            var asm = typeof(Formulario_Facturas).Assembly;
+            var rdlcName = asm.GetManifestResourceNames()
+                              .FirstOrDefault(n => n.EndsWith(".Factura.rdlc"));
+            if (rdlcName == null)
+            {
+                MessageBox.Show("No se encontró el recurso embebido 'Factura.rdlc'. Verifica Build Action = Embedded Resource.",
+                                "Reporte", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
+            Facturas_Preview.LocalReport.ReportEmbeddedResource = rdlcName;
+            Facturas_Preview.LocalReport.DataSources.Clear();
+            Facturas_Preview.RefreshReport();
+
+            CargarFacturas();
+        }
         private void FormularioFacturacion_Load(object sender, EventArgs e)
         {
             CargarFacturas();
@@ -30,43 +42,157 @@ namespace Formulario_Principal_Car_EFULL.Formularios
 
         private void CargarFacturas()
         {
-            try
-            {
-                const string query = @"
-                    SELECT 
-                        F.CodigoFactura,
-                        P.Nombre + ' ' + P.Apellido AS Propietario,
-                        V.Placa AS Vehiculo,
-                        F.TipoServicio AS Servicio,
-                        F.Fecha,
-                        F.Total
-                    FROM Facturas F
-                    INNER JOIN Propietarios P ON F.ID_Propietario = P.ID_Propietario
-                    INNER JOIN Vehiculos V ON F.VehicleID = V.VehicleID
-                    ORDER BY F.Fecha DESC";
+            const string sql = @"
+            SELECT 
+                F.FacturaID,            
+                F.CodigoFactura,
+                P.Nombre + ' ' + P.Apellido AS Propietario,
+                V.Placa AS Vehiculo,
+                F.TipoServicio AS Servicio,
+                F.Fecha,
+                F.Total
+            FROM Facturas F
+            INNER JOIN Propietarios P ON F.ID_Propietario = P.ID_Propietario
+            INNER JOIN Vehiculos V    ON F.VehicleID     = V.VehicleID
+            ORDER BY F.Fecha DESC;";
 
-                using (var con = Conexion_SQL.OpenConnection()) 
-                using (var da = new SqlDataAdapter(query, con)) 
-                {
-                    var dt = new DataTable();
-                    da.Fill(dt);
-                    dgvFacturas.DataSource = dt;
-
-                    // Ajustes visuales
-                    dgvFacturas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-                    dgvFacturas.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-                    dgvFacturas.MultiSelect = false;
-                }
-            }
-            catch (Exception ex)
+            using (var cn = Conexion_SQL.OpenConnection())
+            using (var da = new SqlDataAdapter(sql, cn))
             {
-                MessageBox.Show("Error al cargar facturas: " + ex.Message, "BD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                var dt = new DataTable();
+                da.Fill(dt);
+                dgvFacturas.DataSource = dt;
+                if (dgvFacturas.Columns.Contains("FacturaID"))
+                    dgvFacturas.Columns["FacturaID"].Visible = false;
             }
         }
 
         private void DgvFacturas_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            
+            if (e.RowIndex < 0) return;
+            int facturaID = Convert.ToInt32(dgvFacturas.Rows[e.RowIndex].Cells["FacturaID"].Value);
+            CargarFacturaEnReportViewer(facturaID);   
+        }
+
+
+        private void CargarFacturaEnReportViewer(int facturaID)
+        {
+            try
+            {
+                using (var cn = Conexion_SQL.OpenConnection())
+                {
+                    // Detectar columnas de Vehiculos (marca/modelo/año) —lo de tu código está bien.
+                    string colMarca = null, colModelo = null, colAnio = null;
+                    using (var cmdCols = new SqlCommand(
+                        "SELECT name FROM sys.columns WHERE object_id = OBJECT_ID('dbo.Vehiculos');", cn))
+                    using (var rd = cmdCols.ExecuteReader())
+                    {
+                        var cols = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                        while (rd.Read()) cols.Add(rd.GetString(0));
+
+                        string[] candsMarca = { "ID_Marca", "MarcaID", "ID_MarcaVehiculo", "IDMarca", "IdMarca" };
+                        string[] candsModelo = { "ID_Modelo", "ModeloID", "ID_ModeloVehiculo", "IDModelo", "IdModelo" };
+                        string[] candsAnio = { "ID_Anio", "AnioID", "ID_ModeloAnio", "IDAnio", "IdAnio", "ID_Año", "AnoID" };
+
+                        colMarca = candsMarca.FirstOrDefault(cols.Contains);
+                        colModelo = candsModelo.FirstOrDefault(cols.Contains);
+                        colAnio = candsAnio.FirstOrDefault(cols.Contains);
+                    }
+
+                    string sqlCab = (colMarca != null && colModelo != null && colAnio != null)
+                    ? $@"
+                SELECT 
+                    F.FacturaID,
+                    F.CodigoFactura,
+                    F.Fecha,
+                    F.TipoServicio,
+                    (P.Nombre + ' ' + P.Apellido) AS Propietario,
+                    P.Cedula, 
+                    P.Telefono, 
+                    P.Correo AS Email,      -- << alias clave
+                    V.Placa,
+                    MV.Nombre AS Marca,
+                    MO.Nombre AS Modelo,
+                    AN.Anio,
+                    V.Color,
+                    F.Subtotal,
+                    F.IVA,
+                    F.Total
+                FROM Facturas F
+                INNER JOIN Propietarios P ON F.ID_Propietario = P.ID_Propietario
+                INNER JOIN Vehiculos V    ON F.VehicleID     = V.VehicleID
+                LEFT JOIN MarcaVehiculo  MV ON MV.ID_Marca  = V.{colMarca}
+                LEFT JOIN ModeloVehiculo MO ON MO.ID_Modelo = V.{colModelo}
+                LEFT JOIN ModeloAnio     AN ON AN.ID_Anio   = V.{colAnio}
+                WHERE F.FacturaID = @FacturaID;"
+                    : @"
+                SELECT 
+                    F.FacturaID,
+                    F.CodigoFactura,
+                    F.Fecha,
+                    F.TipoServicio,
+                    (P.Nombre + ' ' + P.Apellido) AS Propietario,
+                    P.Cedula, 
+                    P.Telefono, 
+                    P.Correo AS Email,      -- << alias clave
+                    V.Placa,
+                    NULL AS Marca,
+                    NULL AS Modelo,
+                    NULL AS Anio,
+                    V.Color,
+                    F.Subtotal,
+                    F.IVA,
+                    F.Total
+                FROM Facturas F
+                INNER JOIN Propietarios P ON F.ID_Propietario = P.ID_Propietario
+                INNER JOIN Vehiculos V    ON F.VehicleID     = V.VehicleID
+                WHERE F.FacturaID = @FacturaID;";
+
+                    var dtCab = new DataTable("FacturaDT");
+                    using (var cmdCab = new SqlCommand(sqlCab, cn))
+                    {
+                        cmdCab.Parameters.Add("@FacturaID", SqlDbType.Int).Value = facturaID;
+                        using (var daCab = new SqlDataAdapter(cmdCab))
+                            daCab.Fill(dtCab);
+                    }
+
+                    const string sqlDet = @"
+                SELECT 
+                    ROW_NUMBER() OVER (ORDER BY FD.FacturaDetalleID) AS Item,
+                    FD.RepuestoID,
+                    COALESCE(FD.Descripcion, R.Nombre) AS Descripcion,
+                    FD.ClaveUnidad,
+                    FD.Cantidad,
+                    FD.PrecioUnitario,
+                    (FD.Cantidad * FD.PrecioUnitario) AS Subtotal,
+                    ISNULL(FD.IVA, 0) AS IVA,
+                    (FD.Cantidad * FD.PrecioUnitario) + ISNULL(FD.IVA,0) AS TotalLinea
+                FROM FacturaDetalle FD
+                LEFT JOIN Repuestos R ON R.RepuestoID = FD.RepuestoID
+                WHERE FD.FacturaID = @FacturaID
+                ORDER BY FD.FacturaDetalleID;";
+
+                    var dtDet = new DataTable("FacturaDetalleDT");
+                    using (var cmdDet = new SqlCommand(sqlDet, cn))
+                    {
+                        cmdDet.Parameters.Add("@FacturaID", SqlDbType.Int).Value = facturaID;
+                        using (var daDet = new SqlDataAdapter(cmdDet))
+                            daDet.Fill(dtDet);
+                    }
+
+                    // Enlazar datasets (nombres EXACTOS como en el RDLC)
+                    Facturas_Preview.LocalReport.DataSources.Clear();
+                    Facturas_Preview.LocalReport.DataSources.Add(new ReportDataSource("dsFactura", dtCab));
+                    Facturas_Preview.LocalReport.DataSources.Add(new ReportDataSource("dsFacturaDetalle", dtDet));
+
+                    Facturas_Preview.RefreshReport();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar la factura: " + ex.Message, "Reporte",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private Guna.UI2.WinForms.Guna2DataGridView dgvFacturas;
@@ -87,16 +213,16 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         }
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgvFacturas = new Guna.UI2.WinForms.Guna2DataGridView();
             this.label1 = new System.Windows.Forms.Label();
             this.panelReporte = new Guna.UI2.WinForms.Guna2ShadowPanel();
+            this.Facturas_Preview = new Microsoft.Reporting.WinForms.ReportViewer();
             this.pictureBoxFactura = new FontAwesome.Sharp.IconPictureBox();
             this.guna2ShadowPanel2 = new Guna.UI2.WinForms.Guna2ShadowPanel();
             this.label2 = new System.Windows.Forms.Label();
-            this.Facturas_Preview = new Microsoft.Reporting.WinForms.ReportViewer();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFacturas)).BeginInit();
             this.panelReporte.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxFactura)).BeginInit();
@@ -107,26 +233,26 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             // 
             this.dgvFacturas.AllowUserToAddRows = false;
             this.dgvFacturas.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
-            this.dgvFacturas.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvFacturas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.White;
+            this.dgvFacturas.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvFacturas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             this.dgvFacturas.ColumnHeadersHeight = 15;
             this.dgvFacturas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvFacturas.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvFacturas.DefaultCellStyle = dataGridViewCellStyle6;
             this.dgvFacturas.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.dgvFacturas.Location = new System.Drawing.Point(15, 12);
             this.dgvFacturas.Name = "dgvFacturas";
@@ -178,6 +304,14 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             this.panelReporte.Size = new System.Drawing.Size(490, 642);
             this.panelReporte.TabIndex = 48;
             // 
+            // Facturas_Preview
+            // 
+            this.Facturas_Preview.Location = new System.Drawing.Point(7, 6);
+            this.Facturas_Preview.Name = "Facturas_Preview";
+            this.Facturas_Preview.ServerReport.BearerToken = null;
+            this.Facturas_Preview.Size = new System.Drawing.Size(478, 628);
+            this.Facturas_Preview.TabIndex = 1;
+            // 
             // pictureBoxFactura
             // 
             this.pictureBoxFactura.BackColor = System.Drawing.Color.Transparent;
@@ -213,14 +347,6 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             this.label2.TabIndex = 50;
             this.label2.Text = "Factura:";
             // 
-            // Facturas_Preview
-            // 
-            this.Facturas_Preview.Location = new System.Drawing.Point(7, 6);
-            this.Facturas_Preview.Name = "Facturas_Preview";
-            this.Facturas_Preview.ServerReport.BearerToken = null;
-            this.Facturas_Preview.Size = new System.Drawing.Size(478, 628);
-            this.Facturas_Preview.TabIndex = 1;
-            // 
             // Formulario_Facturas
             // 
             this.ClientSize = new System.Drawing.Size(1212, 753);
@@ -238,12 +364,6 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             this.ResumeLayout(false);
             this.PerformLayout();
 
-        }
-
-        private void Formulario_Facturas_Load(object sender, EventArgs e)
-        {
-
-            this.Facturas_Preview.RefreshReport();
         }
     }
 }
