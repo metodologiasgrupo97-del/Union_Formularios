@@ -25,24 +25,28 @@ namespace Union_Formularios.Formularios
                 var dt = new DataTable();
                 using (var cn = Conexion_SQL.OpenConnection())
                 using (var da = new SqlDataAdapter(@"
-                SELECT
-                    V.VehicleID,
-                    V.Placa,
-                    V.Tipo      AS Tipo,
-                    V.Marca     AS Marca,
-                    V.Modelo    AS Modelo,
-                    V.Anio      AS AnioModelo,
-                    V.NumeroMotor,
-                    V.NumeroChasis,
-                    V.Color,
-                    V.Combustible,
-                    V.Kilometraje,
-                    V.Estado,
-                    V.ID_Propietario,
-                    (P.Nombre + ' ' + P.Apellido) AS Propietario
-                FROM dbo.Vehiculos V
-                LEFT JOIN dbo.Propietarios P ON P.ID_Propietario = V.ID_Propietario
-                ORDER BY V.Placa;", cn))
+            SELECT
+                V.VehicleID,
+                V.Placa,
+                T.Nombre  AS Tipo,
+                MA.Nombre AS Marca,
+                MO.Nombre AS Modelo,
+                A.Anio    AS AnioModelo,
+                V.NumeroMotor,
+                V.NumeroChasis,
+                V.Color,
+                V.Combustible,
+                V.Kilometraje,
+                V.Estado,
+                V.ID_Propietario,
+                (P.Nombre + ' ' + ISNULL(P.Apellido,'')) AS Propietario
+            FROM dbo.Vehiculos V
+            LEFT JOIN dbo.Propietarios   P  ON P.ID_Propietario = V.ID_Propietario
+            LEFT JOIN dbo.TipoVehiculo   T  ON T.TipoID        = V.TipoID
+            LEFT JOIN dbo.MarcaVehiculo  MA ON MA.MarcaID      = V.MarcaID
+            LEFT JOIN dbo.ModeloVehiculo MO ON MO.ModeloID     = V.ModeloID
+            LEFT JOIN dbo.ModeloAnio     A  ON A.ModeloAnioID  = V.ModeloAnioID
+            ORDER BY V.Placa;", cn))
                 {
                     da.Fill(dt);
                 }

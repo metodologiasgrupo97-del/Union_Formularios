@@ -129,9 +129,12 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             label1.Width = 100;
 
             // Carga de placas + marca al combo y al diccionario
+            // Carga de placas + marca al combo y al diccionario
             using (var cn = Conexion_SQL.GetConnection())
-            using (var cmd = new SqlCommand(
-                "SELECT Placa, NULLIF(LTRIM(RTRIM(Marca)),'') AS Marca FROM Vehiculos ORDER BY Placa", cn))
+            using (var cmd = new SqlCommand(@"
+            SELECT v.Placa, NULLIF(LTRIM(RTRIM(v.Marca)),'') AS Marca
+            FROM dbo.Vehiculos v
+            ORDER BY v.Placa;", cn))
             {
                 cn.Open();
                 using (var r = cmd.ExecuteReader())
@@ -152,7 +155,6 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                     }
                 }
             }
-
             // Carga el combo de tipos de servicio (Key/Value para precio automático)
             Cmbox_Tip_Service_Realizado.Items.Clear();
             foreach (var servicio in preciosServicio)
@@ -164,9 +166,9 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         // Callback que recibe el trabajador elegido en el selector y lo refleja en la UI
         public void EstablecerTrabajador(int id, string nombreCompleto)
         {
-            _selectedUserId = id;                // guarda el ID para usarlo al facturar
-            txt_Show_Mecanico_Res.Text = nombreCompleto;
-            txt_preview_mecanico.Text = nombreCompleto;
+            _selectedUserId = id;
+            txt_Show_Mecanico_Res.Text = nombreCompleto ?? string.Empty;
+            txt_preview_mecanico.Text = nombreCompleto ?? string.Empty;   // <<< agregado
         }
 
         // Carga los repuestos al DataGridView y agrega columnas "Cantidad" y "Seleccionar" si no existen
@@ -252,18 +254,15 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                 using (var cn = Conexion_SQL.OpenConnection())
                 using (var cmd = new SqlCommand(
                     @"SELECT TOP 1 NULLIF(LTRIM(RTRIM(Marca)),'') 
-              FROM dbo.Vehiculos 
-              WHERE LTRIM(RTRIM(Placa)) = @p", cn))
+                    FROM dbo.Vehiculos 
+                    WHERE LTRIM(RTRIM(Placa)) = @p", cn))
                 {
                     cmd.Parameters.AddWithValue("@p", placa.Trim());
                     var r = cmd.ExecuteScalar();
                     return r == null || r == DBNull.Value ? null : Convert.ToString(r);
                 }
             }
-            catch
-            {
-                return null;
-            }
+            catch { return null; }
         }
 
         private void CargarRepuestosPorMarca(string marca)
@@ -738,6 +737,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         {
             // Placa seleccionada
             txt_Show_Placa.Text = Cmbox_Select_Plaque.Text;
+            txt_preview_mecanico.Text = txt_Show_Mecanico_Res.Text;
 
             // Fecha de mantenimiento (si no está marcado el check, usa fecha de hoy)
             DateTime fecha;

@@ -437,62 +437,87 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         {
             try
             {
+                // Normaliza placa a AAA-1234
                 string placa = (txt_Placa.Text ?? "").Trim().ToUpper().Replace(" ", "").Replace("_", "");
                 if (Regex.IsMatch(placa, @"^[A-Z]{3}\d{4}$"))
                     placa = placa.Substring(0, 3) + "-" + placa.Substring(3);
 
-                if (!Regex.IsMatch(placa, @"^[A-Z]{3}-\d{4}$")) { MessageBox.Show("Placa inválida (AAA-1234)."); return; }
+                if (!Regex.IsMatch(placa, @"^[A-Z]{3}-\d{4}$"))
+                { MessageBox.Show("Placa inválida (AAA-1234)."); return; }
 
-                if (string.IsNullOrWhiteSpace(Cmbox_Tip_Vehic.Text)) { MessageBox.Show("Seleccione Tipo."); return; }
-                if (string.IsNullOrWhiteSpace(Cmbox_Marca.Text)) { MessageBox.Show("Seleccione Marca."); return; }
-                if (string.IsNullOrWhiteSpace(Cmbox_Modelo.Text)) { MessageBox.Show("Seleccione Modelo."); return; }
-                if (string.IsNullOrWhiteSpace(cmb_Año.Text)) { MessageBox.Show("Seleccione Año."); return; }
+                // Validaciones de UI
+                if (Cmbox_Tip_Vehic.SelectedValue == null) { MessageBox.Show("Seleccione Tipo."); return; }
+                if (Cmbox_Marca.SelectedValue == null) { MessageBox.Show("Seleccione Marca."); return; }
+                if (Cmbox_Modelo.SelectedValue == null) { MessageBox.Show("Seleccione Modelo."); return; }
+                if (cmb_Año.SelectedValue == null) { MessageBox.Show("Seleccione Año."); return; }
                 if (idPropietarioSeleccionado <= 0) { MessageBox.Show("Seleccione un propietario."); return; }
                 if (string.IsNullOrWhiteSpace(txt_Num_Motor.Text)) { MessageBox.Show("Ingrese N° Motor."); return; }
                 if (string.IsNullOrWhiteSpace(txt_Num_Chasis.Text)) { MessageBox.Show("Ingrese N° Chasis."); return; }
                 if (string.IsNullOrWhiteSpace(txt_Color.Text)) { MessageBox.Show("Ingrese Color."); return; }
                 if (string.IsNullOrWhiteSpace(Cmbox_Combustible.Text)) { MessageBox.Show("Seleccione Combustible."); return; }
-                if (!int.TryParse(cmb_Año.Text.Trim(), out int anio)) { MessageBox.Show("Año inválido."); return; }
                 if (!int.TryParse(txt_Kilometraje.Text.Trim(), out int km) || km < 0) { MessageBox.Show("Kilometraje inválido."); return; }
                 if (string.IsNullOrWhiteSpace(Cmbox_Estado.Text)) { MessageBox.Show("Seleccione Estado."); return; }
 
-                string tipo = Cmbox_Tip_Vehic.Text.Trim();
-                string marca = Cmbox_Marca.Text.Trim();
-                string modelo = Cmbox_Modelo.Text.Trim();
+                // IDs seleccionados en combos
+                int tipoId = Convert.ToInt32(Cmbox_Tip_Vehic.SelectedValue);
+                int marcaId = Convert.ToInt32(Cmbox_Marca.SelectedValue);
+                int modeloId = Convert.ToInt32(Cmbox_Modelo.SelectedValue);
+                int modeloAnioId = Convert.ToInt32(cmb_Año.SelectedValue);
+
                 string motor = txt_Num_Motor.Text.Trim().ToUpper();
                 string chasis = txt_Num_Chasis.Text.Trim().ToUpper();
                 string color = txt_Color.Text.Trim();
                 string combus = Cmbox_Combustible.Text.Trim();
                 string estado = Cmbox_Estado.Text.Trim();
 
+                bool isEdit = _vehicleId.HasValue;
+                int currentId = _vehicleId.GetValueOrDefault();
+
                 using (var cn = Conexion_SQL.GetConnection())
                 {
                     cn.Open();
 
-                    if (!IsEditMode)
+                    // --- Unicidad de placa ---
+                    if (isEdit)
                     {
-                        using (var ch = new SqlCommand("SELECT COUNT(1) FROM dbo.Vehiculos WHERE Placa=@p;", cn))
+                        using (var chk = new SqlCommand(
+                            "SELECT COUNT(1) FROM dbo.Vehiculos WHERE Placa=@p AND VehicleID<>@id;", cn))
                         {
-                            ch.Parameters.AddWithValue("@p", placa);
-                            if (Convert.ToInt32(ch.ExecuteScalar()) > 0)
+                            chk.Parameters.AddWithValue("@p", placa);
+                            chk.Parameters.AddWithValue("@id", currentId);
+                            if (Convert.ToInt32(chk.ExecuteScalar()) > 0)
+                            { MessageBox.Show("Ya existe otro vehículo con esa placa."); return; }
+                        }
+                    }
+                    else
+                    {
+                        using (var chk = new SqlCommand(
+                            "SELECT COUNT(1) FROM dbo.Vehiculos WHERE Placa=@p;", cn))
+                        {
+                            chk.Parameters.AddWithValue("@p", placa);
+                            if (Convert.ToInt32(chk.ExecuteScalar()) > 0)
                             { MessageBox.Show("Ya existe un vehículo con esa placa."); return; }
                         }
+                    }
 
+                    if (!isEdit)
+                    {
                         const string sqlIns = @"
-                    INSERT INTO dbo.Vehiculos
-                    (Placa, Tipo, Marca, Modelo, Anio, NumeroMotor, NumeroChasis,
-                     Color, Combustible, Kilometraje, Estado, ID_Propietario)
-                    VALUES
-                    (@Placa, @Tipo, @Marca, @Modelo, @Anio, @Motor, @Chasis,
-                     @Color, @Combustible, @Kilometraje, @Estado, @Prop);";
+INSERT INTO dbo.Vehiculos
+(Placa, TipoID, MarcaID, ModeloID, ModeloAnioID,
+ NumeroMotor, NumeroChasis, Color, Combustible,
+ Kilometraje, Estado, ID_Propietario)
+VALUES
+(@Placa, @TipoID, @MarcaID, @ModeloID, @ModeloAnioID,
+ @Motor, @Chasis, @Color, @Combustible, @Kilometraje, @Estado, @Prop);";
 
                         using (var cmd = new SqlCommand(sqlIns, cn))
                         {
                             cmd.Parameters.AddWithValue("@Placa", placa);
-                            cmd.Parameters.AddWithValue("@Tipo", tipo);
-                            cmd.Parameters.AddWithValue("@Marca", marca);
-                            cmd.Parameters.AddWithValue("@Modelo", modelo);
-                            cmd.Parameters.AddWithValue("@Anio", anio);
+                            cmd.Parameters.AddWithValue("@TipoID", tipoId);
+                            cmd.Parameters.AddWithValue("@MarcaID", marcaId);
+                            cmd.Parameters.AddWithValue("@ModeloID", modeloId);
+                            cmd.Parameters.AddWithValue("@ModeloAnioID", modeloAnioId);
                             cmd.Parameters.AddWithValue("@Motor", motor);
                             cmd.Parameters.AddWithValue("@Chasis", chasis);
                             cmd.Parameters.AddWithValue("@Color", color);
@@ -510,27 +535,27 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                     else
                     {
                         const string sqlUpd = @"
-                    UPDATE dbo.Vehiculos SET 
-                        Tipo=@Tipo,
-                        Marca=@Marca,
-                        Modelo=@Modelo,
-                        Anio=@Anio,
-                        NumeroMotor=@Motor,
-                        NumeroChasis=@Chasis,
-                        Color=@Color,
-                        Combustible=@Combustible,
-                        Kilometraje=@Kilometraje,
-                        Estado=@Estado,
-                        ID_Propietario=@Prop
-                    WHERE VehicleID=@ID;";
+UPDATE dbo.Vehiculos SET
+    TipoID=@TipoID,
+    MarcaID=@MarcaID,
+    ModeloID=@ModeloID,
+    ModeloAnioID=@ModeloAnioID,
+    NumeroMotor=@Motor,
+    NumeroChasis=@Chasis,
+    Color=@Color,
+    Combustible=@Combustible,
+    Kilometraje=@Kilometraje,
+    Estado=@Estado,
+    ID_Propietario=@Prop
+WHERE VehicleID=@ID;";
 
                         using (var cmd = new SqlCommand(sqlUpd, cn))
                         {
-                            cmd.Parameters.AddWithValue("@ID", _vehicleId.Value);
-                            cmd.Parameters.AddWithValue("@Tipo", tipo);
-                            cmd.Parameters.AddWithValue("@Marca", marca);
-                            cmd.Parameters.AddWithValue("@Modelo", modelo);
-                            cmd.Parameters.AddWithValue("@Anio", anio);
+                            cmd.Parameters.AddWithValue("@ID", currentId);
+                            cmd.Parameters.AddWithValue("@TipoID", tipoId);
+                            cmd.Parameters.AddWithValue("@MarcaID", marcaId);
+                            cmd.Parameters.AddWithValue("@ModeloID", modeloId);
+                            cmd.Parameters.AddWithValue("@ModeloAnioID", modeloAnioId);
                             cmd.Parameters.AddWithValue("@Motor", motor);
                             cmd.Parameters.AddWithValue("@Chasis", chasis);
                             cmd.Parameters.AddWithValue("@Color", color);
@@ -597,6 +622,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         {
             try
             {
+                int? tipoId = null, marcaId = null, modeloId = null, modeloAnioId = null;
                 string tipoN = null, marcaN = null, modeloN = null;
                 int anio = 0;
 
@@ -604,36 +630,44 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                 {
                     cn.Open();
                     using (var cmd = new SqlCommand(@"
-                SELECT V.VehicleID, V.Placa,
-                       V.Tipo, V.Marca, V.Modelo, V.Anio,
-                       V.NumeroMotor, V.NumeroChasis, V.Color, V.Combustible,
-                       V.Kilometraje, V.Estado AS EstadoVehiculo,
-                       V.ID_Propietario AS ID_PropietarioVehiculo,
-                       (P.Nombre + ' ' + ISNULL(P.Apellido,'')) AS Propietario
-                FROM dbo.Vehiculos V
-                LEFT JOIN dbo.Propietarios P ON P.ID_Propietario = V.ID_Propietario
-                WHERE V.VehicleID = @id;", cn))
+SELECT 
+    V.VehicleID, V.Placa,
+    V.TipoID, V.MarcaID, V.ModeloID, V.ModeloAnioID,
+    V.NumeroMotor, V.NumeroChasis, V.Color, V.Combustible,
+    V.Kilometraje, V.Estado AS EstadoVehiculo,
+    V.ID_Propietario AS ID_PropietarioVehiculo,
+    (P.Nombre + ' ' + ISNULL(P.Apellido,'')) AS Propietario,
+    T.Nombre  AS TipoNombre,
+    MA.Nombre AS MarcaNombre,
+    MO.Nombre AS ModeloNombre,
+    A.Anio    AS AnioValor
+FROM dbo.Vehiculos V
+LEFT JOIN dbo.Propietarios   P  ON P.ID_Propietario = V.ID_Propietario
+LEFT JOIN dbo.TipoVehiculo   T  ON T.TipoID        = V.TipoID
+LEFT JOIN dbo.MarcaVehiculo  MA ON MA.MarcaID      = V.MarcaID
+LEFT JOIN dbo.ModeloVehiculo MO ON MO.ModeloID     = V.ModeloID
+LEFT JOIN dbo.ModeloAnio     A  ON A.ModeloAnioID  = V.ModeloAnioID
+WHERE V.VehicleID = @id;", cn))
                     {
                         cmd.Parameters.AddWithValue("@id", id);
                         using (var rd = cmd.ExecuteReader())
                         {
-                            if (!rd.Read())
-                            {
-                                MessageBox.Show("No se encontró el vehículo.", "Aviso",
-                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                return;
-                            }
+                            if (!rd.Read()) { MessageBox.Show("No se encontró el vehículo."); return; }
 
                             _vehicleId = id;
 
                             txt_Placa.Text = (rd["Placa"]?.ToString() ?? "").ToUpper();
-                            txt_Placa.ReadOnly = true;
-                            txt_Placa.Enabled = false;
+                            txt_Placa.ReadOnly = true; txt_Placa.Enabled = false;
 
-                            tipoN = rd["Tipo"]?.ToString();
-                            marcaN = rd["Marca"]?.ToString();
-                            modeloN = rd["Modelo"]?.ToString();
-                            int.TryParse(rd["Anio"]?.ToString(), out anio);
+                            tipoId = rd["TipoID"] as int?;
+                            marcaId = rd["MarcaID"] as int?;
+                            modeloId = rd["ModeloID"] as int?;
+                            modeloAnioId = rd["ModeloAnioID"] as int?;
+
+                            tipoN = rd["TipoNombre"]?.ToString();
+                            marcaN = rd["MarcaNombre"]?.ToString();
+                            modeloN = rd["ModeloNombre"]?.ToString();
+                            int.TryParse(rd["AnioValor"]?.ToString(), out anio);
 
                             txt_Num_Motor.Text = rd["NumeroMotor"]?.ToString();
                             txt_Num_Chasis.Text = rd["NumeroChasis"]?.ToString();
@@ -650,57 +684,23 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                     }
                 }
 
-                // ==== poblar combos según catálogos, resolviendo IDs por nombre (helpers) ====
                 _suspendEvents = true;
 
-                // Tipo
+                // cascada de combos por IDs
                 CargarTiposDesdeBD();
-                int? tipoId = GetTipoIdByNombre(tipoN);
-                if (tipoId.HasValue) Cmbox_Tip_Vehic.SelectedValue = tipoId.Value;
-                else
-                {
-                    // si el catálogo no tiene ese tipo, lo agregamos temporalmente
-                    if (Cmbox_Tip_Vehic.FindStringExact(tipoN ?? "") < 0 && !string.IsNullOrWhiteSpace(tipoN))
-                        Cmbox_Tip_Vehic.Items.Add(tipoN);
-                    Cmbox_Tip_Vehic.SelectedItem = tipoN;
-                }
+                if (tipoId.HasValue) Cmbox_Tip_Vehic.SelectedValue = tipoId.Value; else SelectByTextIfNeeded(Cmbox_Tip_Vehic, tipoN);
                 Cmbox_Tip_Vehic.Enabled = true;
 
-                // Marca (por Tipo)
                 if (tipoId.HasValue) CargarMarcasDesdeBD(tipoId.Value); else ResetCombo(Cmbox_Marca);
-                int? marcaId = tipoId.HasValue ? GetMarcaIdByNombre(marcaN, tipoId.Value) : null;
-                if (marcaId.HasValue) Cmbox_Marca.SelectedValue = marcaId.Value;
-                else
-                {
-                    if (Cmbox_Marca.FindStringExact(marcaN ?? "") < 0 && !string.IsNullOrWhiteSpace(marcaN))
-                        Cmbox_Marca.Items.Add(marcaN);
-                    Cmbox_Marca.SelectedItem = marcaN;
-                }
+                if (marcaId.HasValue) Cmbox_Marca.SelectedValue = marcaId.Value; else SelectByTextIfNeeded(Cmbox_Marca, marcaN);
                 Cmbox_Marca.Enabled = true;
 
-                // Modelo (por Marca)
                 if (marcaId.HasValue) CargarModelosDesdeBD(marcaId.Value); else ResetCombo(Cmbox_Modelo);
-                int? modeloId = marcaId.HasValue ? GetModeloIdByNombre(modeloN, marcaId.Value) : null;
-                if (modeloId.HasValue) Cmbox_Modelo.SelectedValue = modeloId.Value;
-                else
-                {
-                    if (Cmbox_Modelo.FindStringExact(modeloN ?? "") < 0 && !string.IsNullOrWhiteSpace(modeloN))
-                        Cmbox_Modelo.Items.Add(modeloN);
-                    Cmbox_Modelo.SelectedItem = modeloN;
-                }
+                if (modeloId.HasValue) Cmbox_Modelo.SelectedValue = modeloId.Value; else SelectByTextIfNeeded(Cmbox_Modelo, modeloN);
                 Cmbox_Modelo.Enabled = true;
 
-                // Año (por Modelo)
                 if (modeloId.HasValue) CargarAniosDesdeBD(modeloId.Value); else ResetCombo(cmb_Año);
-                int? modeloAnioId = modeloId.HasValue ? GetModeloAnioIdByAnio(anio, modeloId.Value) : null;
-                if (modeloAnioId.HasValue) cmb_Año.SelectedValue = modeloAnioId.Value;
-                else
-                {
-                    string anioStr = anio == 0 ? "" : anio.ToString();
-                    if (cmb_Año.FindStringExact(anioStr) < 0 && !string.IsNullOrWhiteSpace(anioStr))
-                        cmb_Año.Items.Add(anioStr);
-                    cmb_Año.SelectedItem = anioStr;
-                }
+                if (modeloAnioId.HasValue) cmb_Año.SelectedValue = modeloAnioId.Value; else SelectByTextIfNeeded(cmb_Año, anio == 0 ? "" : anio.ToString());
                 cmb_Año.Enabled = true;
 
                 _suspendEvents = false;
@@ -712,8 +712,8 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             catch (Exception ex)
             {
                 _suspendEvents = false;
-                MessageBox.Show("Error al cargar vehículo: " + ex.Message,
-                    "Vehículos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al cargar vehículo: " + ex.Message, "Vehículos",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         // ===== 11) VALIDACIONES DE TECLADO =====

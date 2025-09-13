@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\union_formularios\\formularios_adicionales\\formulario_mantenimiento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|c:\\users\\gary.s\\source\\repos\\union_formularios\\union_formularios\\formularios_adicionales\\formulario_mantenimiento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\formularios_adicionales\\formulario_mantenimiento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|c:\\users\\gary.s\\source\\repos\\union_formularios\\union_formularios\\formularios_adicionales\\formulario_mantenimiento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\union_formularios\\formularios_adicionales\\formulario_mantenimiento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\formularios_adicionales\\formulario_mantenimiento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\union_formularios\\formularios_adicionales\\formulario_seleccionar_trabajador.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\formularios_adicionales\\formulario_seleccionar_trabajador.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -28,10 +32,22 @@
               "RelativeDocumentMoniker": "Union_Formularios\\Formularios_Adicionales\\Formulario_Mantenimiento.cs",
               "ToolTip": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Mantenimiento.cs",
               "RelativeToolTip": "Union_Formularios\\Formularios_Adicionales\\Formulario_Mantenimiento.cs",
-              "ViewState": "AgIAAGUCAAAAAAAAAAAiwIMCAAAcAAAAAAAAAA==",
+              "ViewState": "AgIAAO0AAAAAAAAAAAASwAEBAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-13T02:42:21.397Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Formulario_Seleccionar_Trabajador.cs",
+              "DocumentMoniker": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Seleccionar_Trabajador.cs",
+              "RelativeDocumentMoniker": "Union_Formularios\\Formularios_Adicionales\\Formulario_Seleccionar_Trabajador.cs",
+              "ToolTip": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Seleccionar_Trabajador.cs",
+              "RelativeToolTip": "Union_Formularios\\Formularios_Adicionales\\Formulario_Seleccionar_Trabajador.cs",
+              "ViewState": "AgIAADMAAAAAAAAAAAAAwEsAAABDAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-13T14:55:01.691Z"
             },
             {
               "$type": "Document",
@@ -39,11 +55,10 @@
               "Title": "Formulario_Mantenimiento.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Mantenimiento.cs",
               "RelativeDocumentMoniker": "Union_Formularios\\Formularios_Adicionales\\Formulario_Mantenimiento.cs",
-              "ToolTip": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Mantenimiento.cs [Dise\u00F1o]",
-              "RelativeToolTip": "Union_Formularios\\Formularios_Adicionales\\Formulario_Mantenimiento.cs [Dise\u00F1o]",
+              "ToolTip": "C:\\Users\\Kurorko god\\Desktop\\Union_Formularios\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Mantenimiento.cs [Dise\u00F1o]",
+              "RelativeToolTip": "..\\..\\..\\..\\Kurorko god\\Desktop\\Union_Formularios\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Mantenimiento.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-13T07:10:23.165Z",
-              "EditorCaption": " [Dise\u00F1o]"
+              "WhenOpened": "2025-09-13T07:10:23.165Z"
             }
           ]
         }
