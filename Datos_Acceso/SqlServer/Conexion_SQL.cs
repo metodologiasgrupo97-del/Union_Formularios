@@ -4,50 +4,43 @@ using System.IO;
 
 public abstract class Conexion_SQL
 {
-    // Variable estática para guardar el nombre del servidor
     private static string _serverName;
 
     static Conexion_SQL()
     {
-        // Verificar si ya se ha guardado el nombre del servidor
-        if (string.IsNullOrEmpty(_serverName))
+        _serverName = ObtenerServidorDesdeArchivo();
+        // 👇 Ya no lanza excepción aquí
+        if (string.IsNullOrWhiteSpace(_serverName))
         {
-            _serverName = ObtenerServidorDesdeArchivo();
-            if (string.IsNullOrEmpty(_serverName))
-            {
-                _serverName = PedirServidor();
-                GuardarServidorEnArchivo(_serverName);
-            }
+            _serverName = null; // queda en null hasta que Pedir_Nom_Servidor lo guarde
         }
     }
 
-    // Obtener el servidor desde un archivo de configuración (si existe)
     private static string ObtenerServidorDesdeArchivo()
     {
         string filePath = "servidor_config.txt";
         if (File.Exists(filePath))
         {
-            return File.ReadAllText(filePath); 
+            return File.ReadAllText(filePath).Trim();
         }
         return null;
     }
 
     public static void GuardarServidorEnArchivo(string serverName)
     {
+        if (string.IsNullOrWhiteSpace(serverName))
+            throw new ArgumentException("El nombre del servidor no puede estar vacío.");
+
         string filePath = "servidor_config.txt";
-        File.WriteAllText(filePath, serverName); // Guardar el nombre del servidor
+        File.WriteAllText(filePath, serverName);
+        _serverName = serverName; // importante: actualizar la variable estática
     }
 
-    // Método para pedir el nombre del servidor al usuario
-    private static string PedirServidor()
-    {
-        Console.WriteLine("Por favor, ingrese el nombre del servidor:");
-        return Console.ReadLine(); 
-    }
-
-    // Obtener la conexión con el servidor
     public static SqlConnection OpenConnection()
     {
+        if (string.IsNullOrWhiteSpace(_serverName))
+            throw new InvalidOperationException("Falta configurar el servidor. Use Pedir_Nom_Servidor primero.");
+
         string connectionString = $"Server={_serverName};Database=CAR_EFULL;Integrated Security=True;TrustServerCertificate=True;";
         var cn = new SqlConnection(connectionString);
         cn.Open();
@@ -56,6 +49,9 @@ public abstract class Conexion_SQL
 
     public static SqlConnection GetConnection()
     {
+        if (string.IsNullOrWhiteSpace(_serverName))
+            throw new InvalidOperationException("Falta configurar el servidor. Use Pedir_Nom_Servidor primero.");
+
         string connectionString = $"Server={_serverName};Database=CAR_EFULL;Integrated Security=True;TrustServerCertificate=True;";
         return new SqlConnection(connectionString);
     }

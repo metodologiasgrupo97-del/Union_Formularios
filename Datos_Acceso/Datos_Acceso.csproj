@@ -101,9 +101,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SqlServer\ConexionSQL_Implementacion.cs" />
     <Compile Include="MailServices\Servidor_de_Correo_Maestro.cs" />
     <Compile Include="MailServices\Soporte_Del_Correo.cs" />
+    <Compile Include="SqlServer\ConexionSQL_Implementacion.cs" />
     <Compile Include="SqlServer\Conexion_BD_Repuestos.cs" />
     <Compile Include="SqlServer\Conexion_SQL.cs" />
     <Compile Include="SqlServer\Datos_Usuario.cs" />

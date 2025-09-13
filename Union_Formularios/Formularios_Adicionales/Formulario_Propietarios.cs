@@ -24,7 +24,6 @@ namespace Formulario_Principal_Car_EFULL.Formularios
 
         // ===== 2) CONSTRUCTOR =====
         // Inicializa los componentes visuales del formulario.
-        // (No altera lógica de carga ni de datos; eso ocurre en el evento Load).
         public Formulario_Propietarios()
         {
             InitializeComponent();
@@ -36,16 +35,13 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         private void Formulario_Propietarios_Load(object sender, EventArgs e)
         {
             propietariosDT = new DataTable();
-
             using (SqlConnection cn = Conexion_SQL.OpenConnection())
             {
-                cn.Open();
-                string query = "SELECT ID_Propietario, Cedula, Nombre, Apellido, Telefono, Correo, Direccion, Estado, FechaRegistro FROM Propietarios";
-                SqlDataAdapter adapter = new SqlDataAdapter(query, cn);
+                string query = "SELECT ID_Propietario, Cedula, Nombre, Apellido, Telefono, Correo, Direccion, Estado, FechaRegistro FROM dbo.Propietarios";
+                var adapter = new SqlDataAdapter(query, cn);
                 adapter.Fill(propietariosDT);
             }
-            // Mostrar solo Activos mediante vista filtrada sobre el DataTable cargado.
-            DataView vistaActivos = propietariosDT.DefaultView;
+            var vistaActivos = propietariosDT.DefaultView;
             vistaActivos.RowFilter = "Estado = 'Activo'";
             dgvPropietarios.DataSource = vistaActivos;
         }
@@ -55,20 +51,17 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         // Devuelve tupla con cantidades para tomar decisiones en la UI (eliminar, marcar inactivo, etc.).
         private (int vehiculos, int facturas) ContarReferenciasPropietario(int idPropietario)
         {
-            using (SqlConnection cn = new ConexionSQL_Implementacion().AbrirConexion())
+            using (SqlConnection cn = Conexion_SQL.OpenConnection())
+            using (SqlCommand cmd = new SqlCommand(@"
+                SELECT 
+                    Vehiculos = (SELECT COUNT(*) FROM dbo.Vehiculos WHERE ID_Propietario = @id),
+                    Facturas  = (SELECT COUNT(*) FROM dbo.Facturas  WHERE ID_Propietario = @id);", cn))
             {
-                cn.Open();
-                using (SqlCommand cmd = new SqlCommand(@"
-            SELECT 
-	            Vehiculos = (SELECT COUNT(*) FROM Vehiculos WHERE ID_Propietario = @id),
-	            Facturas  = (SELECT COUNT(*) FROM Facturas  WHERE ID_Propietario = @id);", cn))
+                cmd.Parameters.Add("@id", SqlDbType.Int).Value = idPropietario;
+                using (var rd = cmd.ExecuteReader())
                 {
-                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = idPropietario;
-                    using (var rd = cmd.ExecuteReader())
-                    {
-                        if (rd.Read())
-                            return (Convert.ToInt32(rd["Vehiculos"]), Convert.ToInt32(rd["Facturas"]));
-                    }
+                    if (rd.Read())
+                        return (Convert.ToInt32(rd["Vehiculos"]), Convert.ToInt32(rd["Facturas"]));
                 }
             }
             return (0, 0);
@@ -78,15 +71,12 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         // No cambia la vista actual; el llamador decide cuándo recargar la grilla.
         private void MarcarPropietarioInactivo(int idPropietario)
         {
-            using (SqlConnection cn = new ConexionSQL_Implementacion().AbrirConexion())
+            using (SqlConnection cn = Conexion_SQL.OpenConnection())
+            using (SqlCommand cmd = new SqlCommand(
+                "UPDATE dbo.Propietarios SET Estado = 'Inactivo' WHERE ID_Propietario = @id", cn))
             {
-                cn.Open();
-                using (SqlCommand cmd = new SqlCommand(
-                    "UPDATE Propietarios SET Estado = 'Inactivo' WHERE ID_Propietario = @id", cn))
-                {
-                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = idPropietario;
-                    cmd.ExecuteNonQuery();
-                }
+                cmd.Parameters.Add("@id", SqlDbType.Int).Value = idPropietario;
+                cmd.ExecuteNonQuery();
             }
         }
 
@@ -94,12 +84,10 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         // (Aquí no se aplica filtro Estado='Activo'; el llamador muestra todo el resultado de la consulta).
         private void CargarPropietarios()
         {
-            using (SqlConnection cn = new ConexionSQL_Implementacion().AbrirConexion())
+            using (SqlConnection cn = Conexion_SQL.OpenConnection())
             {
-                cn.Open();
-                string query = "SELECT * FROM Propietarios";
-                SqlDataAdapter da = new SqlDataAdapter(query, cn);
-                DataTable dt = new DataTable();
+                var da = new SqlDataAdapter("SELECT * FROM dbo.Propietarios", cn);
+                var dt = new DataTable();
                 da.Fill(dt);
                 dgvPropietarios.DataSource = dt;
             }
@@ -111,15 +99,9 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         private void dgvPropietarios_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
-
-            int idPropietario = Convert.ToInt32(
-                dgvPropietarios.Rows[e.RowIndex].Cells["ID_Propietario"].Value
-            );
-
-            // Abre directamente en modo edición (constructor con ID)
+            int idPropietario = Convert.ToInt32(dgvPropietarios.Rows[e.RowIndex].Cells["ID_Propietario"].Value);
             var frmEditar = new Formulario_Add_Propietario(idPropietario);
             frmEditar.FormClosed += (s, args) => CargarPropietarios();
-
             frmEditar.ShowDialog(this);
         }
 
@@ -132,7 +114,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             {
                 if (dgvPropietarios.CurrentRow == null)
                 {
-                    MessageBox.Show("Por favor, seleccione un propietario para eliminar.", "Aviso",
+                    MessageBox.Show("Seleccione un propietario.", "Aviso",
                         MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
@@ -141,87 +123,66 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                 string cedula = dgvPropietarios.CurrentRow.Cells["Cedula"].Value?.ToString() ?? "";
                 string nombre = dgvPropietarios.CurrentRow.Cells["Nombre"].Value?.ToString() ?? "(sin nombre)";
 
-                // Cuenta referencias antes de intentar borrar
                 var refs = ContarReferenciasPropietario(idPropietario);
                 int vehiculos = refs.vehiculos;
                 int facturas = refs.facturas;
 
                 if (facturas > 0)
                 {
-                    // No borrar: hay facturas 
                     var resp = MessageBox.Show(
-                        $"El propietario {nombre} ({cedula}) tiene {facturas} factura(s) asociada(s).\n" +
-                        $"Por integridad, no se puede eliminar.\n\n¿Deseas marcarlo como INACTIVO?",
+                        $"El propietario {nombre} ({cedula}) tiene {facturas} factura(s) asociada(s).\nNo se puede eliminar.\n\n¿Deseas marcarlo como INACTIVO?",
                         "Propietario con facturas", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
 
                     if (resp == DialogResult.Yes)
                     {
                         MarcarPropietarioInactivo(idPropietario);
                         CargarPropietarios();
-                        MessageBox.Show("Se marcó el propietario como Inactivo.", "Listo",
+                        MessageBox.Show("Se marcó como Inactivo.", "Listo",
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return;
                 }
 
-                // No hay facturas
-                string msg = vehiculos > 0
-                    ? $"El propietario tiene {vehiculos} vehículo(s) asociado(s).\n" +
-                      $"Se DESVINCULARÁN (ID_Propietario = NULL) y luego se ELIMINARÁ el propietario.\n\n¿Confirmas?"
-                    : $"¿Eliminar al propietario {nombre} ({cedula})?";
+                if (vehiculos > 0)
+                {
+                    MessageBox.Show(
+                        $"El propietario {nombre} ({cedula}) tiene {vehiculos} vehículo(s) asociado(s).\nNo se puede eliminar.",
+                        "Propietario con vehículos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
-                if (MessageBox.Show(msg, "Confirmar eliminación",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                if (MessageBox.Show(
+                        $"¿Eliminar al propietario {nombre} ({cedula})?",
+                        "Confirmar eliminación",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                     return;
 
-                using (SqlConnection cn = new ConexionSQL_Implementacion().AbrirConexion())
+                using (SqlConnection cn = Conexion_SQL.OpenConnection())
+                using (SqlTransaction tx = cn.BeginTransaction())
                 {
-                    cn.Open();
-                    using (SqlTransaction tx = cn.BeginTransaction())
+                    using (SqlCommand cmd = new SqlCommand(
+                        "DELETE FROM dbo.Propietarios WHERE ID_Propietario = @id", cn, tx))
                     {
-                        try
-                        {
-                            if (vehiculos > 0)
-                            {
-                                using (SqlCommand cmd = new SqlCommand(
-                                    "UPDATE Vehiculos SET ID_Propietario = NULL WHERE ID_Propietario = @id", cn, tx))
-                                {
-                                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = idPropietario;
-                                    cmd.ExecuteNonQuery();
-                                }
-                            }
-
-                            using (SqlCommand cmd = new SqlCommand(
-                                "DELETE FROM Propietarios WHERE ID_Propietario = @id", cn, tx))
-                            {
-                                cmd.Parameters.Add("@id", SqlDbType.Int).Value = idPropietario;
-                                cmd.ExecuteNonQuery();
-                            }
-
-                            tx.Commit();
-                        }
-                        catch
-                        {
-                            tx.Rollback();
-                            throw; // Se propaga al catch externo para mostrar mensaje
-                        }
+                        cmd.Parameters.Add("@id", SqlDbType.Int).Value = idPropietario;
+                        cmd.ExecuteNonQuery();
                     }
+                    tx.Commit();
                 }
 
                 CargarPropietarios();
                 MessageBox.Show("Propietario eliminado correctamente.", "Éxito",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            catch (SqlException ex) when (ex.Number == 547) // Violación de FK
+            catch (SqlException ex) when (ex.Number == 547)
             {
                 MessageBox.Show(
-                    "No se pudo eliminar debido a registros relacionados (restricción de integridad). " +
-                    "Puedes marcarlo como Inactivo.", "Restricción de integridad",
+                    "No se pudo eliminar por registros relacionados.",
+                    "Restricción de integridad",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ocurrió un error al eliminar el propietario:\n{ex.Message}", "Error",
+                MessageBox.Show($"Ocurrió un error:\n{ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -230,8 +191,8 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         // Al cerrarse, se recarga el DataGridView para reflejar el nuevo registro.
         private void btn_Añadir_Click(object sender, EventArgs e)
         {
-            Formulario_Add_Propietario frmAdd = new Formulario_Add_Propietario();
-            frmAdd.FormClosed += (s, args) => CargarPropietarios(); // Recargar al cerrar
+            var frmAdd = new Formulario_Add_Propietario();
+            frmAdd.FormClosed += (s, args) => CargarPropietarios();
             frmAdd.ShowDialog();
         }
 

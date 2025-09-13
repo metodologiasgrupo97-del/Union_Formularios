@@ -482,20 +482,23 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                         }
 
                         const string sqlIns = @"
-                            INSERT INTO dbo.Vehiculos
-                            (Placa, Tipo, Marca, Modelo, Anio, NumeroMotor, NumeroChasis,
-                             Color, Combustible, Kilometraje, Estado, ID_Propietario)
-                            VALUES
-                            (@Placa,@Tipo,@Marca,@Modelo,@Anio,@Motor,@Chasis,
-                             @Color,@Combustible,@Kilometraje,@Estado,@Prop);";
+                        INSERT INTO dbo.Vehiculos
+                        (Placa, TipoID, MarcaID, ModeloID, ModeloAnioID, NumeroMotor, NumeroChasis,Color, Combustible, Kilometraje, Estado, ID_Propietario)
+                        VALUES
+                        (@Placa, @TipoID, @MarcaID, @ModeloID, @ModeloAnioID, @Motor, @Chasis,@Color, @Combustible, @Kilometraje, @Estado, @Prop);";
+
+                        int tipoId = (int)Cmbox_Tip_Vehic.SelectedValue;
+                        int marcaId = (int)Cmbox_Marca.SelectedValue;
+                        int modeloId = (int)Cmbox_Modelo.SelectedValue;
+                        int modeloAnioId = (int)cmb_Año.SelectedValue;
 
                         using (var cmd = new SqlCommand(sqlIns, cn))
                         {
                             cmd.Parameters.AddWithValue("@Placa", placa);
-                            cmd.Parameters.AddWithValue("@Tipo", tipo);
-                            cmd.Parameters.AddWithValue("@Marca", marca);
-                            cmd.Parameters.AddWithValue("@Modelo", modelo);
-                            cmd.Parameters.AddWithValue("@Anio", anio);
+                            cmd.Parameters.AddWithValue("@TipoID", tipoId);
+                            cmd.Parameters.AddWithValue("@MarcaID", marcaId);
+                            cmd.Parameters.AddWithValue("@ModeloID", modeloId);
+                            cmd.Parameters.AddWithValue("@ModeloAnioID", modeloAnioId);
                             cmd.Parameters.AddWithValue("@Motor", motor);
                             cmd.Parameters.AddWithValue("@Chasis", chasis);
                             cmd.Parameters.AddWithValue("@Color", color);
@@ -513,19 +516,19 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                     else
                     {
                         const string sqlUpd = @"
-                            UPDATE dbo.Vehiculos
-                               SET Tipo=@Tipo,
-                                   Marca=@Marca,
-                                   Modelo=@Modelo,
-                                   Anio=@Anio,
-                                   NumeroMotor=@Motor,
-                                   NumeroChasis=@Chasis,
-                                   Color=@Color,
-                                   Combustible=@Combustible,
-                                   Kilometraje=@Kilometraje,
-                                   Estado=@Estado,
-                                   ID_Propietario=@Prop
-                             WHERE VehicleID=@ID;";
+                        UPDATE dbo.Vehiculos SET 
+                        TipoID=@TipoID,
+                        MarcaID=@MarcaID,
+                        ModeloID=@ModeloID,
+                        ModeloAnioID=@ModeloAnioID,
+                        NumeroMotor=@Motor,
+                        NumeroChasis=@Chasis,
+                        Color=@Color,
+                        Combustible=@Combustible,
+                        Kilometraje=@Kilometraje,
+                        Estado=@Estado,
+                        ID_Propietario=@Prop
+                        WHERE VehicleID=@ID;";
 
                         using (var cmd = new SqlCommand(sqlUpd, cn))
                         {
@@ -600,6 +603,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         {
             try
             {
+                int? tipoId = null, marcaId = null, modeloId = null, modeloAnioId = null;
                 string tipoN = null, marcaN = null, modeloN = null;
                 int anio = 0;
 
@@ -607,14 +611,24 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                 {
                     cn.Open();
                     using (var cmd = new SqlCommand(@"
-                        SELECT V.VehicleID, V.Placa, V.Tipo, V.Marca, V.Modelo, V.Anio,
-                               V.NumeroMotor, V.NumeroChasis, V.Color, V.Combustible,
-                               V.Kilometraje, V.Estado AS EstadoVehiculo,
-                               V.ID_Propietario AS ID_PropietarioVehiculo,
-                               (P.Nombre + ' ' + P.Apellido) AS Propietario
-                        FROM dbo.Vehiculos AS V
-                        LEFT JOIN dbo.Propietarios AS P ON P.ID_Propietario = V.ID_Propietario
-                        WHERE V.VehicleID = @id;", cn))
+                SELECT 
+                    V.VehicleID, V.Placa,
+                    V.TipoID, V.MarcaID, V.ModeloID, V.ModeloAnioID,
+                    V.NumeroMotor, V.NumeroChasis, V.Color, V.Combustible,
+                    V.Kilometraje, V.Estado AS EstadoVehiculo,
+                    V.ID_Propietario AS ID_PropietarioVehiculo,
+                    (P.Nombre + ' ' + ISNULL(P.Apellido,'')) AS Propietario,
+                    T.Nombre  AS TipoNombre,
+                    MA.Nombre AS MarcaNombre,
+                    MO.Nombre AS ModeloNombre,
+                    A.Anio    AS AnioValor
+                FROM dbo.Vehiculos V
+                LEFT JOIN dbo.Propietarios    P  ON P.ID_Propietario = V.ID_Propietario
+                LEFT JOIN dbo.TipoVehiculo    T  ON T.TipoID        = V.TipoID
+                LEFT JOIN dbo.MarcaVehiculo   MA ON MA.MarcaID      = V.MarcaID
+                LEFT JOIN dbo.ModeloVehiculo  MO ON MO.ModeloID     = V.ModeloID
+                LEFT JOIN dbo.ModeloAnio      A  ON A.ModeloAnioID  = V.ModeloAnioID
+                WHERE V.VehicleID = @id;", cn))
                     {
                         cmd.Parameters.AddWithValue("@id", id);
                         using (var rd = cmd.ExecuteReader())
@@ -632,10 +646,15 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                             txt_Placa.ReadOnly = true;
                             txt_Placa.Enabled = false;
 
-                            tipoN = rd["Tipo"]?.ToString();
-                            marcaN = rd["Marca"]?.ToString();
-                            modeloN = rd["Modelo"]?.ToString();
-                            int.TryParse(rd["Anio"]?.ToString(), out anio);
+                            tipoId = rd["TipoID"] == DBNull.Value ? (int?)null : Convert.ToInt32(rd["TipoID"]);
+                            marcaId = rd["MarcaID"] == DBNull.Value ? (int?)null : Convert.ToInt32(rd["MarcaID"]);
+                            modeloId = rd["ModeloID"] == DBNull.Value ? (int?)null : Convert.ToInt32(rd["ModeloID"]);
+                            modeloAnioId = rd["ModeloAnioID"] == DBNull.Value ? (int?)null : Convert.ToInt32(rd["ModeloAnioID"]);
+
+                            tipoN = rd["TipoNombre"]?.ToString();
+                            marcaN = rd["MarcaNombre"]?.ToString();
+                            modeloN = rd["ModeloNombre"]?.ToString();
+                            int.TryParse(rd["AnioValor"]?.ToString(), out anio);
 
                             txt_Num_Motor.Text = rd["NumeroMotor"]?.ToString();
                             txt_Num_Chasis.Text = rd["NumeroChasis"]?.ToString();
@@ -656,25 +675,21 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                 _suspendEvents = true;
 
                 CargarTiposDesdeBD();
-                int? tipoId = GetTipoIdByNombre(tipoN);
                 if (tipoId.HasValue) Cmbox_Tip_Vehic.SelectedValue = tipoId.Value;
                 else SelectByTextIfNeeded(Cmbox_Tip_Vehic, tipoN);
                 Cmbox_Tip_Vehic.Enabled = true;
 
                 if (tipoId.HasValue) CargarMarcasDesdeBD(tipoId.Value); else ResetCombo(Cmbox_Marca);
-                int? marcaId = tipoId.HasValue ? GetMarcaIdByNombre(marcaN, tipoId.Value) : null;
                 if (marcaId.HasValue) Cmbox_Marca.SelectedValue = marcaId.Value;
                 else SelectByTextIfNeeded(Cmbox_Marca, marcaN);
                 Cmbox_Marca.Enabled = true;
 
                 if (marcaId.HasValue) CargarModelosDesdeBD(marcaId.Value); else ResetCombo(Cmbox_Modelo);
-                int? modeloId = marcaId.HasValue ? GetModeloIdByNombre(modeloN, marcaId.Value) : null;
                 if (modeloId.HasValue) Cmbox_Modelo.SelectedValue = modeloId.Value;
                 else SelectByTextIfNeeded(Cmbox_Modelo, modeloN);
                 Cmbox_Modelo.Enabled = true;
 
                 if (modeloId.HasValue) CargarAniosDesdeBD(modeloId.Value); else ResetCombo(cmb_Año);
-                int? modeloAnioId = modeloId.HasValue ? GetModeloAnioIdByAnio(anio, modeloId.Value) : null;
                 if (modeloAnioId.HasValue) cmb_Año.SelectedValue = modeloAnioId.Value;
                 else SelectByTextIfNeeded(cmb_Año, anio == 0 ? "" : anio.ToString());
                 cmb_Año.Enabled = true;

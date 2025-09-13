@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Datos_Acceso.SqlServer;
 
@@ -20,68 +14,53 @@ namespace Union_Formularios
             CargarTotales();
             CargarVehiculos();
         }
+
         private void CargarTotales()
         {
             using (var cn = Conexion_SQL.OpenConnection())
             {
-                // Total de vehículos
-                using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM Vehiculos", cn))
-                {
-                    int totalVehiculos = (int)cmd.ExecuteScalar();
-                    lblTotalVehiculos.Text = totalVehiculos.ToString();
-                }
-                // Total de propietarios
-                using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM Propietarios", cn))
-                {
-                    int totalPropietarios = (int)cmd.ExecuteScalar();
-                    lblTotalPropietarios.Text = totalPropietarios.ToString();
-                }
-                // Total de trabajadores 
-                using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM Users", cn))
-                {
-                    int totalTrabajadores = (int)cmd.ExecuteScalar();
-                    lblTotalTrabajadores.Text = totalTrabajadores.ToString();
-                }
-                // Total de facturas
-                using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM Facturas", cn))
-                {
-                    int totalFacturas = (int)cmd.ExecuteScalar();
-                    llblTotalFacturas.Text = totalFacturas.ToString();
-                }
+                using (var cmd = new SqlCommand("SELECT COUNT(*) FROM dbo.Vehiculos", cn))
+                    lblTotalVehiculos.Text = ((int)cmd.ExecuteScalar()).ToString();
+
+                using (var cmd = new SqlCommand("SELECT COUNT(*) FROM dbo.Propietarios", cn))
+                    lblTotalPropietarios.Text = ((int)cmd.ExecuteScalar()).ToString();
+
+                using (var cmd = new SqlCommand("SELECT COUNT(*) FROM dbo.Users", cn))
+                    lblTotalTrabajadores.Text = ((int)cmd.ExecuteScalar()).ToString();
+
+                using (var cmd = new SqlCommand("SELECT COUNT(*) FROM dbo.Facturas", cn))
+                    llblTotalFacturas.Text = ((int)cmd.ExecuteScalar()).ToString();
             }
         }
+
         private void Horafecha_Tick_1(object sender, EventArgs e)
         {
             lblHora.Text = DateTime.Now.ToLongTimeString();
             lblFecha.Text = DateTime.Now.ToLongDateString();
         }
+
         private void CargarVehiculos()
-        {
+        { 
             try
             {
-                using (SqlConnection cn = Conexion_SQL.GetConnection()) 
+                using (var cn = Conexion_SQL.OpenConnection())
                 {
-                    string consulta = @"
-                    SELECT 
-                        V.Placa,
-                        Ma.Nombre AS Marca,
-                        Mo.Nombre AS Modelo,
-                        V.Color,
-                        V.Estado,
-                        (P.Nombre + ' ' + ISNULL(P.Apellido,'')) AS Propietario
-                    FROM Vehiculos V
-                    INNER JOIN Propietarios    P  ON V.ID_Propietario = P.ID_Propietario
-                    INNER JOIN MarcaVehiculo   Ma ON V.MarcaID       = Ma.MarcaID
-                    INNER JOIN ModeloVehiculo  Mo ON V.ModeloID      = Mo.ModeloID
-                    ORDER BY V.Placa;";
+                    const string sql = @"
+                SELECT 
+                    v.Placa,
+                    ISNULL(NULLIF(v.Marca, ''), '(sin marca)')  AS Marca,
+                    ISNULL(NULLIF(v.Modelo,''), '(sin modelo)') AS Modelo,
+                    v.Color,
+                    v.Estado,
+                    (p.Nombre + ' ' + ISNULL(p.Apellido,'')) AS Propietario
+                FROM dbo.Vehiculos v
+                INNER JOIN dbo.Propietarios p ON p.ID_Propietario = v.ID_Propietario
+                ORDER BY v.Placa;";
 
-                    using (SqlCommand cmd = new SqlCommand(consulta, cn))
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    using (var da = new SqlDataAdapter(sql, cn))
                     {
-                        DataTable tabla = new DataTable();
+                        var tabla = new DataTable();
                         da.Fill(tabla);
-
-                        dgvVehiculos.AutoGenerateColumns = true;
                         dgvVehiculos.DataSource = tabla;
                         dgvVehiculos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                         dgvVehiculos.ReadOnly = true;
@@ -94,7 +73,5 @@ namespace Union_Formularios
                 MessageBox.Show("Error al cargar los vehículos: " + ex.Message);
             }
         }
-
-
     }
 }

@@ -3,24 +3,40 @@
   "WorkspaceRootPath": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|c:\\users\\gary.s\\source\\repos\\union_formularios\\union_formularios\\iniciocontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\iniciocontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|c:\\users\\gary.s\\source\\repos\\union_formularios\\union_formularios\\formularios_adicionales\\factura.rdlc||{46F6D2A1-5E86-4080-A799-01F3D0E23796}",
+      "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\formularios_adicionales\\factura.rdlc||{46F6D2A1-5E86-4080-A799-01F3D0E23796}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\union_formularios\\iniciocontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\iniciocontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{C3AECF19-53B7-4A6B-A45D-0BAE78916ECF}|Datos_Acceso\\Datos_Acceso.csproj|C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\datos_acceso\\sqlserver\\conexion_sql.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C3AECF19-53B7-4A6B-A45D-0BAE78916ECF}|Datos_Acceso\\Datos_Acceso.csproj|solutionrelative:datos_acceso\\sqlserver\\conexion_sql.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\union_formularios\\formularios_adicionales\\formulario_mantenimiento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\formularios_adicionales\\formulario_mantenimiento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\union_formularios\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\union_formularios\\formularios_adicionales\\formulario_propietarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\formularios_adicionales\\formulario_propietarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\union_formularios\\formularios_adicionales\\formulario_vehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\formularios_adicionales\\formulario_vehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\union_formularios\\formularios_adicionales\\formulario_mantenimiento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\formularios_adicionales\\formulario_mantenimiento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\union_formularios\\formularios_adicionales\\formulario_propietarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\formularios_adicionales\\formulario_propietarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\union_formularios\\formularios_adicionales\\formulario_vehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\formularios_adicionales\\formulario_vehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\union_formularios\\iniciocontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\iniciocontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
   "DocumentGroupContainers": [
@@ -35,30 +51,54 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "InicioControl.cs",
-              "DocumentMoniker": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\InicioControl.cs",
-              "RelativeDocumentMoniker": "Union_Formularios\\InicioControl.cs",
-              "ToolTip": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\InicioControl.cs",
-              "RelativeToolTip": "Union_Formularios\\InicioControl.cs",
-              "ViewState": "AgIAACoAAAAAAAAAAAAowD0AAABEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-13T02:42:47.732Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "InicioControl.cs [Dise\u00F1o]",
-              "DocumentMoniker": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\InicioControl.cs",
-              "RelativeDocumentMoniker": "Union_Formularios\\InicioControl.cs",
-              "ToolTip": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\InicioControl.cs [Dise\u00F1o]",
-              "RelativeToolTip": "Union_Formularios\\InicioControl.cs [Dise\u00F1o]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-13T02:42:44.463Z"
+              "Title": "Factura.rdlc [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Factura.rdlc",
+              "RelativeDocumentMoniker": "Union_Formularios\\Formularios_Adicionales\\Factura.rdlc",
+              "ToolTip": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Factura.rdlc [Dise\u00F1o]",
+              "RelativeToolTip": "Union_Formularios\\Formularios_Adicionales\\Factura.rdlc [Dise\u00F1o]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001755|",
+              "WhenOpened": "2025-09-13T04:52:09.051Z",
+              "EditorCaption": " [Dise\u00F1o]"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Program.cs",
+              "RelativeDocumentMoniker": "Union_Formularios\\Program.cs",
+              "ToolTip": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Program.cs",
+              "RelativeToolTip": "Union_Formularios\\Program.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-13T04:47:27.156Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Conexion_SQL.cs",
+              "DocumentMoniker": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Datos_Acceso\\SqlServer\\Conexion_SQL.cs",
+              "RelativeDocumentMoniker": "Datos_Acceso\\SqlServer\\Conexion_SQL.cs",
+              "ToolTip": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Datos_Acceso\\SqlServer\\Conexion_SQL.cs",
+              "RelativeToolTip": "Datos_Acceso\\SqlServer\\Conexion_SQL.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAswDoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-13T04:44:01.511Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Formulario_Propietarios.cs",
+              "DocumentMoniker": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Propietarios.cs",
+              "RelativeDocumentMoniker": "Union_Formularios\\Formularios_Adicionales\\Formulario_Propietarios.cs",
+              "ToolTip": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Propietarios.cs",
+              "RelativeToolTip": "Union_Formularios\\Formularios_Adicionales\\Formulario_Propietarios.cs",
+              "ViewState": "AgIAAEwAAAAAAAAAAAAswMQAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-13T03:21:02.857Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "Formulario_Mantenimiento.cs",
               "DocumentMoniker": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Mantenimiento.cs",
               "RelativeDocumentMoniker": "Union_Formularios\\Formularios_Adicionales\\Formulario_Mantenimiento.cs",
@@ -70,19 +110,30 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "Formulario_Vehiculos.cs",
               "DocumentMoniker": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Vehiculos.cs",
               "RelativeDocumentMoniker": "Union_Formularios\\Formularios_Adicionales\\Formulario_Vehiculos.cs",
               "ToolTip": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Vehiculos.cs",
               "RelativeToolTip": "Union_Formularios\\Formularios_Adicionales\\Formulario_Vehiculos.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAA7AAAAAAAAAA==",
+              "ViewState": "AgIAAE8CAAAAAAAAAAAywMUCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-13T02:34:29.216Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
+              "Title": "Formulario_Propietarios.cs [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Propietarios.cs",
+              "RelativeDocumentMoniker": "Union_Formularios\\Formularios_Adicionales\\Formulario_Propietarios.cs",
+              "ToolTip": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Propietarios.cs [Dise\u00F1o]",
+              "RelativeToolTip": "Union_Formularios\\Formularios_Adicionales\\Formulario_Propietarios.cs [Dise\u00F1o]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-13T03:21:00.971Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "Formulario_Vehiculos.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Vehiculos.cs",
               "RelativeDocumentMoniker": "Union_Formularios\\Formularios_Adicionales\\Formulario_Vehiculos.cs",
@@ -90,6 +141,17 @@
               "RelativeToolTip": "Union_Formularios\\Formularios_Adicionales\\Formulario_Vehiculos.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-13T02:34:28.355Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "InicioControl.cs [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\InicioControl.cs",
+              "RelativeDocumentMoniker": "Union_Formularios\\InicioControl.cs",
+              "ToolTip": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\Union_Formularios\\InicioControl.cs [Dise\u00F1o]",
+              "RelativeToolTip": "Union_Formularios\\InicioControl.cs [Dise\u00F1o]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-13T02:42:44.463Z"
             }
           ]
         }
