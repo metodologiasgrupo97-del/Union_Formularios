@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle31 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle32 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle33 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lblFecha = new System.Windows.Forms.Label();
             this.lblHora = new System.Windows.Forms.Label();
             this.lbl_Cont_Prop = new System.Windows.Forms.Label();
@@ -40,36 +40,36 @@
             this.lblTotalVehiculos = new System.Windows.Forms.Label();
             this.guna2GradientPanel1 = new Guna.UI2.WinForms.Guna2GradientPanel();
             this.lbl_Cont_Trab = new System.Windows.Forms.Label();
+            this.guna2GradientPanel4 = new Guna.UI2.WinForms.Guna2GradientPanel();
+            this.iconPictureBox4 = new FontAwesome.Sharp.IconPictureBox();
             this.lblTotalTrabajadores = new System.Windows.Forms.Label();
             this.Horafecha = new System.Windows.Forms.Timer(this.components);
             this.dgvVehiculos = new Guna.UI2.WinForms.Guna2DataGridView();
-            this.guna2GradientPanel4 = new Guna.UI2.WinForms.Guna2GradientPanel();
             this.guna2GradientPanel5 = new Guna.UI2.WinForms.Guna2GradientPanel();
             this.guna2GradientPanel6 = new Guna.UI2.WinForms.Guna2GradientPanel();
+            this.iconPictureBox2 = new FontAwesome.Sharp.IconPictureBox();
             this.guna2GradientPanel2 = new Guna.UI2.WinForms.Guna2GradientPanel();
             this.guna2GradientPanel7 = new Guna.UI2.WinForms.Guna2GradientPanel();
+            this.iconPictureBox3 = new FontAwesome.Sharp.IconPictureBox();
             this.guna2GradientPanel3 = new Guna.UI2.WinForms.Guna2GradientPanel();
             this.guna2GradientPanel8 = new Guna.UI2.WinForms.Guna2GradientPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.llblTotalFacturas = new System.Windows.Forms.Label();
             this.guna2GradientPanel9 = new Guna.UI2.WinForms.Guna2GradientPanel();
-            this.iconPictureBox3 = new FontAwesome.Sharp.IconPictureBox();
-            this.iconPictureBox2 = new FontAwesome.Sharp.IconPictureBox();
-            this.iconPictureBox4 = new FontAwesome.Sharp.IconPictureBox();
             this.iconPictureBox1 = new FontAwesome.Sharp.IconPictureBox();
             this.guna2GradientPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvVehiculos)).BeginInit();
             this.guna2GradientPanel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvVehiculos)).BeginInit();
             this.guna2GradientPanel5.SuspendLayout();
             this.guna2GradientPanel6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox2)).BeginInit();
             this.guna2GradientPanel2.SuspendLayout();
             this.guna2GradientPanel7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox3)).BeginInit();
             this.guna2GradientPanel3.SuspendLayout();
             this.guna2GradientPanel8.SuspendLayout();
             this.guna2GradientPanel9.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -174,6 +174,34 @@
             this.lbl_Cont_Trab.TabIndex = 8;
             this.lbl_Cont_Trab.Text = "TRABAJADORES";
             // 
+            // guna2GradientPanel4
+            // 
+            this.guna2GradientPanel4.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.guna2GradientPanel4.BorderRadius = 10;
+            this.guna2GradientPanel4.Controls.Add(this.iconPictureBox4);
+            this.guna2GradientPanel4.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(168)))), ((int)(((byte)(121)))));
+            this.guna2GradientPanel4.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(118)))), ((int)(((byte)(134)))));
+            this.guna2GradientPanel4.Location = new System.Drawing.Point(19, 35);
+            this.guna2GradientPanel4.Name = "guna2GradientPanel4";
+            this.guna2GradientPanel4.ShadowDecoration.BorderRadius = 14;
+            this.guna2GradientPanel4.ShadowDecoration.Color = System.Drawing.Color.Gray;
+            this.guna2GradientPanel4.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(0, 0, 5, 5);
+            this.guna2GradientPanel4.Size = new System.Drawing.Size(65, 59);
+            this.guna2GradientPanel4.TabIndex = 9;
+            // 
+            // iconPictureBox4
+            // 
+            this.iconPictureBox4.BackColor = System.Drawing.Color.Transparent;
+            this.iconPictureBox4.IconChar = FontAwesome.Sharp.IconChar.User;
+            this.iconPictureBox4.IconColor = System.Drawing.Color.White;
+            this.iconPictureBox4.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.iconPictureBox4.IconSize = 33;
+            this.iconPictureBox4.Location = new System.Drawing.Point(17, 14);
+            this.iconPictureBox4.Name = "iconPictureBox4";
+            this.iconPictureBox4.Size = new System.Drawing.Size(33, 33);
+            this.iconPictureBox4.TabIndex = 0;
+            this.iconPictureBox4.TabStop = false;
+            // 
             // lblTotalTrabajadores
             // 
             this.lblTotalTrabajadores.AutoSize = true;
@@ -193,29 +221,33 @@
             // 
             // dgvVehiculos
             // 
-            dataGridViewCellStyle31.BackColor = System.Drawing.Color.White;
-            this.dgvVehiculos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle31;
-            dataGridViewCellStyle32.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle32.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle32.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle32.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle32.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle32.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle32.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvVehiculos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle32;
+            this.dgvVehiculos.AllowUserToAddRows = false;
+            this.dgvVehiculos.AllowUserToDeleteRows = false;
+            this.dgvVehiculos.AllowUserToOrderColumns = true;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
+            this.dgvVehiculos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvVehiculos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvVehiculos.ColumnHeadersHeight = 15;
             this.dgvVehiculos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            dataGridViewCellStyle33.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle33.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle33.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle33.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle33.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle33.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle33.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvVehiculos.DefaultCellStyle = dataGridViewCellStyle33;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvVehiculos.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvVehiculos.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.dgvVehiculos.Location = new System.Drawing.Point(33, 219);
             this.dgvVehiculos.Name = "dgvVehiculos";
+            this.dgvVehiculos.ReadOnly = true;
             this.dgvVehiculos.RowHeadersVisible = false;
             this.dgvVehiculos.Size = new System.Drawing.Size(650, 528);
             this.dgvVehiculos.TabIndex = 46;
@@ -232,7 +264,7 @@
             this.dgvVehiculos.ThemeStyle.HeaderStyle.ForeColor = System.Drawing.Color.White;
             this.dgvVehiculos.ThemeStyle.HeaderStyle.HeaightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             this.dgvVehiculos.ThemeStyle.HeaderStyle.Height = 15;
-            this.dgvVehiculos.ThemeStyle.ReadOnly = false;
+            this.dgvVehiculos.ThemeStyle.ReadOnly = true;
             this.dgvVehiculos.ThemeStyle.RowsStyle.BackColor = System.Drawing.Color.White;
             this.dgvVehiculos.ThemeStyle.RowsStyle.BorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgvVehiculos.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -240,21 +272,6 @@
             this.dgvVehiculos.ThemeStyle.RowsStyle.Height = 22;
             this.dgvVehiculos.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
             this.dgvVehiculos.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            // 
-            // guna2GradientPanel4
-            // 
-            this.guna2GradientPanel4.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.guna2GradientPanel4.BorderRadius = 10;
-            this.guna2GradientPanel4.Controls.Add(this.iconPictureBox4);
-            this.guna2GradientPanel4.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(168)))), ((int)(((byte)(121)))));
-            this.guna2GradientPanel4.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(118)))), ((int)(((byte)(134)))));
-            this.guna2GradientPanel4.Location = new System.Drawing.Point(19, 35);
-            this.guna2GradientPanel4.Name = "guna2GradientPanel4";
-            this.guna2GradientPanel4.ShadowDecoration.BorderRadius = 14;
-            this.guna2GradientPanel4.ShadowDecoration.Color = System.Drawing.Color.Gray;
-            this.guna2GradientPanel4.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(0, 0, 5, 5);
-            this.guna2GradientPanel4.Size = new System.Drawing.Size(65, 59);
-            this.guna2GradientPanel4.TabIndex = 9;
             // 
             // guna2GradientPanel5
             // 
@@ -288,6 +305,19 @@
             this.guna2GradientPanel6.Size = new System.Drawing.Size(65, 59);
             this.guna2GradientPanel6.TabIndex = 9;
             // 
+            // iconPictureBox2
+            // 
+            this.iconPictureBox2.BackColor = System.Drawing.Color.Transparent;
+            this.iconPictureBox2.IconChar = FontAwesome.Sharp.IconChar.Car;
+            this.iconPictureBox2.IconColor = System.Drawing.Color.White;
+            this.iconPictureBox2.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.iconPictureBox2.IconSize = 33;
+            this.iconPictureBox2.Location = new System.Drawing.Point(17, 14);
+            this.iconPictureBox2.Name = "iconPictureBox2";
+            this.iconPictureBox2.Size = new System.Drawing.Size(33, 33);
+            this.iconPictureBox2.TabIndex = 1;
+            this.iconPictureBox2.TabStop = false;
+            // 
             // guna2GradientPanel2
             // 
             this.guna2GradientPanel2.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -319,6 +349,19 @@
             this.guna2GradientPanel7.ShadowDecoration.Shadow = new System.Windows.Forms.Padding(0, 0, 5, 5);
             this.guna2GradientPanel7.Size = new System.Drawing.Size(65, 59);
             this.guna2GradientPanel7.TabIndex = 9;
+            // 
+            // iconPictureBox3
+            // 
+            this.iconPictureBox3.BackColor = System.Drawing.Color.Transparent;
+            this.iconPictureBox3.IconChar = FontAwesome.Sharp.IconChar.UserTie;
+            this.iconPictureBox3.IconColor = System.Drawing.Color.White;
+            this.iconPictureBox3.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.iconPictureBox3.IconSize = 33;
+            this.iconPictureBox3.Location = new System.Drawing.Point(16, 14);
+            this.iconPictureBox3.Name = "iconPictureBox3";
+            this.iconPictureBox3.Size = new System.Drawing.Size(33, 33);
+            this.iconPictureBox3.TabIndex = 13;
+            this.iconPictureBox3.TabStop = false;
             // 
             // guna2GradientPanel3
             // 
@@ -393,45 +436,6 @@
             this.guna2GradientPanel9.Size = new System.Drawing.Size(65, 59);
             this.guna2GradientPanel9.TabIndex = 9;
             // 
-            // iconPictureBox3
-            // 
-            this.iconPictureBox3.BackColor = System.Drawing.Color.Transparent;
-            this.iconPictureBox3.IconChar = FontAwesome.Sharp.IconChar.UserTie;
-            this.iconPictureBox3.IconColor = System.Drawing.Color.White;
-            this.iconPictureBox3.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.iconPictureBox3.IconSize = 33;
-            this.iconPictureBox3.Location = new System.Drawing.Point(16, 14);
-            this.iconPictureBox3.Name = "iconPictureBox3";
-            this.iconPictureBox3.Size = new System.Drawing.Size(33, 33);
-            this.iconPictureBox3.TabIndex = 13;
-            this.iconPictureBox3.TabStop = false;
-            // 
-            // iconPictureBox2
-            // 
-            this.iconPictureBox2.BackColor = System.Drawing.Color.Transparent;
-            this.iconPictureBox2.IconChar = FontAwesome.Sharp.IconChar.Car;
-            this.iconPictureBox2.IconColor = System.Drawing.Color.White;
-            this.iconPictureBox2.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.iconPictureBox2.IconSize = 33;
-            this.iconPictureBox2.Location = new System.Drawing.Point(17, 14);
-            this.iconPictureBox2.Name = "iconPictureBox2";
-            this.iconPictureBox2.Size = new System.Drawing.Size(33, 33);
-            this.iconPictureBox2.TabIndex = 1;
-            this.iconPictureBox2.TabStop = false;
-            // 
-            // iconPictureBox4
-            // 
-            this.iconPictureBox4.BackColor = System.Drawing.Color.Transparent;
-            this.iconPictureBox4.IconChar = FontAwesome.Sharp.IconChar.User;
-            this.iconPictureBox4.IconColor = System.Drawing.Color.White;
-            this.iconPictureBox4.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.iconPictureBox4.IconSize = 33;
-            this.iconPictureBox4.Location = new System.Drawing.Point(17, 14);
-            this.iconPictureBox4.Name = "iconPictureBox4";
-            this.iconPictureBox4.Size = new System.Drawing.Size(33, 33);
-            this.iconPictureBox4.TabIndex = 0;
-            this.iconPictureBox4.TabStop = false;
-            // 
             // iconPictureBox1
             // 
             this.iconPictureBox1.BackColor = System.Drawing.Color.Transparent;
@@ -459,22 +463,22 @@
             this.Size = new System.Drawing.Size(1228, 792);
             this.guna2GradientPanel1.ResumeLayout(false);
             this.guna2GradientPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvVehiculos)).EndInit();
             this.guna2GradientPanel4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvVehiculos)).EndInit();
             this.guna2GradientPanel5.ResumeLayout(false);
             this.guna2GradientPanel5.PerformLayout();
             this.guna2GradientPanel6.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox2)).EndInit();
             this.guna2GradientPanel2.ResumeLayout(false);
             this.guna2GradientPanel2.PerformLayout();
             this.guna2GradientPanel7.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox3)).EndInit();
             this.guna2GradientPanel3.ResumeLayout(false);
             this.guna2GradientPanel3.PerformLayout();
             this.guna2GradientPanel8.ResumeLayout(false);
             this.guna2GradientPanel8.PerformLayout();
             this.guna2GradientPanel9.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox1)).EndInit();
             this.ResumeLayout(false);
 

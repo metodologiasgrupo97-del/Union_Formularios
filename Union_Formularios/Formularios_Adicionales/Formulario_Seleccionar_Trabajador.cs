@@ -34,7 +34,6 @@ namespace Union_Formularios.Formularios
                 DataTable trabajadoresDT = new DataTable();
                 using (var cn = Conexion_SQL.OpenConnection())
                 {
-                    cn.Open();
                     string query = @"SELECT UserID, FirstName AS Nombre, LastName AS Apellido, Position AS Cargo 
                                      FROM Users 
                                      WHERE Position = 'Trabajador'";

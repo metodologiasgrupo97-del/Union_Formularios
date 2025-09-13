@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Windows.Forms;
-using Datos_Acceso.SqlServer;
 
 namespace Union_Formularios
 {
@@ -40,37 +40,54 @@ namespace Union_Formularios
         }
 
         private void CargarVehiculos()
-        { 
+        {
             try
             {
                 using (var cn = Conexion_SQL.OpenConnection())
                 {
-                    const string sql = @"
-                SELECT 
-                    v.Placa,
-                    ISNULL(NULLIF(v.Marca, ''), '(sin marca)')  AS Marca,
-                    ISNULL(NULLIF(v.Modelo,''), '(sin modelo)') AS Modelo,
-                    v.Color,
-                    v.Estado,
-                    (p.Nombre + ' ' + ISNULL(p.Apellido,'')) AS Propietario
-                FROM dbo.Vehiculos v
-                INNER JOIN dbo.Propietarios p ON p.ID_Propietario = v.ID_Propietario
-                ORDER BY v.Placa;";
+                    var dt = new DataTable();
+                    string sqlNuevo = @"
+                    SELECT 
+                        V.Placa,
+                        MV.Nombre   AS Marca,
+                        ModV.Nombre AS Modelo,
+                        V.Color,
+                        V.Estado,
+                        (P.Nombre + ' ' + P.Apellido) AS Propietario
+                    FROM dbo.Vehiculos V
+                    INNER JOIN dbo.Propietarios   P    ON P.ID_Propietario = V.ID_Propietario
+                    INNER JOIN dbo.MarcaVehiculo  MV   ON MV.MarcaID       = V.MarcaID
+                    INNER JOIN dbo.ModeloVehiculo ModV ON ModV.ModeloID    = V.ModeloID
+                    ORDER BY V.VehicleID DESC;";
 
-                    using (var da = new SqlDataAdapter(sql, cn))
+                    try
                     {
-                        var tabla = new DataTable();
-                        da.Fill(tabla);
-                        dgvVehiculos.DataSource = tabla;
-                        dgvVehiculos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-                        dgvVehiculos.ReadOnly = true;
-                        dgvVehiculos.AllowUserToAddRows = false;
+                        new SqlDataAdapter(sqlNuevo, cn).Fill(dt);
                     }
+                    catch (SqlException ex) when (ex.Number == 207) 
+                    {
+                        string sqlViejo = @"
+                        SELECT 
+                            V.Placa,
+                            V.Marca     AS Marca,
+                            V.Modelo    AS Modelo,
+                            V.Color,
+                            V.Estado,
+                            (P.Nombre + ' ' + P.Apellido) AS Propietario
+                        FROM dbo.Vehiculos V
+                        LEFT JOIN dbo.Propietarios P ON P.ID_Propietario = V.ID_Propietario
+                        ORDER BY V.VehicleID DESC;";
+                        dt.Clear();
+                        new SqlDataAdapter(sqlViejo, cn).Fill(dt);
+                    }
+                    dgvVehiculos.AutoGenerateColumns = true;
+                    dgvVehiculos.DataSource = dt.Rows.Count > 0 ? dt : null;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar los vehículos: " + ex.Message);
+                MessageBox.Show("Error al cargar los vehículos: " + ex.Message, "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

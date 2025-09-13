@@ -30,10 +30,6 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             { "Revisión general", 50 }
         };
 
-        // Referencias a labels (si las usas desde el diseñador, permanecen)
-        private Label lb_valor_servicio;
-        private Label label10;
-
         // Marca del vehículo de la placa actualmente seleccionada
         private string _marcaVehiculoActual = null;
 
@@ -100,6 +96,9 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             dgvRepuestos.EditingControlShowing += dgvRepuestos_EditingControlShowing;     // restringe Cantidad a números
             dgvRepuestos.CurrentCellDirtyStateChanged += dgvRepuestos_CurrentCellDirtyStateChanged; // confirma checkbox
             dgvRepuestos.CellValidating += dgvRepuestos_CellValidating;                   // valida Cantidad y stock
+            dgvRepuestos.DataError += dgvRepuestos_DataError;                 // evita reventar por formato
+            dgvRepuestos.CellValueChanged += dgvRepuestos_CellValueChanged;   // recalcula y normaliza
+
 
             // Pone todas las columnas en solo lectura salvo "Cantidad" y "Seleccionar"
             foreach (DataGridViewColumn col in dgvRepuestos.Columns)
@@ -234,23 +233,14 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         // Ajusta cantidad contra stock cuando termina de editarse la celda
         private void dgvRepuestos_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex < 0) return;
             if (dgvRepuestos.Columns[e.ColumnIndex].Name == "Cantidad")
             {
                 var row = dgvRepuestos.Rows[e.RowIndex];
-                if (row.Cells["Stock"].Value != null && row.Cells["Cantidad"].Value != null)
-                {
-                    int stock = Convert.ToInt32(row.Cells["Stock"].Value);
-                    int cantidad = 0;
-                    int.TryParse(Convert.ToString(row.Cells["Cantidad"].Value), out cantidad);
-
-                    if (cantidad > stock)
-                    {
-                        MessageBox.Show("La cantidad sobrepasa el stock disponible.", "Stock insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        row.Cells["Cantidad"].Value = stock; // recorta al máximo permitido
-                    }
-                }
+                int cant = GetInt(row.Cells["Cantidad"]?.Value, 1);
+                SetCantidadDentroDeRango(row, cant);
+                ActualizarListaRepuestos();
             }
-            ActualizarListaRepuestos(); // refresca el resumen del lado derecho
         }
 
         private string GetMarcaPorPlaca(string placa)
@@ -262,11 +252,10 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                 using (var cn = Conexion_SQL.OpenConnection())
                 using (var cmd = new SqlCommand(
                     @"SELECT TOP 1 NULLIF(LTRIM(RTRIM(Marca)),'') 
-              FROM Vehiculos 
+              FROM dbo.Vehiculos 
               WHERE LTRIM(RTRIM(Placa)) = @p", cn))
                 {
                     cmd.Parameters.AddWithValue("@p", placa.Trim());
-                    cn.Open();
                     var r = cmd.ExecuteScalar();
                     return r == null || r == DBNull.Value ? null : Convert.ToString(r);
                 }
@@ -279,38 +268,36 @@ namespace Formulario_Principal_Car_EFULL.Formularios
 
         private void CargarRepuestosPorMarca(string marca)
         {
-            // Si no hay marca, vaciamos grilla
             if (string.IsNullOrWhiteSpace(marca))
             {
                 dgvRepuestos.DataSource = null;
                 dgvRepuestos.Columns.Clear();
                 return;
             }
-
             try
             {
                 using (var cn = Conexion_SQL.OpenConnection())
                 using (var da = new SqlDataAdapter(@"
-            SELECT
-                r.RepuestoID,
-                r.Codigo,
-                r.Nombre,
-                r.Categoria,
-                r.Marca,
-                r.Modelo,
-                r.PrecioUnitario,
-                r.Stock
-            FROM Repuestos r
-            WHERE r.Activo = 1
-              AND (r.Marca = @marca OR @marca = '') AND LTRIM(RTRIM(r.Marca)) = LTRIM(RTRIM(@marca))
-            ORDER BY r.Nombre;", cn))
+                SELECT
+                    r.RepuestoID,
+                    r.Codigo,
+                    r.Nombre,
+                    r.Categoria,
+                    r.Marca,
+                    r.Modelo,
+                    r.PrecioUnitario,
+                    r.Stock
+                FROM dbo.Repuestos r
+                WHERE r.Activo = 1 AND (@marca = '' OR LTRIM(RTRIM(r.Marca)) = LTRIM(RTRIM(@marca)))
+                ORDER BY r.Nombre;", cn))
                 {
                     da.SelectCommand.Parameters.AddWithValue("@marca", marca ?? string.Empty);
+
                     var t = new DataTable();
                     da.Fill(t);
 
                     dgvRepuestos.DataSource = t;
-                    Agrega_Cantidad_Seleccionar();   // agrega "Cantidad" y "Seleccionar" si faltan
+                    Agrega_Cantidad_Seleccionar();
 
                     if (dgvRepuestos.Columns.Contains("RepuestoID"))
                         dgvRepuestos.Columns["RepuestoID"].Visible = false;
@@ -353,8 +340,6 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             }
         }
 
-
-
         // Al comenzar a editar "Cantidad" forzamos que solo acepte números
         private void dgvRepuestos_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
@@ -365,6 +350,10 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                 {
                     tb.KeyPress -= Cantidad_KeyPressOnlyNumbers;
                     tb.KeyPress += Cantidad_KeyPressOnlyNumbers;
+
+                    // Seleccionar todo al entrar para facilitar sobreescritura
+                    tb.Enter -= (s, _) => ((TextBox)s).SelectAll();
+                    tb.Enter += (s, _) => ((TextBox)s).SelectAll();
                 }
             }
         }
@@ -372,7 +361,6 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         // Validación para permitir solo dígitos en la columna Cantidad
         private void Cantidad_KeyPressOnlyNumbers(object sender, KeyPressEventArgs e)
         {
-            // Solo dígitos y teclas de control (backspace, delete, etc.)
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
                 e.Handled = true;
         }
@@ -390,31 +378,35 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         // Validación de la columna "Cantidad": número entero >= 0 y no exceder stock
         private void dgvRepuestos_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
-            if (dgvRepuestos.Columns[e.ColumnIndex].Name == "Cantidad")
+            if (dgvRepuestos.Columns[e.ColumnIndex].Name != "Cantidad") return;
+
+            var row = dgvRepuestos.Rows[e.RowIndex];
+            if (row.IsNewRow) return;
+
+            // vacío -> 1
+            var texto = Convert.ToString(e.FormattedValue)?.Trim();
+            if (string.IsNullOrEmpty(texto))
             {
-                var row = dgvRepuestos.Rows[e.RowIndex];
-                if (row.IsNewRow) return;
+                SetCantidadDentroDeRango(row, 1);
+                e.Cancel = false;
+                return;
+            }
 
-                int cantidad;
-                if (!int.TryParse(Convert.ToString(e.FormattedValue), out cantidad) || cantidad < 0)
-                {
-                    e.Cancel = true;
-                    MessageBox.Show("Ingrese una cantidad numérica válida (entera y >= 0).", "Cantidad inválida",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+            int cantidad;
+            if (!int.TryParse(texto, out cantidad) || cantidad < 1)
+            {
+                e.Cancel = true;
+                MessageBox.Show("Ingrese una cantidad válida (entera y ≥ 1).", "Cantidad inválida",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
-                if (row.Cells["Stock"]?.Value != null)
-                {
-                    int stock = 0;
-                    int.TryParse(row.Cells["Stock"].Value.ToString(), out stock);
-                    if (cantidad > stock)
-                    {
-                        e.Cancel = true;
-                        MessageBox.Show("La cantidad sobrepasa el stock disponible.", "Stock insuficiente",
-                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                }
+            int stock = GetInt(row.Cells["Stock"]?.Value, 0);
+            if (stock > 0 && cantidad > stock)
+            {
+                e.Cancel = true;
+                MessageBox.Show($"La cantidad no puede superar el stock disponible ({stock}).",
+                    "Stock insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -425,14 +417,11 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             {
                 using (var cn = Conexion_SQL.OpenConnection())
                 using (var cmd = new SqlCommand(@"
-                    SELECT TOP 1 TasaDecimal
-                    FROM Impuestos
-                    WHERE Activo = 1 AND Codigo = 'IVA'
-                      AND GETDATE() >= VigenteDesde
-                      AND (VigenteHasta IS NULL OR GETDATE() <= VigenteHasta)
-                    ORDER BY VigenteDesde DESC;", cn))
+                SELECT TOP 1 TasaDecimal
+                FROM dbo.Impuestos
+                WHERE Activo = 1 AND Codigo = 'IVA' AND GETDATE() >= VigenteDesde AND (VigenteHasta IS NULL OR GETDATE() <= VigenteHasta)
+                ORDER BY VigenteDesde DESC;", cn))  
                 {
-                    cn.Open();
                     var r = cmd.ExecuteScalar();
                     if (r != null && r != DBNull.Value)
                         _ivaRate = Convert.ToDecimal(r);
@@ -440,16 +429,26 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             }
             catch
             {
-                _ivaRate = 0.15m; // fallback
+                _ivaRate = 0.15m;
             }
         }
 
         // Cuando marcan/desmarcan "Seleccionar" en la grilla, actualiza el resumen
         private void dgvRepuestos_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (dgvRepuestos.Columns[e.ColumnIndex].Name == "Seleccionar" && e.RowIndex >= 0)
+            if (e.RowIndex < 0) return;
+            if (dgvRepuestos.Columns[e.ColumnIndex].Name == "Seleccionar")
             {
                 dgvRepuestos.EndEdit();
+                var row = dgvRepuestos.Rows[e.RowIndex];
+
+                bool sel = row.Cells["Seleccionar"].Value is bool b && b;
+                if (sel)
+                {
+                    int cant = GetInt(row.Cells["Cantidad"]?.Value, 0);
+                    if (cant < 1) cant = 1;
+                    SetCantidadDentroDeRango(row, cant);
+                }
                 ActualizarListaRepuestos();
             }
         }
@@ -470,6 +469,16 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                         txt_Show_Repuestos.AppendText($"{nombre} x {cantidad}{Environment.NewLine}");
                     }
                 }
+            }
+        }
+        private void dgvRepuestos_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            if (dgvRepuestos.Columns[e.ColumnIndex].Name == "Cantidad")
+            {
+                e.Cancel = true;
+                MessageBox.Show("Cantidad inválida. Use números enteros (≥ 1).",
+                    "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                dgvRepuestos.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = 1;
             }
         }
 
@@ -504,6 +513,21 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             return value.HasValue ? (object)value.Value : DBNull.Value;
         }
 
+        private static int GetInt(object v, int def = 0)
+        {
+            if (v == null || v == DBNull.Value) return def;
+            int n; return int.TryParse(Convert.ToString(v), out n) ? n : def;
+        }
+
+        private void SetCantidadDentroDeRango(DataGridViewRow row, int cantidadDeseada)
+        {
+            int stock = GetInt(row.Cells["Stock"]?.Value, 0);
+            int cantidad = Math.Max(1, cantidadDeseada);     // mínimo 1
+            if (stock > 0) cantidad = Math.Min(cantidad, stock);
+            row.Cells["Cantidad"].Value = cantidad;
+        }
+
+
         // Parsea textos tipo "$ 1.234,56" a decimal respetando la cultura del SO
         private static decimal ParseMoney(string s)
         {
@@ -517,14 +541,14 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         {
             try
             {
-                // Validaciones mínimas de UI antes de tocar la BD
-                if (string.IsNullOrWhiteSpace(txt_Show_Placa.Text))
-                { MessageBox.Show("Selecciona un vehículo y presiona 'Cargar Datos'."); return; }
+                // -------- Validaciones mínimas UI --------
+                if (string.IsNullOrWhiteSpace(Cmbox_Select_Plaque.Text))
+                { MessageBox.Show("Selecciona una placa."); return; }
 
-                if (string.IsNullOrWhiteSpace(txt_Show_Service.Text))
-                { MessageBox.Show("Selecciona el tipo de servicio y presiona 'Cargar Datos'."); return; }
+                if (string.IsNullOrWhiteSpace(Cmbox_Tip_Service_Realizado.Text))
+                { MessageBox.Show("Selecciona el tipo de servicio."); return; }
 
-                if (string.IsNullOrWhiteSpace(txt_Show_Mecanico_Res.Text))
+                if (string.IsNullOrWhiteSpace(txt_Show_Mecanico_Res.Text) && !_selectedUserId.HasValue)
                 { MessageBox.Show("Selecciona el mecánico responsable."); return; }
 
                 if (cmb_metodo_de_pago.SelectedIndex < 0)
@@ -533,141 +557,179 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                 if (cmb_forma_de_pago.SelectedIndex < 0)
                 { MessageBox.Show("Selecciona la forma de pago."); return; }
 
-                // Confirmación previa
-                var advertencia = MessageBox.Show(this, "¿Está seguro de guardar la factura?","Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
-                if (advertencia != DialogResult.Yes) return;
+                // Confirmación
+                if (MessageBox.Show(this, "¿Desea guardar la factura?",
+                        "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+                        MessageBoxDefaultButton.Button2) != DialogResult.Yes) return;
+
+                // -------- Recalcular totales en caliente --------
+                // Servicio
+                decimal costoServicio = 0m;
+                if (Cmbox_Tip_Service_Realizado.SelectedItem is KeyValuePair<string, decimal> kv)
+                    costoServicio = kv.Value;
+                else if (preciosServicio.TryGetValue(Cmbox_Tip_Service_Realizado.Text, out var vServ))
+                    costoServicio = vServ;
+
+                // Repuestos seleccionados
+                decimal totalRepuestos = 0m;
+                var lineasSeleccionadas = new List<(int RepuestoID, int Cantidad, decimal Precio)>();
+                foreach (DataGridViewRow row in dgvRepuestos.Rows)
+                {
+                    if (row.IsNewRow) continue;
+                    if (!(row.Cells["Seleccionar"].Value is bool sel) || !sel) continue;
+
+                    int repuestoID, cantidad; decimal precio;
+                    if (!int.TryParse(Convert.ToString(row.Cells["RepuestoID"]?.Value), out repuestoID)) continue;
+
+                    // Cantidad: mínimo 1
+                    if (!int.TryParse(Convert.ToString(row.Cells["Cantidad"]?.Value), out cantidad) || cantidad < 1)
+                        cantidad = 1;
+
+                    var vPrecio = row.Cells["PrecioUnitario"]?.Value;
+                    if (vPrecio is decimal dec) precio = dec;
+                    else if (!decimal.TryParse(Convert.ToString(vPrecio), out precio)) continue;
+
+                    // No superar stock (si hay columna)
+                    int stock = 0;
+                    int.TryParse(Convert.ToString(row.Cells["Stock"]?.Value), out stock);
+                    if (stock > 0 && cantidad > stock) cantidad = stock;
+
+                    if (cantidad >= 1 && precio > 0)
+                    {
+                        lineasSeleccionadas.Add((repuestoID, cantidad, precio));
+                        totalRepuestos += cantidad * precio;
+                    }
+                }
+
+                // Si no hay repuestos, se permite factura solo con servicio (opcional)
+                if (costoServicio <= 0m && lineasSeleccionadas.Count == 0)
+                {
+                    MessageBox.Show("Agrega al menos un repuesto o selecciona un servicio con costo.");
+                    return;
+                }
+
+                // Fecha de mantenimiento (si falla el parse, hoy)
+                DateTime fechaMant = DateTime.Today;
+                if (DTP_Date_Mantenimiento.ShowCheckBox && !DTP_Date_Mantenimiento.Checked)
+                    fechaMant = DateTime.Today;
+                else
+                    fechaMant = DTP_Date_Mantenimiento.Value.Date;
+
+                // Totales
+                decimal totalFactura = totalRepuestos + costoServicio;
+                decimal subtotal = Math.Round(totalFactura / (1 + _ivaRate), 2);
+                decimal iva = Math.Round(totalFactura - subtotal, 2);
 
                 using (var cn = Conexion_SQL.OpenConnection())
+                using (var tx = cn.BeginTransaction())
                 {
-                    cn.Open();
-                    SqlTransaction tran = cn.BeginTransaction();
-
                     try
                     {
-                        // Parseo de totales desde labels
-                        decimal total = ParseMoney(lbl_total_a_pagar.Text);
-                        decimal subtotal = ParseMoney(lbl_sub_total.Text);
-                        decimal iva = ParseMoney(lbl_iva.Text);
-
-                        // Busca VehicleID + ID_Propietario (este último es NOT NULL en Facturas)
-                        var info = GetVehiculoInfo(cn, tran, txt_Show_Placa.Text);
-                        if (!info.idProp.HasValue)
+                        // Vehicle + Propietario (Propietario es obligatorio en Facturas)
+                        var (vehicleId, idProp) = GetVehiculoInfo(cn, tx, Cmbox_Select_Plaque.Text);
+                        if (!idProp.HasValue)
                         {
-                            MessageBox.Show("La placa seleccionada no tiene propietario asignado. Asignar propietario antes de facturar.",
-                                "Facturación", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            tran.Rollback();
+                            MessageBox.Show("La placa seleccionada no tiene propietario asignado.");
+                            tx.Rollback();
                             return;
                         }
 
-                        // ID de mecánico (puede ser null si no se eligió desde el selector)
-                        int? userId = _selectedUserId;
+                        // Cabecera
+                        string insertFactura = @"
+                            INSERT INTO dbo.Facturas (CodigoFactura, Fecha, ID_Propietario, VehicleID, MetodoPago, FormaPago, Moneda,
+                            Subtotal, IVA, Total, FechaMantenimiento, TipoServicio, UserID, Observaciones)
+                            VALUES
+                            (@CodigoFactura, @Fecha, @ID_Propietario, @VehicleID, @MetodoPago, @FormaPago, 'USD',
+                            @Subtotal, @IVA, @Total, @FechaMantenimiento, @TipoServicio, @UserID, @Observaciones);
+                            SELECT CAST(SCOPE_IDENTITY() AS int);";
 
-                        // Convierte fecha del preview (si falla, usa hoy)
-                        DateTime fechaMant = DateTime.Today;
-                        DateTime.TryParseExact(txt_Show_Date.Text, "dd/MM/yyyy", CultureInfo.InvariantCulture,DateTimeStyles.None, out fechaMant);
-
-                        // Inserta cabecera de factura (usa DBNull para campos opcionales)
-                        string insertFactura = 
-                        @"INSERT INTO Facturas(CodigoFactura, Fecha, ID_Propietario, VehicleID, MetodoPago, FormaPago, Moneda, Subtotal, IVA, Total, FechaMantenimiento, TipoServicio, UserID, Observaciones)
-                        VALUES (@CodigoFactura, @Fecha, @ID_Propietario, @VehicleID, @MetodoPago, @FormaPago, 'USD', @Subtotal, @IVA, @Total, @FechaMantenimiento, @TipoServicio, @UserID, @Observaciones);
-                        SELECT CAST(SCOPE_IDENTITY() AS int);";
-
-                        SqlCommand cmdFactura = new SqlCommand(insertFactura, cn, tran);
-
-                        string codigoFactura = "FAC-" + DateTime.Now.ToString("yyyyMMddHHmmss");
-
-                        cmdFactura.Parameters.AddWithValue("@CodigoFactura", codigoFactura);
-                        cmdFactura.Parameters.AddWithValue("@Fecha", DateTime.Now);
-                        cmdFactura.Parameters.AddWithValue("@ID_Propietario", info.idProp.Value);
-                        cmdFactura.Parameters.AddWithValue("@VehicleID", info.vehicleId);
-                        cmdFactura.Parameters.AddWithValue("@MetodoPago", cmb_metodo_de_pago.Text);
-                        cmdFactura.Parameters.AddWithValue("@FormaPago", cmb_forma_de_pago.Text);
-                        cmdFactura.Parameters.AddWithValue("@Subtotal", subtotal);
-                        cmdFactura.Parameters.AddWithValue("@IVA", iva);
-                        cmdFactura.Parameters.AddWithValue("@Total", total);
-                        cmdFactura.Parameters.AddWithValue("@FechaMantenimiento", fechaMant);
-                        cmdFactura.Parameters.AddWithValue("@TipoServicio", DbOrNull(txt_Show_Service.Text));
-                        cmdFactura.Parameters.AddWithValue("@UserID", DbOrNull(userId));
-                        cmdFactura.Parameters.AddWithValue("@Observaciones",
-                            DbOrNull(string.IsNullOrWhiteSpace(txt_Show_Obsv.Text) ? null : txt_Show_Obsv.Text));
-
-                        int facturaID = Convert.ToInt32(cmdFactura.ExecuteScalar());
-
-
-                        // Inserta detalle para cada repuesto marcado como "Seleccionar"
-                        foreach (DataGridViewRow row in dgvRepuestos.Rows)
+                        using (var cmdFactura = new SqlCommand(insertFactura, cn, tx))
                         {
-                            bool seleccionado = row.Cells["Seleccionar"].Value is bool b && b;
-                            if (!seleccionado) continue;
+                            string codigoFactura = "FAC-" + DateTime.Now.ToString("yyyyMMddHHmmss");
 
-                            // RepuestoID
-                            int repuestoID;
-                            var vRep = row.Cells["RepuestoID"]?.Value;
-                            if (vRep == null || vRep == DBNull.Value || !int.TryParse(vRep.ToString(), out repuestoID))
-                                continue;
+                            cmdFactura.Parameters.AddWithValue("@CodigoFactura", codigoFactura);
+                            cmdFactura.Parameters.AddWithValue("@Fecha", DateTime.Now);
+                            cmdFactura.Parameters.AddWithValue("@ID_Propietario", idProp.Value);
+                            cmdFactura.Parameters.AddWithValue("@VehicleID", vehicleId);
+                            cmdFactura.Parameters.AddWithValue("@MetodoPago", cmb_metodo_de_pago.Text);
+                            cmdFactura.Parameters.AddWithValue("@FormaPago", cmb_forma_de_pago.Text);
+                            cmdFactura.Parameters.AddWithValue("@Subtotal", subtotal);
+                            cmdFactura.Parameters.AddWithValue("@IVA", iva);
+                            cmdFactura.Parameters.AddWithValue("@Total", totalFactura);
+                            cmdFactura.Parameters.AddWithValue("@FechaMantenimiento", fechaMant);
+                            cmdFactura.Parameters.AddWithValue("@TipoServicio", string.IsNullOrWhiteSpace(Cmbox_Tip_Service_Realizado.Text) ? (object)DBNull.Value : Cmbox_Tip_Service_Realizado.Text);
+                            cmdFactura.Parameters.AddWithValue("@UserID", _selectedUserId.HasValue ? (object)_selectedUserId.Value : DBNull.Value);
+                            cmdFactura.Parameters.AddWithValue("@Observaciones", string.IsNullOrWhiteSpace(txt_Obsv.Text) ? (object)DBNull.Value : txt_Obsv.Text);
 
-                            // Cantidad
-                            int cantidad = 0;
-                            var vCant = row.Cells["Cantidad"]?.Value;
-                            if (vCant != null && vCant != DBNull.Value)
-                                int.TryParse(vCant.ToString(), out cantidad);
-                            if (cantidad <= 0) continue;
+                            int facturaID = Convert.ToInt32(cmdFactura.ExecuteScalar());
 
-                            // Precio
-                            decimal precioUnit = 0m;
-                            var vPrecio = row.Cells["PrecioUnitario"]?.Value;
-                            if (vPrecio != null && vPrecio != DBNull.Value)
+                            // Detalle + control de stock
+                            foreach (var it in lineasSeleccionadas)
                             {
-                                if (vPrecio is decimal dec) precioUnit = dec;
-                                else decimal.TryParse(vPrecio.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out precioUnit);
-                            }
-                            if (precioUnit <= 0m) continue;
+                                // Bloqueo de fila y verificación de stock
+                                int stockActual;
+                                using (var cmdStock = new SqlCommand(
+                                    "SELECT Stock FROM dbo.Repuestos WITH (UPDLOCK, ROWLOCK) WHERE RepuestoID=@id", cn, tx))
+                                {
+                                    cmdStock.Parameters.AddWithValue("@id", it.RepuestoID);
+                                    var s = cmdStock.ExecuteScalar();
+                                    stockActual = s == null || s == DBNull.Value ? 0 : Convert.ToInt32(s);
+                                }
+                                if (stockActual < it.Cantidad)
+                                    throw new InvalidOperationException(
+                                        $"Stock insuficiente para el repuesto {it.RepuestoID}. Disponible: {stockActual}, requerido: {it.Cantidad}.");
 
-                            // === Bloqueo/validación de stock en BD (UPDLOCK) ===
-                            int stockActual;
-                            using (var cmdStock = new SqlCommand(
-                                "SELECT Stock FROM Repuestos WITH (UPDLOCK, ROWLOCK) WHERE RepuestoID=@id", cn, tran))
-                            {
-                                cmdStock.Parameters.AddWithValue("@id", repuestoID);
-                                var s = cmdStock.ExecuteScalar();
-                                stockActual = s == null || s == DBNull.Value ? 0 : Convert.ToInt32(s);
-                            }
-                            if (stockActual < cantidad)
-                                throw new InvalidOperationException($"Stock insuficiente para el repuesto {repuestoID}. Disponible: {stockActual}, requerido: {cantidad}.");
+                                using (var cmdDet = new SqlCommand(@"
+                                    INSERT INTO dbo.FacturaDetalle (FacturaID, RepuestoID, Cantidad, PrecioUnitario, IVA)
+                                    VALUES (@FacturaID, @RepuestoID, @Cantidad, @PrecioUnitario, @IVA);", cn, tx))
+                                {
+                                    cmdDet.Parameters.AddWithValue("@FacturaID", facturaID);
+                                    cmdDet.Parameters.AddWithValue("@RepuestoID", it.RepuestoID);
+                                    cmdDet.Parameters.AddWithValue("@Cantidad", it.Cantidad);
+                                    cmdDet.Parameters.AddWithValue("@PrecioUnitario", it.Precio);
+                                    cmdDet.Parameters.AddWithValue("@IVA", Math.Round(it.Precio * it.Cantidad * _ivaRate, 2));
+                                    cmdDet.ExecuteNonQuery();
+                                }
 
-                            // Inserta detalle
-                            using (SqlCommand cmdDetalle = new SqlCommand(@"
-                            INSERT INTO FacturaDetalle (FacturaID, RepuestoID, Cantidad, PrecioUnitario, IVA)
-                            VALUES (@FacturaID, @RepuestoID, @Cantidad, @PrecioUnitario, @IVA);", cn, tran))
-                            {
-                                cmdDetalle.Parameters.AddWithValue("@FacturaID", facturaID);
-                                cmdDetalle.Parameters.AddWithValue("@RepuestoID", repuestoID);
-                                cmdDetalle.Parameters.AddWithValue("@Cantidad", cantidad);
-                                cmdDetalle.Parameters.AddWithValue("@PrecioUnitario", precioUnit);
-                                cmdDetalle.Parameters.AddWithValue("@IVA", Math.Round(precioUnit * cantidad * _ivaRate, 2));
-                                cmdDetalle.ExecuteNonQuery();
-                            }
-
-                            // Descuenta stock
-                            using (var cmdUpd = new SqlCommand(
-                                "UPDATE Repuestos SET Stock = Stock - @c WHERE RepuestoID = @id", cn, tran))
-                            {
-                                cmdUpd.Parameters.AddWithValue("@c", cantidad);
-                                cmdUpd.Parameters.AddWithValue("@id", repuestoID);
-                                cmdUpd.ExecuteNonQuery();
+                                using (var cmdUpd = new SqlCommand(
+                                    "UPDATE dbo.Repuestos SET Stock = Stock - @c WHERE RepuestoID = @id", cn, tx))
+                                {
+                                    cmdUpd.Parameters.AddWithValue("@c", it.Cantidad);
+                                    cmdUpd.Parameters.AddWithValue("@id", it.RepuestoID);
+                                    cmdUpd.ExecuteNonQuery();
+                                }
                             }
                         }
+
+                        // *** AQUÍ ESTABA EL FALLO: COMMIT ***
+                        tx.Commit();
+
+                        MessageBox.Show("Factura guardada correctamente.", "OK",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        // (Opcional) refrescar vista/resumen
+                        lbl_sub_total.Text = subtotal.ToString("C");
+                        lbl_iva.Text = iva.ToString("C");
+                        lbl_total_a_pagar.Text = totalFactura.ToString("C");
+                        txt_Show_Placa.Text = Cmbox_Select_Plaque.Text;
+                        txt_Show_Date.Text = fechaMant.ToString("dd/MM/yyyy");
+                        txt_Show_Service.Text = Cmbox_Tip_Service_Realizado.Text;
+                        txt_Show_Obsv.Text = string.IsNullOrWhiteSpace(txt_Obsv.Text) ? "(Ninguna observación)" : txt_Obsv.Text;
+                        lb_valor_servicio.Text = costoServicio.ToString("C");
+                        ActualizarListaRepuestos();
                     }
-                    catch (Exception ex)
+                    catch (Exception exTx)
                     {
-                        tran.Rollback();
-                        MessageBox.Show("Error al guardar factura: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        try { tx.Rollback(); } catch { }
+                        MessageBox.Show("Error al guardar factura: " + exTx.Message,
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error de conexión: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error de conexión: " + ex.Message,
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -798,6 +860,33 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                 dgvRepuestos.Columns.Clear();
             }
         }
+        private void dgvRepuestos_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            string col = dgvRepuestos.Columns[e.ColumnIndex].Name;
+
+            if (col == "Cantidad")
+            {
+                var row = dgvRepuestos.Rows[e.RowIndex];
+                int cant = GetInt(row.Cells["Cantidad"]?.Value, 1);
+                SetCantidadDentroDeRango(row, cant);
+                ActualizarListaRepuestos();
+            }
+            else if (col == "Seleccionar")
+            {
+                var row = dgvRepuestos.Rows[e.RowIndex];
+                bool sel = row.Cells["Seleccionar"].Value is bool b && b;
+
+                // Al seleccionar, si cantidad inválida -> 1 (y dentro de stock)
+                if (sel)
+                {
+                    int cant = GetInt(row.Cells["Cantidad"]?.Value, 0);
+                    if (cant < 1) cant = 1;
+                    SetCantidadDentroDeRango(row, cant);
+                }
+                ActualizarListaRepuestos();
+            }
+        }
 
         // Radio “No usar repuestos”: limpia la grilla
         private void rdb_NoUsarRepuestos_CheckedChanged(object sender, EventArgs e)
@@ -897,6 +986,8 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         private Label label23;
         private Label lbl_sub_total;
         private Label lbl_iva;
+        private Label lb_valor_servicio;
+        private Label label10;
         private Label lbl_total_a_pagar;
         private Guna.UI2.WinForms.Guna2TextBox txt_Show_Obsv;
         private Label label25;
