@@ -128,15 +128,36 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             label1.AutoSize = false;
             label1.Width = 100;
 
-            // Carga de placas + marca al combo y al diccionario
-            // Carga de placas + marca al combo y al diccionario
-            using (var cn = Conexion_SQL.GetConnection())
-            using (var cmd = new SqlCommand(@"
-            SELECT v.Placa, NULLIF(LTRIM(RTRIM(v.Marca)),'') AS Marca
-            FROM dbo.Vehiculos v
-            ORDER BY v.Placa;", cn))
+            // Carga de placas + marca al combo y al diccionario (tolerante a esquema)
+            using (var cn = Conexion_SQL.OpenConnection())
             {
-                cn.Open();
+                var colMarcaTexto = FindCol(cn, "Vehiculos", "Marca", "MarcaVehiculo");
+                var fks = DetectVehiculosFKs(cn);
+                var pkM = DetectPKMarca(cn);
+
+                string selectMarca;
+                string joins = string.Empty; // ¡importante!
+
+                if (colMarcaTexto != null)
+                {
+                    selectMarca = $"NULLIF(LTRIM(RTRIM(v.[{colMarcaTexto}])), '')";
+                }
+                else if (fks.fkMarca != null && pkM != null)
+                {
+                    selectMarca = "mv.Nombre";
+                    joins = $" LEFT JOIN MarcaVehiculo mv ON mv.[{pkM}] = v.[{fks.fkMarca}]"; // <- espacio inicial
+                }
+                else
+                {
+                    selectMarca = "CAST(NULL AS NVARCHAR(100))";
+                }
+
+                string sql = $@"
+        SELECT v.Placa, {selectMarca} AS Marca
+        FROM dbo.Vehiculos v{joins}
+        ORDER BY v.Placa;";
+
+                using (var cmd = new SqlCommand(sql, cn))
                 using (var r = cmd.ExecuteReader())
                 {
                     Cmbox_Select_Plaque.Items.Clear();
@@ -146,7 +167,6 @@ namespace Formulario_Principal_Car_EFULL.Formularios
                     {
                         var placa = Convert.ToString(r["Placa"])?.Trim();
                         var marca = r.IsDBNull(1) ? null : Convert.ToString(r["Marca"])?.Trim();
-
                         if (!string.IsNullOrEmpty(placa))
                         {
                             Cmbox_Select_Plaque.Items.Add(placa);
@@ -252,17 +272,45 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             try
             {
                 using (var cn = Conexion_SQL.OpenConnection())
-                using (var cmd = new SqlCommand(
-                    @"SELECT TOP 1 NULLIF(LTRIM(RTRIM(Marca)),'') 
-                    FROM dbo.Vehiculos 
-                    WHERE LTRIM(RTRIM(Placa)) = @p", cn))
                 {
-                    cmd.Parameters.AddWithValue("@p", placa.Trim());
-                    var r = cmd.ExecuteScalar();
-                    return r == null || r == DBNull.Value ? null : Convert.ToString(r);
+                    var colMarcaTexto = FindCol(cn, "Vehiculos", "Marca", "MarcaVehiculo");
+                    var fks = DetectVehiculosFKs(cn);
+                    var pkM = DetectPKMarca(cn);
+
+                    string selectMarca;
+                    string joins = string.Empty; // ¡importante!
+
+                    if (colMarcaTexto != null)
+                    {
+                        selectMarca = $"NULLIF(LTRIM(RTRIM(v.[{colMarcaTexto}])), '')";
+                    }
+                    else if (fks.fkMarca != null && pkM != null)
+                    {
+                        selectMarca = "mv.Nombre";
+                        joins = $" LEFT JOIN MarcaVehiculo mv ON mv.[{pkM}] = v.[{fks.fkMarca}]"; // <- espacio inicial
+                    }
+                    else
+                    {
+                        selectMarca = "CAST(NULL AS NVARCHAR(100))";
+                    }
+
+                    string sql = $@"
+                SELECT TOP 1 {selectMarca}
+                FROM dbo.Vehiculos v{joins}
+                WHERE LTRIM(RTRIM(v.Placa)) = @p;";
+
+                    using (var cmd = new SqlCommand(sql, cn))
+                    {
+                        cmd.Parameters.Add("@p", SqlDbType.NVarChar, 10).Value = placa.Trim();
+                        var val = cmd.ExecuteScalar();
+                        return val == null || val == DBNull.Value ? null : Convert.ToString(val).Trim();
+                    }
                 }
             }
-            catch { return null; }
+            catch
+            {
+                return null;
+            }
         }
 
         private void CargarRepuestosPorMarca(string marca)
@@ -525,14 +573,43 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             if (stock > 0) cantidad = Math.Min(cantidad, stock);
             row.Cells["Cantidad"].Value = cantidad;
         }
-
-
-        // Parsea textos tipo "$ 1.234,56" a decimal respetando la cultura del SO
-        private static decimal ParseMoney(string s)
+        // ===== Helpers para detectar columnas reales en BD =====
+        private static string FindCol(SqlConnection cn, string table, params string[] candidates)
         {
-            if (decimal.TryParse(s, NumberStyles.Currency, CultureInfo.CurrentCulture, out var d)) return d;
-            if (decimal.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out d)) return d;
-            return 0m;
+            string inList = string.Join("','", candidates);
+            string sql = $@"
+        SELECT TOP 1 name
+        FROM sys.columns
+        WHERE object_id = OBJECT_ID('dbo.{table}') AND name IN ('{inList}');";
+            using (var cmd = new SqlCommand(sql, cn))
+            {
+                var r = cmd.ExecuteScalar();
+                return r == null ? null : r.ToString();
+            }
+        }
+
+        // FKs en Vehiculos
+        private static (string fkMarca, string fkModelo, string fkAnio) DetectVehiculosFKs(SqlConnection cn)
+        {
+            return (
+                fkMarca: FindCol(cn, "Vehiculos", "ID_Marca", "MarcaID", "IDMarca", "IdMarca", "ID_MarcaVehiculo"),
+                fkModelo: FindCol(cn, "Vehiculos", "ID_Modelo", "ModeloID", "IDModelo", "IdModelo", "ID_ModeloVehiculo"),
+                fkAnio: FindCol(cn, "Vehiculos", "ID_Anio", "AnioID", "IDAnio", "IdAnio", "ID_Año", "AnoID", "ID_ModeloAnio")
+            );
+        }
+
+        // PKs en catálogos
+        private static string DetectPKMarca(SqlConnection cn)
+        {
+            return FindCol(cn, "MarcaVehiculo", "ID_Marca", "MarcaID", "IdMarca");
+        }
+        private static string DetectPKModelo(SqlConnection cn)
+        {
+            return FindCol(cn, "ModeloVehiculo", "ID_Modelo", "ModeloID", "IdModelo");
+        }
+        private static string DetectPKAnio(SqlConnection cn)
+        {
+            return FindCol(cn, "ModeloAnio", "ID_Anio", "AnioID", "IdAnio", "ID_Año", "AnoID");
         }
 
         // ==== Guardar Factura (cabecera + detalle) con validaciones y transacción ====
@@ -944,7 +1021,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
 
             txt_Show_Date.Text = DTP_Date_Mantenimiento.Value.ToString("dd/MM/yyyy");
         }
-
+        
 
         private void txt_Show_Repuestos_TextChanged(object sender, EventArgs e) { }
         private Label label1;

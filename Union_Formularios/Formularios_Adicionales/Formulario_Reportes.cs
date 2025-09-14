@@ -34,7 +34,6 @@ namespace Formulario_Principal_Car_EFULL.Formularios
             WireHandlersOnce();
         }
 
-        private readonly string _connStr = "Data Source=.;Initial Catalog=CAR_EFULL;Integrated Security=True;TrustServerCertificate=True";
         private readonly BindingSource _bs = new BindingSource();
         private DataTable _dt = new DataTable();
 
@@ -131,9 +130,8 @@ namespace Formulario_Principal_Car_EFULL.Formularios
         {
             try
             {
-                using (var cn = new SqlConnection(_connStr))
+                using (var cn = Conexion_SQL.OpenConnection())
                 {
-                    cn.Open();
 
                     // Placas
                     using (var da = new SqlDataAdapter(@"SELECT DISTINCT v.Placa FROM Vehiculos v INNER JOIN Facturas f ON f.VehicleID = v.VehicleID ORDER BY v.Placa;", cn))
@@ -297,7 +295,7 @@ namespace Formulario_Principal_Car_EFULL.Formularios
 
                 sql.AppendLine("ORDER BY f.FechaMantenimiento DESC, f.CodigoFactura DESC");
 
-                using (var cn = new SqlConnection(_connStr))
+                using (var cn = Conexion_SQL.OpenConnection())
                 using (var da = new SqlDataAdapter(sql.ToString(), cn))
                 {
                     foreach (var p in cmdParams) da.SelectCommand.Parameters.Add(p);

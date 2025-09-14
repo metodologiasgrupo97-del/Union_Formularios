@@ -1,12 +1,84 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Gary.S\\source\\repos\\Union_Formularios\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\Users\\WorkCasz\\Desktop\\Desktop\\Union_Formularios\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|c:\\users\\workcasz\\desktop\\desktop\\union_formularios\\union_formularios\\formularios_adicionales\\formulario_reportes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\formularios_adicionales\\formulario_reportes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C3AECF19-53B7-4A6B-A45D-0BAE78916ECF}|Datos_Acceso\\Datos_Acceso.csproj|C:\\Users\\WorkCasz\\Desktop\\Desktop\\Union_Formularios\\datos_acceso\\sqlserver\\conexion_sql.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C3AECF19-53B7-4A6B-A45D-0BAE78916ECF}|Datos_Acceso\\Datos_Acceso.csproj|solutionrelative:datos_acceso\\sqlserver\\conexion_sql.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|C:\\Users\\WorkCasz\\Desktop\\Desktop\\Union_Formularios\\union_formularios\\formularios_adicionales\\formulario_reportes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\formularios_adicionales\\formulario_reportes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|C:\\Users\\WorkCasz\\Desktop\\Desktop\\Union_Formularios\\union_formularios\\formularios_adicionales\\formulario_mantenimiento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2CED8BEE-86E1-499D-A068-0B699623833B}|Union_Formularios\\Union_Formularios.csproj|solutionrelative:union_formularios\\formularios_adicionales\\formulario_mantenimiento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Conexion_SQL.cs",
+              "DocumentMoniker": "C:\\Users\\WorkCasz\\Desktop\\Desktop\\Union_Formularios\\Datos_Acceso\\SqlServer\\Conexion_SQL.cs",
+              "RelativeDocumentMoniker": "Datos_Acceso\\SqlServer\\Conexion_SQL.cs",
+              "ToolTip": "C:\\Users\\WorkCasz\\Desktop\\Desktop\\Union_Formularios\\Datos_Acceso\\SqlServer\\Conexion_SQL.cs",
+              "RelativeToolTip": "Datos_Acceso\\SqlServer\\Conexion_SQL.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAAAA0AAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T04:22:10.077Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Formulario_Reportes.cs",
+              "DocumentMoniker": "C:\\Users\\WorkCasz\\Desktop\\Desktop\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Reportes.cs",
+              "RelativeDocumentMoniker": "Union_Formularios\\Formularios_Adicionales\\Formulario_Reportes.cs",
+              "ToolTip": "C:\\Users\\WorkCasz\\Desktop\\Desktop\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Reportes.cs",
+              "RelativeToolTip": "Union_Formularios\\Formularios_Adicionales\\Formulario_Reportes.cs",
+              "ViewState": "AgIAAHQAAAAAAAAAAAAAAIYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T03:43:47.114Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Formulario_Reportes.cs [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\WorkCasz\\Desktop\\Desktop\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Reportes.cs",
+              "RelativeDocumentMoniker": "Union_Formularios\\Formularios_Adicionales\\Formulario_Reportes.cs",
+              "ToolTip": "C:\\Users\\WorkCasz\\Desktop\\Desktop\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Reportes.cs [Dise\u00F1o]",
+              "RelativeToolTip": "Union_Formularios\\Formularios_Adicionales\\Formulario_Reportes.cs [Dise\u00F1o]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T03:43:32.039Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Formulario_Mantenimiento.cs",
+              "DocumentMoniker": "C:\\Users\\WorkCasz\\Desktop\\Desktop\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Mantenimiento.cs",
+              "RelativeDocumentMoniker": "Union_Formularios\\Formularios_Adicionales\\Formulario_Mantenimiento.cs",
+              "ToolTip": "C:\\Users\\WorkCasz\\Desktop\\Desktop\\Union_Formularios\\Union_Formularios\\Formularios_Adicionales\\Formulario_Mantenimiento.cs",
+              "RelativeToolTip": "Union_Formularios\\Formularios_Adicionales\\Formulario_Mantenimiento.cs",
+              "ViewState": "AgIAABUBAAAAAAAAAADwvzoBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T01:27:30.267Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

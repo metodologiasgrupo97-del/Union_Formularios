@@ -9,10 +9,9 @@ public abstract class Conexion_SQL
     static Conexion_SQL()
     {
         _serverName = ObtenerServidorDesdeArchivo();
-        // 👇 Ya no lanza excepción aquí
         if (string.IsNullOrWhiteSpace(_serverName))
         {
-            _serverName = null; // queda en null hasta que Pedir_Nom_Servidor lo guarde
+            _serverName = null; 
         }
     }
 
@@ -33,7 +32,7 @@ public abstract class Conexion_SQL
 
         string filePath = "servidor_config.txt";
         File.WriteAllText(filePath, serverName);
-        _serverName = serverName; // importante: actualizar la variable estática
+        _serverName = serverName; 
     }
 
     public static SqlConnection OpenConnection()
