@@ -33,6 +33,10 @@ CREATE TABLE Propietarios (
     FechaRegistro DATETIME NULL DEFAULT GETDATE()
 );
 
+INSERT INTO Propietarios (Nombres, Apellidos, Cedula, Telefono, Correo, Direccion, Estado)
+VALUES ('Carlos', 'Ramírez Torres', '120736289', '0998765432', 'carlos.ramirez@example.com', 'Av. Quito y Bolívar', 'Activo');
+
+
 -- =========================================
 -- Tabla de Tipos de Vehículo
 -- =========================================
@@ -114,6 +118,11 @@ INSERT INTO Users
     (LoginName, Password, FirstName, LastName, Position, Email, FotoPerfil, Telefono, TelefonoSecundario)
 VALUES
     ('Vodruk', '123gasc', 'Sánchez', '', 'Administrador', 'gascornejo885@gmail.com', NULL, '0967747273', NULL);
+
+INSERT INTO Users 
+    (Usuario, Clave, Rol, Nombres, Apellidos, Correo, Telefono, Estado)
+VALUES 
+    ('jlopez', '12345', 'Trabajador', 'Juan', 'López Pérez', 'juan.lopez@example.com', '0987654321', 'Activo');
 
 -- =========================================
 -- Tabla de Empresa
