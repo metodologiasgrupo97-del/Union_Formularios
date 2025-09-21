@@ -1,0 +1,196 @@
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Capa_Corte_Transversal.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Capa_Corte_Transversal.pdb
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Corte_Transversal.csproj.AssemblyReference.cache
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Corte_Transversal.csproj.CoreCompileInputs.cache
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Corte_Transversal.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Corte_Transversal.pdb
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Guna.UI2.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Cor.3A8CD8C2.Up2Date
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Capa_Corte_Transversal.dll.config
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.FileProviders.Abstractions.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.FileProviders.Physical.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.FileSystemGlobbing.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.Primitives.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Buffers.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.IO.Pipelines.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Memory.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Text.Encodings.Web.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Text.Json.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Threading.Tasks.Extensions.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.ValueTuple.dll
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.Configuration.Abstractions.xml
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.FileProviders.Abstractions.xml
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.FileProviders.Physical.xml
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.FileSystemGlobbing.xml
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.Primitives.xml
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Buffers.xml
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.IO.Pipelines.xml
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Memory.xml
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Numerics.Vectors.xml
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Text.Encodings.Web.xml
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Text.Json.xml
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Threading.Tasks.Extensions.xml
+C:\Users\Gary.S\source\repos\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.ValueTuple.xml
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Capa_Corte_Transversal.dll.config
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Capa_Corte_Transversal.dll
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Capa_Corte_Transversal.pdb
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Guna.UI2.dll
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.FileProviders.Abstractions.dll
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.FileProviders.Physical.dll
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.FileSystemGlobbing.dll
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.Primitives.dll
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Buffers.dll
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.IO.Pipelines.dll
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Memory.dll
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Text.Encodings.Web.dll
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Text.Json.dll
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Threading.Tasks.Extensions.dll
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.ValueTuple.dll
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.Configuration.Abstractions.xml
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.FileProviders.Abstractions.xml
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.FileProviders.Physical.xml
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.FileSystemGlobbing.xml
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.Primitives.xml
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Buffers.xml
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.IO.Pipelines.xml
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Memory.xml
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Numerics.Vectors.xml
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Text.Encodings.Web.xml
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Text.Json.xml
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Threading.Tasks.Extensions.xml
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.ValueTuple.xml
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Corte_Transversal.csproj.AssemblyReference.cache
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Corte_Transversal.csproj.CoreCompileInputs.cache
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Cor.3A8CD8C2.Up2Date
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Corte_Transversal.dll
+C:\Users\Kurorko god\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Corte_Transversal.pdb
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\libHarfBuzzSharp.dylib
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\x86\libHarfBuzzSharp.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\x64\libHarfBuzzSharp.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\arm64\libHarfBuzzSharp.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\libSkiaSharp.dylib
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\x86\libSkiaSharp.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\x64\libSkiaSharp.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\arm64\libSkiaSharp.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\x64\libHarfBuzzSharp.so
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\arm\libHarfBuzzSharp.so
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\arm64\libHarfBuzzSharp.so
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\musl-x64\libHarfBuzzSharp.so
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\x64\libSkiaSharp.so
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\arm\libSkiaSharp.so
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\arm64\libSkiaSharp.so
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\musl-x64\libSkiaSharp.so
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Capa_Corte_Transversal.dll.config
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Capa_Corte_Transversal.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Capa_Corte_Transversal.pdb
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.Base.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.Controls.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.DesignerSupport.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.Dialogs.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.Markup.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.Markup.Xaml.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.Metal.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.MicroCom.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.OpenGL.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.Remote.Protocol.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.Skia.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\GLWpfControl.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Guna.UI2.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\HarfBuzzSharp.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\MicroCom.Runtime.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.FileProviders.Abstractions.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.FileProviders.Physical.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.FileSystemGlobbing.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.Primitives.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\OpenTK.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\OpenTK.GLControl.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\ScottPlot.Avalonia.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\ScottPlot.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\ScottPlot.WinForms.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\ScottPlot.WPF.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\SkiaSharp.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\SkiaSharp.HarfBuzz.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\SkiaSharp.Views.Desktop.Common.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\SkiaSharp.Views.WindowsForms.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\SkiaSharp.Views.WPF.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Buffers.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.ComponentModel.Annotations.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Drawing.Common.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.IO.Pipelines.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Memory.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Text.Encodings.Web.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Text.Json.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Threading.Tasks.Extensions.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.ValueTuple.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.Base.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.Controls.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.DesignerSupport.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.Dialogs.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.Markup.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.Markup.Xaml.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.Metal.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.MicroCom.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.OpenGL.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.Remote.Protocol.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Avalonia.Skia.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\GLWpfControl.pdb
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\HarfBuzzSharp.pdb
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\HarfBuzzSharp.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.Configuration.Abstractions.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.FileProviders.Abstractions.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.FileProviders.Physical.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.FileSystemGlobbing.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\Microsoft.Extensions.Primitives.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\OpenTK.pdb
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\OpenTK.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\OpenTK.GLControl.pdb
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\OpenTK.GLControl.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\ScottPlot.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\ScottPlot.Avalonia.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\ScottPlot.WinForms.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\ScottPlot.WPF.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\SkiaSharp.pdb
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\SkiaSharp.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\SkiaSharp.HarfBuzz.pdb
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\SkiaSharp.HarfBuzz.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\SkiaSharp.Views.Desktop.Common.pdb
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\SkiaSharp.Views.Desktop.Common.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\SkiaSharp.Views.WindowsForms.pdb
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\SkiaSharp.Views.WindowsForms.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\SkiaSharp.Views.WPF.pdb
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\SkiaSharp.Views.WPF.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Buffers.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.IO.Pipelines.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Memory.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Numerics.Vectors.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Text.Encodings.Web.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Text.Json.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.Threading.Tasks.Extensions.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\bin\Debug\System.ValueTuple.xml
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Corte_Transversal.csproj.AssemblyReference.cache
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Avalonia\Resources.Inputs.cache
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Corte_Transversal.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Corte_Transversal.csproj.CoreCompileInputs.cache
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Cor.3A8CD8C2.Up2Date
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Corte_Transversal.dll
+C:\Users\Gary.S\Desktop\Union_Formularios\Union_Formularios\Capa_Corte_Transversal\obj\Debug\Capa_Corte_Transversal.pdb
